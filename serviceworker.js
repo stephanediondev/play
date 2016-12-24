@@ -20,12 +20,21 @@ self.addEventListener('activate', function(ExtendableEvent) {
 
     postMessage('activate event from service worker');
 
+    self.clients.matchAll().then(function(clientList) {
+        clientList.some(function(client) {
+            if(client.focused) {
+                postMessage('client: ' + client.id);
+            }
+        });
+    });
+
     if('waitUntil' in ExtendableEvent) {
         ExtendableEvent.waitUntil(
             caches.keys().then(function(cacheNames) {
                 return Promise.all(
                     cacheNames.map(function(cacheName) {
                         if(cacheName !== CACHE_KEY) {
+                            postMessage('delete cache: ' + cacheName);
                             return caches.delete(cacheName);
                         }
                     })
@@ -47,8 +56,10 @@ self.addEventListener('fetch', function(FetchEvent) {
     FetchEvent.respondWith(
         caches.match(FetchEvent.request).then(function(response) {
             if(response) {
+                postMessage('from service worker');
                 return response;
             }
+            postMessage('from server');
             return fetch(FetchEvent.request);
         })
     );
@@ -64,6 +75,12 @@ self.addEventListener('periodicsync', function(PeriodicSyncEvent) {
     console.log(PeriodicSyncEvent);
 
     postMessage('periodicsync event from service worker');
+});
+
+self.addEventListener('pushsubscriptionchange', function(PushEvent) {
+    console.log(PushEvent);
+
+    postMessage('pushsubscriptionchange event from service worker');
 });
 
 self.addEventListener('push', function(PushEvent) {
@@ -94,6 +111,8 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
     postMessage('message event from service worker');
 
     postMessage('command: ' + ExtendableMessageEvent.data.command);
+
+    postMessage('source: ' + ExtendableMessageEvent.source.id);
 
     switch(ExtendableMessageEvent.data.command) {
         case 'reload-cache':
