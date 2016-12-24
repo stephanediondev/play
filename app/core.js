@@ -1,3 +1,38 @@
+if('serviceWorker' in navigator && window.location.protocol == 'https:') {
+    var serviceWorkerEnabled = true;
+
+    /*navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+        writeHistory('service worker already registered');
+
+        if('PushManager' in window) { 
+            ServiceWorkerRegistration.pushManager.getSubscription().then(function(pushSubscription) {
+                console.log(pushSubscription);
+
+                if(pushSubscription) {
+                    writeHistory('subscription already done');
+                }
+            });
+        }
+    });*/
+
+    navigator.serviceWorker.onmessage = function (ServiceWorkerMessageEvent) {
+        console.log(ServiceWorkerMessageEvent);
+
+        writeHistory(ServiceWorkerMessageEvent.data.content);
+    };
+
+} else {
+    var serviceWorkerEnabled = false;
+
+    if('serviceWorker' in navigator === false) {
+        writeHistory('serviceWorker not supported');
+    }
+
+    if(window.location.protocol !== 'https:') {
+        writeHistory('https only');
+    }
+}
+
 var applicationServerKey = 'BPjjzF6mMnplDTu3U8XVwkrgxK7cclGZpiqM3iICEhWa8HyaowqKCXeANyND9+ikuXN0+cnjsSrDPkwd6T/w8tA=';
 
 var buttonRegister = document.getElementById('btn_register');
@@ -50,167 +85,149 @@ buttonPeriodicSync.addEventListener('click', function() {
 });
 
 buttonMessageCache.addEventListener('click', function() {
-    message({command: 'add', url: '3680468.jpg'});
+    message({command: 'reload-cache'});
 });
 
 buttonMessageNotification.addEventListener('click', function() {
-    message({command: 'notification', url: 'body'});
+    message({command: 'send-notification', content: 'body'});
 });
 
 buttonChearHistory.addEventListener('click', function() {
     document.getElementById('history').innerHTML = '';
 });
 
-if('serviceWorker' in navigator && window.location.protocol == 'https:') {
-    navigator.serviceWorker.onmessage = function (ServiceWorkerMessageEvent) {
-        console.log(ServiceWorkerMessageEvent);
-
-        writeHistory(ServiceWorkerMessageEvent.data.content);
-    };
-}
-
 function register() {
-    if('serviceWorker' in navigator && window.location.protocol == 'https:') {
+    if(serviceWorkerEnabled) {
         navigator.serviceWorker.register('serviceworker.js').then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
 
             if(ServiceWorkerRegistration.installing) {
-                writeHistory('installing');
+                writeHistory('register installing');
+
             } else if(ServiceWorkerRegistration.waiting) {
-                writeHistory('waiting');
+                writeHistory('register waiting');
+
             } else if(ServiceWorkerRegistration.active) {
-                writeHistory('active');
-            }
-
-            if('PushManager' in window) { 
-                ServiceWorkerRegistration.pushManager.getSubscription().then(function(pushSubscription) {
-                    console.log(pushSubscription);
-
-                    if(pushSubscription) {
-                        var toJSON = pushSubscription.toJSON();
-
-                        writeHistory('endpoint: ' + pushSubscription.endpoint);
-                        writeHistory('public_key: ' + toJSON.keys.p256dh);
-                        writeHistory('authentication_secret: ' + toJSON.keys.auth);
-                    }
-
-                }).catch(function(event) {
-                    console.log(event);
-                });
+                writeHistory('register active');
             }
         });
     }
 }
 
 function unregister() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        ServiceWorkerRegistration.unregister().then(function() {
-            writeHistory('ServiceWorkerRegistration.unregister()');
-
-        }).catch(function(event) {
-            console.log(event);
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.unregister().then(function() {
+                writeHistory('unregister done');
+            });
         });
-    });
+    }
 }
 
 function subscribe() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-            writeHistory('permissionState: ' + permissionState);
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                writeHistory('permissionState: ' + permissionState);
 
-            if(permissionState == 'denied') {
-            }
+                if(permissionState == 'denied') {
+                }
 
-            if(permissionState == 'prompt' || permissionState == 'granted') {
-                ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}).then(function(pushSubscription) {
-                    console.log(pushSubscription);
+                if(permissionState == 'prompt' || permissionState == 'granted') {
+                    ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}).then(function(pushSubscription) {
+                        console.log(pushSubscription);
 
-                    if(pushSubscription) {
-                        var toJSON = pushSubscription.toJSON();
+                        if(pushSubscription) {
+                            var toJSON = pushSubscription.toJSON();
 
-                        writeHistory('endpoint: ' + pushSubscription.endpoint);
-                        writeHistory('public_key: ' + toJSON.keys.p256dh);
-                        writeHistory('authentication_secret: ' + toJSON.keys.auth);
-                    }
-                });
-            }
+                            writeHistory('endpoint: ' + pushSubscription.endpoint);
+                            writeHistory('public_key: ' + toJSON.keys.p256dh);
+                            writeHistory('authentication_secret: ' + toJSON.keys.auth);
+                        }
+                    });
+                }
+            });
         });
-    });
+    }
 }
 
 function unsubscribe() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
-            console.log(PushSubscription);
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
+                console.log(PushSubscription);
 
-            if(PushSubscription) {
-                PushSubscription.unsubscribe().then(function() {
-                    writeHistory('PushSubscription.unsubscribe()');
-                });
-            }
-
-        }).catch(function(event) {
-            console.log(event);
+                if(PushSubscription) {
+                    PushSubscription.unsubscribe().then(function() {
+                        writeHistory('unsubcribe done');
+                    });
+                }
+            });
         });
-    });
+    }
 }
 
 function permissionState() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-            writeHistory('permissionState: ' + permissionState);
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                writeHistory('permissionState: ' + permissionState);
+            });
         });
-    });
+    }
 }
 
 function message(content) {
-    navigator.serviceWorker.ready.then(function() {
-        return new Promise(function(resolve, reject) {
-            var messageChannel = new MessageChannel();
-            messageChannel.port1.onmessage = function(event) {
-            if(event.data.error) {
-                reject(event.data.error);
-            } else {
-                resolve(event.data);
-            }
-            };
-            navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function() {
+            return new Promise(function(resolve, reject) {
+                var messageChannel = new MessageChannel();
+                messageChannel.port1.onmessage = function(event) {
+                if(event.data.error) {
+                    reject(event.data.error);
+                } else {
+                    resolve(event.data);
+                }
+                };
+                navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
+            });
         });
-    });
+    }
 }
 
 function update() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        ServiceWorkerRegistration.update().then(function() {
-            writeHistory('ServiceWorkerRegistration.update()');
-
-        }).catch(function(event) {
-            console.log(event);
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.update().then(function() {
+                writeHistory('update done');
+            });
         });
-    });
+    }
 }
 
 function sync_register() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        if('sync' in ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.sync.register('test-sync').then();
-        }
-    });
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            if('sync' in ServiceWorkerRegistration) {
+                ServiceWorkerRegistration.sync.register('test-sync').then();
+            }
+        });
+    }
 }
 
 function periodic_sync_register() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        if('periodicSync' in ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.periodicSync.register({
-                tag: 'get-latest-news',         // default: ''
-                minPeriod: 12 * 60 * 60 * 1000, // default: 0
-                powerState: 'avoid-draining',   // default: 'auto'
-                networkState: 'avoid-cellular'  // default: 'online'
-            }).then(function(periodicSyncReg) {
-                console.log(periodicSyncReg);
-            });
-        }
-    });
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            if('periodicSync' in ServiceWorkerRegistration) {
+                ServiceWorkerRegistration.periodicSync.register({
+                    tag: 'get-latest-news',         // default: ''
+                    minPeriod: 12 * 60 * 60 * 1000, // default: 0
+                    powerState: 'avoid-draining',   // default: 'auto'
+                    networkState: 'avoid-cellular'  // default: 'online'
+                }).then();
+            }
+        });
+    }
 }
 
 function writeHistory(message) {
