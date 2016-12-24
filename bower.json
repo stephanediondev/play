@@ -1,0 +1,7 @@
+{
+    "name": "serviceworker",
+    "license": "GPL-3.0",
+    "dependencies": {
+        "material-design-lite": "*"
+    }
+}

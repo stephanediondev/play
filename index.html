@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Welcome!</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="HandheldFriendly" content="true">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#3F51B5">
+<link rel="icon" sizes="32x32" href="app/icons/icon-32x32.png">
+<link rel="icon" sizes="192x192" href="app/icons/icon-192x192.png">
+<link rel="icon" sizes="512x512" href="app/icons/icon-512x512.png">
+<link rel="apple-touch-icon" sizes="512x512" href="app/icons/icon-512x512.png">
+<link rel="apple-touch-icon-precomposed" sizes="512x512" href="app/icons/icon-512x512.png">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" type="text/css" href="vendor/material-design-lite/material.min.css">
+<link rel="stylesheet" type="text/css" href="app/core.css">
+</head>
+
+<body class="anonymous online not_administrator no_entries">
+
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+    <header class="mdl-layout__header mdl-color--indigo">
+        <div class="mdl-layout__header-row">
+            <div class="mdl-layout-spacer">
+            </div>
+
+            <nav class="mdl-navigation">
+            </nav
+        </div>
+    </header>
+
+    <aside class="mdl-layout__drawer">
+    </aside>
+
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-snackbar mdl-js-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button type="button" class="mdl-snackbar__action"></button>
+        </div>
+
+        <div class="mdl-grid" id="top">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col">
+                <div class="mdl-card__title">
+                    <h1 class="mdl-card__title-text">
+                        ServiceWorkerRegistration
+                    </h1>
+                </div>
+                <div class="mdl-card__supporting-text">
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a href="#" id="btn_register" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Register</a>
+                    <a href="#" id="btn_unregister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unregister</a>
+                    <a href="#" id="btn_update" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Update</a>
+                    <a href="#" id="btn_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Sync</a>
+                    <a href="#" id="btn_periodic_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Periodic sync</a>
+                </div>
+            </div>
+
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col">
+                <div class="mdl-card__title">
+                    <h1 class="mdl-card__title-text">
+                        PushSubscription
+                    </h1>
+                </div>
+                <div class="mdl-card__supporting-text">
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a href="#" id="btn_subscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Subscribe</a>
+                    <a href="#" id="btn_unsubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unsubscribe</a>
+                    <a href="#" id="btn_permission_state" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
+                </div>
+            </div>
+
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col">
+                <div class="mdl-card__title">
+                    <h1 class="mdl-card__title-text">
+                        ExtendableMessageEvent
+                    </h1>
+                </div>
+                <div class="mdl-card__supporting-text">
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a href="#" id="btn_message_cache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">cache.put</a>
+                    <a href="#" id="btn_message_notification" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">showNotification</a>
+                </div>
+            </div>
+
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
+                <div class="mdl-card__title">
+                    <h1 class="mdl-card__title-text">
+                        History
+                    </h1>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <ul id="history">
+                    </ul>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a href="#" id="btn_clear_history" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Clear</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="vendor/material-design-lite/material.min.js"></script>
+<script type="text/javascript" src="app/core.js"></script>
+
+</body>
+</html>
