@@ -1,5 +1,6 @@
 {
-    "name": "serviceworker",
+    "name": "playground",
+    "short_name": "playground",
     "icons": [
         {
             "src": "app/icons/icon-32x32.png",
