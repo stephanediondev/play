@@ -1,4 +1,15 @@
 var CACHE_KEY = 'serviceworker-v1';
+var CACHE_FILES = [
+    'manifest.json',
+    'index.html',
+    'app/core.css',
+    'app/core.js',
+    'app/icons/icon-32x32.png',
+    'app/icons/icon-192x192.png',
+    'app/icons/icon-512x512.png',
+    'vendor/material-design-lite/material.min.css',
+    'vendor/material-design-lite/material.min.js'
+];
 var TAG = 'serviceworker';
 
 self.addEventListener('install', function(InstallEvent) {
@@ -144,17 +155,7 @@ function showNotification(title, body, tag) {
 
 function setCache() {
     caches.open(CACHE_KEY).then(function(cache) {
-        return cache.addAll([
-            'manifest.json',
-            'index.html',
-            'app/core.css',
-            'app/core.js',
-            'app/icons/icon-32x32.png',
-            'app/icons/icon-192x192.png',
-            'app/icons/icon-512x512.png',
-            'vendor/material-design-lite/material.min.css',
-            'vendor/material-design-lite/material.min.js'
-        ]);
+        return cache.addAll(CACHE_FILES);
     });
 }
 

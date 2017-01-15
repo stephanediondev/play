@@ -4,7 +4,7 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     /*navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
         writeHistory('service worker already registered');
 
-        if('PushManager' in window) { 
+        if('PushManager' in window) {
             ServiceWorkerRegistration.pushManager.getSubscription().then(function(pushSubscription) {
                 console.log(pushSubscription);
 
@@ -89,7 +89,14 @@ buttonMessageCache.addEventListener('click', function() {
 });
 
 buttonMessageNotification.addEventListener('click', function() {
-    message({command: 'send-notification', content: 'body'});
+    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+        ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+            writeHistory('permissionState: ' + permissionState);
+            if(permissionState != 'denied') {
+                message({command: 'send-notification', content: 'body'});
+            }
+        });
+    });
 });
 
 buttonChearHistory.addEventListener('click', function() {
@@ -210,6 +217,8 @@ function sync_register() {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
             if('sync' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.sync.register('test-sync').then();
+            } else {
+                writeHistory('sync not supported');
             }
         });
     }
@@ -225,6 +234,8 @@ function periodic_sync_register() {
                     powerState: 'avoid-draining',   // default: 'auto'
                     networkState: 'avoid-cellular'  // default: 'online'
                 }).then();
+            } else {
+                writeHistory('periodic sync not supported');
             }
         });
     }
@@ -234,7 +245,7 @@ function writeHistory(message) {
     var history = document.getElementById('history');
     var node = document.createElement('li');
     var textnode = document.createTextNode(message);
-    node.appendChild(textnode); 
+    node.appendChild(textnode);
     history.insertBefore(node, history.firstChild);
 }
 
