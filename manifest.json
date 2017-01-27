@@ -1,5 +1,5 @@
 {
-    "name": "serviceworker",
+    "name": "playground-pwa",
     "icons": [
         {
             "src": "app/icons/icon-32x32.png",

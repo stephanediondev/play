@@ -1,5 +1,5 @@
 {
-    "name": "serviceworker",
+    "name": "playground-pwa",
     "license": "GPL-3.0",
     "dependencies": {
         "material-design-lite": "*"

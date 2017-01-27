@@ -1,3 +1,10 @@
 .mdl-card {
     min-height: inherit;
 }
+.mdl-list__item {
+    min-height: inherit;
+    padding: 0px;
+}
+.mdl-button {
+    min-width: inherit;
+}

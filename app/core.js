@@ -49,6 +49,9 @@ var buttonPeriodicSync = document.getElementById('btn_periodic_sync');
 
 var buttonMessageCache = document.getElementById('btn_message_cache');
 var buttonMessageNotification = document.getElementById('btn_message_notification');
+var buttonMessageUnknown = document.getElementById('btn_message_unknown');
+
+var buttonShare = document.getElementById('btn_share');
 
 var buttonChearHistory = document.getElementById('btn_clear_history');
 
@@ -97,6 +100,14 @@ buttonMessageNotification.addEventListener('click', function() {
             }
         });
     });
+});
+
+buttonMessageUnknown.addEventListener('click', function() {
+    message({});
+});
+
+buttonShare.addEventListener('click', function() {
+    share();
 });
 
 buttonChearHistory.addEventListener('click', function() {
@@ -190,11 +201,11 @@ function message(content) {
             return new Promise(function(resolve, reject) {
                 var messageChannel = new MessageChannel();
                 messageChannel.port1.onmessage = function(event) {
-                if(event.data.error) {
-                    reject(event.data.error);
-                } else {
-                    resolve(event.data);
-                }
+                    if(event.data.error) {
+                        reject(event.data.error);
+                    } else {
+                        resolve(event.data);
+                    }
                 };
                 navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
             });
@@ -216,7 +227,7 @@ function sync_register() {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
             if('sync' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.sync.register('test-sync').then();
+                ServiceWorkerRegistration.sync.register('playground-pwa-sync').then();
             } else {
                 writeHistory('sync not supported');
             }
@@ -229,15 +240,29 @@ function periodic_sync_register() {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
             if('periodicSync' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.periodicSync.register({
-                    tag: 'get-latest-news',         // default: ''
+                    tag: 'playground-pwa-periodicSync', // default: ''
                     minPeriod: 12 * 60 * 60 * 1000, // default: 0
-                    powerState: 'avoid-draining',   // default: 'auto'
-                    networkState: 'avoid-cellular'  // default: 'online'
+                    powerState: 'avoid-draining', // default: 'auto'
+                    networkState: 'avoid-cellular' // default: 'online'
                 }).then();
             } else {
                 writeHistory('periodic sync not supported');
             }
         });
+    }
+}
+
+function share() {
+    if('share' in navigator) {
+        navigator.share({
+            title: document.title,
+            text: 'Hello World',
+            url: window.location.href
+        }).then(function() {
+            writeHistory('share');
+        });
+    } else {
+        writeHistory('share not supported');
     }
 }
 

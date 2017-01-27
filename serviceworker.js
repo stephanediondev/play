@@ -1,7 +1,8 @@
-var CACHE_KEY = 'serviceworker-v1';
+var CACHE_KEY = 'playground-pwa-v1';
 var CACHE_FILES = [
     'manifest.json',
     'index.html',
+    'index.html?utm=homescreen',
     'app/core.css',
     'app/core.js',
     'app/icons/icon-32x32.png',
@@ -10,7 +11,7 @@ var CACHE_FILES = [
     'vendor/material-design-lite/material.min.css',
     'vendor/material-design-lite/material.min.js'
 ];
-var TAG = 'serviceworker';
+var TAG = 'playground-pwa';
 
 self.addEventListener('install', function(InstallEvent) {
     console.log(InstallEvent);
@@ -31,8 +32,8 @@ self.addEventListener('activate', function(ExtendableEvent) {
 
     postMessage('activate event from service worker');
 
-    self.clients.matchAll().then(function(clientList) {
-        clientList.some(function(client) {
+    self.clients.matchAll().then(function(clients) {
+        clients.map(function(client) {
             if(client.focused) {
                 postMessage('client: ' + client.id);
             }
@@ -79,7 +80,15 @@ self.addEventListener('fetch', function(FetchEvent) {
 self.addEventListener('sync', function(SyncEvent) {
     console.log(SyncEvent);
 
-    postMessage('sync event from service worker');
+    postMessage(SyncEvent.tag);
+
+    SyncEvent.waitUntil(
+        self.clients.matchAll().then(function(clients) {
+            return clients.map(function(client) {
+                postMessage('sync event from service worker');
+            });
+        })
+    );
 });
 
 self.addEventListener('periodicsync', function(PeriodicSyncEvent) {
@@ -139,6 +148,13 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
     }
 });
 
+function setCache() {
+    caches.delete(CACHE_KEY);
+    caches.open(CACHE_KEY).then(function(cache) {
+        return cache.addAll(CACHE_FILES);
+    });
+}
+
 function showNotification(title, body, tag) {
     self.registration.showNotification(title, {
         body: body,
@@ -153,16 +169,10 @@ function showNotification(title, body, tag) {
     });
 }
 
-function setCache() {
-    caches.open(CACHE_KEY).then(function(cache) {
-        return cache.addAll(CACHE_FILES);
-    });
-}
-
 function postMessage(content) {
     self.clients.matchAll().then(function(clients) {
-        Promise.all(clients.map(function(client) {
+        clients.map(function(client) {
             client.postMessage({content: content});
-        }));
+        });
     });
 }

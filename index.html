@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Service Worker Playground</title>
+<title>playground-pwa</title>
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="HandheldFriendly" content="true">
@@ -21,17 +21,10 @@
 <link rel="stylesheet" type="text/css" href="app/core.css">
 </head>
 
-<body class="anonymous online not_administrator no_entries">
+<body>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
     <header class="mdl-layout__header mdl-color--indigo">
-        <div class="mdl-layout__header-row">
-            <div class="mdl-layout-spacer">
-            </div>
-
-            <nav class="mdl-navigation">
-            </nav
-        </div>
     </header>
 
     <aside class="mdl-layout__drawer">
@@ -39,54 +32,86 @@
 
     <main class="mdl-layout__content mdl-color--grey-100">
         <div class="mdl-snackbar mdl-js-snackbar">
-            <div class="mdl-snackbar__text"></div>
-            <button type="button" class="mdl-snackbar__action"></button>
+            <div class="mdl-snackbar__text">
+            </div>
+            <button type="button" class="mdl-snackbar__action">
+            </button>
         </div>
 
         <div class="mdl-grid" id="top">
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
-                <div class="mdl-card__title">
-                    <h1 class="mdl-card__title-text">
-                        ServiceWorkerRegistration
-                    </h1>
-                </div>
                 <div class="mdl-card__supporting-text">
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a href="#" id="btn_register" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Register</a>
-                    <a href="#" id="btn_unregister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unregister</a>
-                    <a href="#" id="btn_update" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Update</a>
-                    <a href="#" id="btn_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Sync</a>
-                    <a href="#" id="btn_periodic_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Periodic sync</a>
+                    <h1 class="mdl-card__title-text">
+                        Service Worker
+                    </h1>
+                    <ul>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_register" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Register</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_unregister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unregister</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_update" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Update</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Sync</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_periodic_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Periodic sync</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
-                <div class="mdl-card__title">
-                    <h1 class="mdl-card__title-text">
-                        PushSubscription
-                    </h1>
-                </div>
                 <div class="mdl-card__supporting-text">
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a href="#" id="btn_subscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Subscribe</a>
-                    <a href="#" id="btn_unsubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unsubscribe</a>
-                    <a href="#" id="btn_permission_state" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
+                    <h1 class="mdl-card__title-text">
+                        Push API
+                    </h1>
+                    <ul>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_subscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Subscribe</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_unsubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unsubscribe</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_message_notification" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send notification</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_permission_state" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
-                <div class="mdl-card__title">
-                    <h1 class="mdl-card__title-text">
-                        ExtendableMessageEvent
-                    </h1>
-                </div>
                 <div class="mdl-card__supporting-text">
+                    <h1 class="mdl-card__title-text">
+                        Channel messaging
+                    </h1>
+                    <ul>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_message_cache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Reload cache</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_message_unknown" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unknown command</a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a href="#" id="btn_message_cache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Reload cache</a>
-                    <a href="#" id="btn_message_notification" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send notification</a>
+            </div>
+
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
+                <div class="mdl-card__supporting-text">
+                    <h1 class="mdl-card__title-text">
+                        Web Share API
+                    </h1>
+                    <ul>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_share" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Share</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
