@@ -110,7 +110,7 @@ self.addEventListener('push', function(PushEvent) {
 
     if('waitUntil' in PushEvent) {
         PushEvent.waitUntil(
-            showNotification('push event from service worker', 'body', TAG)
+            showNotification('from service worker (push event)', 'body', TAG)
         );
     }
 });
@@ -140,7 +140,7 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
         break;
 
         case 'send-notification':
-            showNotification('message event from service worker', ExtendableMessageEvent.data.content, TAG);
+            showNotification('from service worker (message event)', ExtendableMessageEvent.data.content, TAG);
         break;
 
         default:
@@ -161,7 +161,7 @@ function showNotification(title, body, tag) {
         tag: tag,
         badge: 'app/icons/icon-32x32.png',
         icon: 'app/icons/icon-192x192.png',
-        image: '3680468.jpg',
+        image: 'app/icons/icon-512x512.png',
         actions: [
             { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
             { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }

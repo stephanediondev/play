@@ -1,3 +1,5 @@
+var TAG = 'playground-pwa';
+
 if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     var serviceWorkerEnabled = true;
 
@@ -51,6 +53,7 @@ var buttonPeriodicSync = document.getElementById('btn_periodic_sync');
 
 var buttonMessageCache = document.getElementById('btn_message_cache');
 var buttonMessageNotification = document.getElementById('btn_message_notification');
+var buttonMessageNotificationWorker = document.getElementById('btn_message_notification_worker');
 var buttonMessageUnknown = document.getElementById('btn_message_unknown');
 
 var buttonShare = document.getElementById('btn_share');
@@ -96,6 +99,10 @@ buttonMessageCache.addEventListener('click', function() {
 });
 
 buttonMessageNotification.addEventListener('click', function() {
+    showNotification('from page', 'body', TAG);
+});
+
+buttonMessageNotificationWorker.addEventListener('click', function() {
     navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
         ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
             writeHistory('permissionState: ' + permissionState);
@@ -312,6 +319,23 @@ function geolocationGet() {
     } else {
         setSnackbar('geolocation not supported');
     }
+}
+
+function showNotification(title, body, tag) {
+    var notification = new Notification(title, {
+        body: body,
+        tag: tag,
+        badge: 'app/icons/icon-32x32.png',
+        icon: 'app/icons/icon-192x192.png',
+        image: 'app/icons/icon-512x512.png'
+    });
+    notification.addEventListener('click', function(Event) {
+        console.log(Event);
+
+        setSnackbar('close notification from page');
+
+        notification.close();
+    });
 }
 
 function writeHistory(message) {
