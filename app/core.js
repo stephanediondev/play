@@ -33,6 +33,8 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     }
 }
 
+var snackbarContainer = document.querySelector('.mdl-snackbar');
+
 var applicationServerKey = 'BPjjzF6mMnplDTu3U8XVwkrgxK7cclGZpiqM3iICEhWa8HyaowqKCXeANyND9+ikuXN0+cnjsSrDPkwd6T/w8tA=';
 
 var buttonRegister = document.getElementById('btn_register');
@@ -52,6 +54,8 @@ var buttonMessageNotification = document.getElementById('btn_message_notificatio
 var buttonMessageUnknown = document.getElementById('btn_message_unknown');
 
 var buttonShare = document.getElementById('btn_share');
+
+var buttonGeolocationGet = document.getElementById('btn_geolocation_get');
 
 var buttonChearHistory = document.getElementById('btn_clear_history');
 
@@ -110,14 +114,36 @@ buttonShare.addEventListener('click', function() {
     share();
 });
 
+buttonGeolocationGet.addEventListener('click', function() {
+    geolocationGet();
+});
+
 buttonChearHistory.addEventListener('click', function() {
     document.getElementById('history').innerHTML = '';
 });
+
+window.addEventListener('online', updateOnlineStatus);
+
+window.addEventListener('offline', updateOnlineStatus);
+
+updateOnlineStatus();
+
+function updateOnlineStatus() {
+    if(navigator.onLine) {
+        writeHistory('online');
+    } else {
+        writeHistory('offline');
+    }
+}
 
 function register() {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.register('serviceworker.js').then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
+
+            ServiceWorkerRegistration.addEventListener('updatefound', function() {
+                writeHistory('updatefound');
+            });
 
             if(ServiceWorkerRegistration.installing) {
                 writeHistory('register installing');
@@ -190,6 +216,7 @@ function permissionState() {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
             ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
                 writeHistory('permissionState: ' + permissionState);
+                setSnackbar(permissionState);
             });
         });
     }
@@ -229,7 +256,7 @@ function sync_register() {
             if('sync' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.sync.register('playground-pwa-sync').then();
             } else {
-                writeHistory('sync not supported');
+                setSnackbar('sync not supported');
             }
         });
     }
@@ -246,7 +273,7 @@ function periodic_sync_register() {
                     networkState: 'avoid-cellular' // default: 'online'
                 }).then();
             } else {
-                writeHistory('periodic sync not supported');
+                setSnackbar('periodic sync not supported');
             }
         });
     }
@@ -262,7 +289,28 @@ function share() {
             writeHistory('share');
         });
     } else {
-        writeHistory('share not supported');
+        setSnackbar('share not supported');
+    }
+}
+
+function geolocationGet() {
+    if(navigator.geolocation) {
+        setSnackbar('In progress');
+        navigator.geolocation.getCurrentPosition(
+            function(Geoposition) {
+                console.log(Geoposition);
+                writeHistory(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
+                setSnackbar(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
+            },
+            function(PositionError) {
+                console.log(PositionError);
+                writeHistory(PositionError.message);
+                setSnackbar(PositionError.message);
+            },
+            {'enableHighAccuracy': true, 'timeout': 10000}
+        );
+    } else {
+        setSnackbar('geolocation not supported');
     }
 }
 
@@ -284,4 +332,10 @@ function urlBase64ToUint8Array(base64String) {
         outputArray[i] = rawData.charCodeAt(i);
     }
     return outputArray;
+}
+
+function setSnackbar(message) {
+    if(typeof message !== undefined) {
+        snackbarContainer.MaterialSnackbar.showSnackbar({message: message, timeout: 1000});
+    }
 }
