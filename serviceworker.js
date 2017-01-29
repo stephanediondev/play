@@ -16,7 +16,7 @@ var TAG = 'playground-pwa';
 self.addEventListener('install', function(InstallEvent) {
     console.log(InstallEvent);
 
-    postMessage('install event from service worker');
+    postMessage('history', 'install event from service worker');
 
     if('waitUntil' in InstallEvent) {
         InstallEvent.waitUntil(
@@ -30,12 +30,12 @@ self.addEventListener('install', function(InstallEvent) {
 self.addEventListener('activate', function(ExtendableEvent) {
     console.log(ExtendableEvent);
 
-    postMessage('activate event from service worker');
+    postMessage('history', 'activate event from service worker');
 
     self.clients.matchAll().then(function(clients) {
         clients.map(function(client) {
             if(client.focused) {
-                postMessage('client: ' + client.id);
+                postMessage('history', 'client: ' + client.id);
             }
         });
     });
@@ -46,7 +46,7 @@ self.addEventListener('activate', function(ExtendableEvent) {
                 return Promise.all(
                     cacheNames.map(function(cacheName) {
                         if(cacheName !== CACHE_KEY) {
-                            postMessage('delete cache: ' + cacheName);
+                            postMessage('history', 'delete cache: ' + cacheName);
                             return caches.delete(cacheName);
                         }
                     })
@@ -61,17 +61,17 @@ self.addEventListener('activate', function(ExtendableEvent) {
 self.addEventListener('fetch', function(FetchEvent) {
     console.log(FetchEvent);
 
-    postMessage('fetch event from service worker');
+    postMessage('history', 'fetch event from service worker');
 
-    postMessage(FetchEvent.request.url);
+    postMessage('history', FetchEvent.request.url);
 
     FetchEvent.respondWith(
         caches.match(FetchEvent.request).then(function(response) {
             if(response) {
-                postMessage('from service worker');
+                postMessage('history', 'from service worker');
                 return response;
             }
-            postMessage('from server');
+            postMessage('history', 'from server');
             return fetch(FetchEvent.request);
         })
     );
@@ -80,12 +80,12 @@ self.addEventListener('fetch', function(FetchEvent) {
 self.addEventListener('sync', function(SyncEvent) {
     console.log(SyncEvent);
 
-    postMessage(SyncEvent.tag);
+    postMessage('history', SyncEvent.tag);
 
     SyncEvent.waitUntil(
         self.clients.matchAll().then(function(clients) {
             return clients.map(function(client) {
-                postMessage('sync event from service worker');
+                postMessage('history', 'sync event from service worker');
             });
         })
     );
@@ -94,19 +94,19 @@ self.addEventListener('sync', function(SyncEvent) {
 self.addEventListener('periodicsync', function(PeriodicSyncEvent) {
     console.log(PeriodicSyncEvent);
 
-    postMessage('periodicsync event from service worker');
+    postMessage('history', 'periodicsync event from service worker');
 });
 
 self.addEventListener('pushsubscriptionchange', function(PushEvent) {
     console.log(PushEvent);
 
-    postMessage('pushsubscriptionchange event from service worker');
+    postMessage('history', 'pushsubscriptionchange event from service worker');
 });
 
 self.addEventListener('push', function(PushEvent) {
     console.log(PushEvent);
 
-    postMessage('push event from service worker');
+    postMessage('history', 'push event from service worker');
 
     if('waitUntil' in PushEvent) {
         PushEvent.waitUntil(
@@ -118,9 +118,9 @@ self.addEventListener('push', function(PushEvent) {
 self.addEventListener('notificationclick', function(NotificationEvent) {
     console.log(NotificationEvent);
 
-    postMessage('notificationclick event from service worker');
+    postMessage('history', 'notificationclick event from service worker');
 
-    postMessage('action: ' + NotificationEvent.action);
+    postMessage('snackbar', NotificationEvent.action);
 
     NotificationEvent.notification.close();
 });
@@ -128,11 +128,11 @@ self.addEventListener('notificationclick', function(NotificationEvent) {
 self.addEventListener('message', function(ExtendableMessageEvent) {
     console.log(ExtendableMessageEvent);
 
-    postMessage('message event from service worker');
+    postMessage('history', 'message event from service worker');
 
-    postMessage('command: ' + ExtendableMessageEvent.data.command);
+    postMessage('history', 'command: ' + ExtendableMessageEvent.data.command);
 
-    postMessage('source: ' + ExtendableMessageEvent.source.id);
+    postMessage('history', 'source: ' + ExtendableMessageEvent.source.id);
 
     switch(ExtendableMessageEvent.data.command) {
         case 'reload-cache':
@@ -144,7 +144,7 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
         break;
 
         default:
-            postMessage('unknown command: ' + ExtendableMessageEvent.data.command);
+            postMessage('history', 'unknown command: ' + ExtendableMessageEvent.data.command);
     }
 });
 
@@ -169,10 +169,10 @@ function showNotification(title, body, tag) {
     });
 }
 
-function postMessage(content) {
+function postMessage(type, content) {
     self.clients.matchAll().then(function(clients) {
         clients.map(function(client) {
-            client.postMessage({content: content});
+            client.postMessage({type: type, content: content});
         });
     });
 }

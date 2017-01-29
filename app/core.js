@@ -1,5 +1,7 @@
 var TAG = 'playground-pwa';
 
+checkConfig();
+
 if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     var serviceWorkerEnabled = true;
 
@@ -20,7 +22,13 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     navigator.serviceWorker.onmessage = function (ServiceWorkerMessageEvent) {
         console.log(ServiceWorkerMessageEvent);
 
-        writeHistory(ServiceWorkerMessageEvent.data.content);
+        if(ServiceWorkerMessageEvent.data.type == 'snackbar') {
+            setSnackbar(ServiceWorkerMessageEvent.data.content);
+        }
+
+        if(ServiceWorkerMessageEvent.data.type == 'history') {
+            writeHistory(ServiceWorkerMessageEvent.data.content);
+        }
     };
 
 } else {
@@ -376,4 +384,46 @@ function setSnackbar(message) {
     if(typeof message !== undefined) {
         snackbarContainer.MaterialSnackbar.showSnackbar({message: message, timeout: 1000});
     }
+}
+
+function checkConfig() {
+    if(typeof self.fetch == 'undefined') {
+        setCheck('check-fetch', 'red');
+    } else {
+        setCheck('check-fetch', 'green');
+    }
+
+    if('serviceWorker' in navigator === false) {
+        setCheck('check-serviceworker', 'red');
+    } else {
+        setCheck('check-serviceworker', 'green');
+    }
+
+    if('localStorage' in window === false) {
+        setCheck('check-localstorage', 'red');
+    } else {
+        setCheck('check-localstorage', 'green');
+    }
+
+    if('indexedDB' in window === false) {
+        setCheck('check-indexeddb', 'red');
+    } else {
+        setCheck('check-indexeddb', 'green');
+    }
+
+    if('FileReader' in window === false) {
+        setCheck('check-filereader', 'red');
+    } else {
+        setCheck('check-filereader', 'green');
+    }
+
+    if('geolocation' in navigator === false) {
+        setCheck('check-geolocation', 'red');
+    } else {
+        setCheck('check-geolocation', 'green');
+    }
+}
+
+function setCheck(id, color) {
+    document.getElementById(id).className += ' mdl-color--' + color;
 }
