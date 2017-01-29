@@ -103,14 +103,7 @@ buttonMessageNotification.addEventListener('click', function() {
 });
 
 buttonMessageNotificationWorker.addEventListener('click', function() {
-    navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-            writeHistory('permissionState: ' + permissionState);
-            if(permissionState != 'denied') {
-                message({command: 'send-notification', content: 'body'});
-            }
-        });
-    });
+    showNotificationWorker();
 });
 
 buttonMessageUnknown.addEventListener('click', function() {
@@ -150,6 +143,7 @@ function register() {
 
             ServiceWorkerRegistration.addEventListener('updatefound', function() {
                 writeHistory('updatefound');
+                message({command: 'reload-cache'});
             });
 
             if(ServiceWorkerRegistration.installing) {
@@ -161,6 +155,8 @@ function register() {
             } else if(ServiceWorkerRegistration.active) {
                 writeHistory('register active');
             }
+        }).catch(function(TypeError) {
+            console.log(TypeError);
         });
     }
 }
@@ -182,6 +178,7 @@ function subscribe() {
                 writeHistory('permissionState: ' + permissionState);
 
                 if(permissionState == 'denied') {
+                    setSnackbar(permissionState);
                 }
 
                 if(permissionState == 'prompt' || permissionState == 'granted') {
@@ -322,6 +319,10 @@ function geolocationGet() {
 }
 
 function showNotification(title, body, tag) {
+    if(Notification.permission == 'denied') {
+        setSnackbar(Notification.permission);
+    }
+
     var notification = new Notification(title, {
         body: body,
         tag: tag,
@@ -338,6 +339,19 @@ function showNotification(title, body, tag) {
     });
 }
 
+function showNotificationWorker() {
+    if(serviceWorkerEnabled) {
+        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                writeHistory('permissionState: ' + permissionState);
+                if(permissionState != 'denied') {
+                    message({command: 'send-notification', content: 'body'});
+                }
+            });
+        });
+    }
+}
+
 function writeHistory(message) {
     var history = document.getElementById('history');
     var node = document.createElement('li');
@@ -347,10 +361,10 @@ function writeHistory(message) {
 }
 
 function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
+    var padding = '='.repeat((4 - base64String.length % 4) % 4);
+    var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    var rawData = window.atob(base64);
+    var outputArray = new Uint8Array(rawData.length);
 
     for(var i = 0; i < rawData.length; ++i) {
         outputArray[i] = rawData.charCodeAt(i);
