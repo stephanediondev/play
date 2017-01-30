@@ -23,42 +23,9 @@
 
 <body>
 
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header mdl-color--indigo">
     </header>
-
-    <aside class="mdl-layout__drawer">
-        <p>
-            <span class="mdl-chip" id="check-fetch">
-                <span class="mdl-chip__text mdl-color-text--white">Fetch</span>
-            </span>
-        </p>
-        <p>
-            <span class="mdl-chip" id="check-serviceworker">
-                <span class="mdl-chip__text mdl-color-text--white">Service Worker</span>
-            </span>
-        </p>
-        <p>
-            <span class="mdl-chip" id="check-localstorage">
-                <span class="mdl-chip__text mdl-color-text--white">Local Storage</span>
-            </span>
-        </p>
-        <p>
-            <span class="mdl-chip" id="check-indexeddb">
-                <span class="mdl-chip__text mdl-color-text--white">IndexedDB</span>
-            </span>
-        </p>
-        <p>
-            <span class="mdl-chip" id="check-filereader">
-                <span class="mdl-chip__text mdl-color-text--white">FileReader</span>
-            </span>
-        </p>
-        <p>
-            <span class="mdl-chip" id="check-geolocation">
-                <span class="mdl-chip__text mdl-color-text--white">Geolocation</span>
-            </span>
-        </p>
-    </aside>
 
     <main class="mdl-layout__content mdl-color--grey-100">
         <div class="mdl-snackbar mdl-js-snackbar">
@@ -72,7 +39,9 @@
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        Service Worker
+                        <span class="mdl-chip" id="title-serviceworker">
+                            <span class="mdl-chip__text mdl-color-text--white">Service Worker</span>
+                        </span>
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -97,7 +66,9 @@
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        Push API
+                        <span class="mdl-chip" id="title-pushapi">
+                            <span class="mdl-chip__text mdl-color-text--white">Push API</span>
+                        </span>
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -116,14 +87,16 @@
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        Notifications API
+                        <span class="mdl-chip" id="title-notificationsapi">
+                            <span class="mdl-chip__text mdl-color-text--white">Notifications API</span>
+                        </span>
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_message_notification" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from page)</a>
+                            <a href="#" id="btn_notification_page" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from page)</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_message_notification_worker" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from service worker)</a>
+                            <a href="#" id="btn_notification_worker" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from service worker)</a>
                         </li>
                     </ul>
                 </div>
@@ -132,7 +105,9 @@
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        Channel messaging
+                        <span class="mdl-chip" id="title-channelmessaging">
+                            <span class="mdl-chip__text mdl-color-text--white">Channel messaging</span>
+                        </span>
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -148,7 +123,9 @@
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        Web Share API
+                        <span class="mdl-chip" id="title-webshareapi">
+                            <span class="mdl-chip__text mdl-color-text--white">Web Share API</span>
+                        </span>
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -161,7 +138,9 @@
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        Geolocation API
+                        <span class="mdl-chip" id="title-geolocationapi">
+                            <span class="mdl-chip__text mdl-color-text--white">Geolocation API</span>
+                        </span>
                     </h1>
                     <ul>
                         <li class="mdl-list__item">

@@ -1,23 +1,11 @@
-var TAG = 'playground-pwa';
+var snackbarContainer = document.querySelector('.mdl-snackbar');
 
-checkConfig();
+var TAG = 'playground-pwa';
 
 if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     var serviceWorkerEnabled = true;
 
-    /*navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-        writeHistory('service worker already registered');
-
-        if('PushManager' in window) {
-            ServiceWorkerRegistration.pushManager.getSubscription().then(function(pushSubscription) {
-                console.log(pushSubscription);
-
-                if(pushSubscription) {
-                    writeHistory('subscription already done');
-                }
-            });
-        }
-    });*/
+    register();
 
     navigator.serviceWorker.onmessage = function (ServiceWorkerMessageEvent) {
         console.log(ServiceWorkerMessageEvent);
@@ -43,8 +31,6 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     }
 }
 
-var snackbarContainer = document.querySelector('.mdl-snackbar');
-
 var applicationServerKey = 'BPjjzF6mMnplDTu3U8XVwkrgxK7cclGZpiqM3iICEhWa8HyaowqKCXeANyND9+ikuXN0+cnjsSrDPkwd6T/w8tA=';
 
 var buttonRegister = document.getElementById('btn_register');
@@ -60,15 +46,16 @@ var buttonSync = document.getElementById('btn_sync');
 var buttonPeriodicSync = document.getElementById('btn_periodic_sync');
 
 var buttonMessageCache = document.getElementById('btn_message_cache');
-var buttonMessageNotification = document.getElementById('btn_message_notification');
-var buttonMessageNotificationWorker = document.getElementById('btn_message_notification_worker');
 var buttonMessageUnknown = document.getElementById('btn_message_unknown');
+
+var buttonNotificationPage = document.getElementById('btn_notification_page');
+var buttonNotificationWorker = document.getElementById('btn_notification_worker');
 
 var buttonShare = document.getElementById('btn_share');
 
 var buttonGeolocationGet = document.getElementById('btn_geolocation_get');
 
-var buttonChearHistory = document.getElementById('btn_clear_history');
+var buttonClearHistory = document.getElementById('btn_clear_history');
 
 buttonRegister.addEventListener('click', function() {
     register();
@@ -106,11 +93,11 @@ buttonMessageCache.addEventListener('click', function() {
     message({command: 'reload-cache'});
 });
 
-buttonMessageNotification.addEventListener('click', function() {
-    showNotification('from page', 'body', TAG);
+buttonNotificationPage.addEventListener('click', function() {
+    showNotificationPage('from page', 'body', TAG);
 });
 
-buttonMessageNotificationWorker.addEventListener('click', function() {
+buttonNotificationWorker.addEventListener('click', function() {
     showNotificationWorker();
 });
 
@@ -126,7 +113,7 @@ buttonGeolocationGet.addEventListener('click', function() {
     geolocationGet();
 });
 
-buttonChearHistory.addEventListener('click', function() {
+buttonClearHistory.addEventListener('click', function() {
     document.getElementById('history').innerHTML = '';
 });
 
@@ -134,7 +121,9 @@ window.addEventListener('online', updateOnlineStatus);
 
 window.addEventListener('offline', updateOnlineStatus);
 
-updateOnlineStatus();
+document.addEventListener('DOMContentLoaded', function() {
+    updateOnlineStatus();
+});
 
 function updateOnlineStatus() {
     if(navigator.onLine) {
@@ -148,6 +137,26 @@ function register() {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.register('serviceworker.js').then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
+
+            setChip('title-serviceworker', 'green');
+
+            ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
+                console.log(PushSubscription);
+
+                if(PushSubscription && typeof PushSubscription === 'object') {
+                    setChip('title-pushapi', 'green');
+                } else {
+                    setChip('title-pushapi', 'red');
+                }
+            });
+
+            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                if(permissionState != 'denied') {
+                    setChip('title-notificationsapi', 'green');
+                } else {
+                    setChip('title-notificationsapi', 'red');
+                }
+            });
 
             ServiceWorkerRegistration.addEventListener('updatefound', function() {
                 writeHistory('updatefound');
@@ -163,6 +172,7 @@ function register() {
             } else if(ServiceWorkerRegistration.active) {
                 writeHistory('register active');
             }
+
         }).catch(function(TypeError) {
             console.log(TypeError);
         });
@@ -174,6 +184,8 @@ function unregister() {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
             ServiceWorkerRegistration.unregister().then(function() {
                 writeHistory('unregister done');
+                setChip('title-serviceworker', 'red');
+                setChip('title-pushapi', 'red');
             });
         });
     }
@@ -190,13 +202,15 @@ function subscribe() {
                 }
 
                 if(permissionState == 'prompt' || permissionState == 'granted') {
-                    ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}).then(function(pushSubscription) {
-                        console.log(pushSubscription);
+                    ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}).then(function(PushSubscription) {
+                        console.log(PushSubscription);
 
-                        if(pushSubscription) {
-                            var toJSON = pushSubscription.toJSON();
+                        if(PushSubscription && typeof PushSubscription === 'object') {
+                            setChip('title-pushapi', 'green');
 
-                            writeHistory('endpoint: ' + pushSubscription.endpoint);
+                            var toJSON = PushSubscription.toJSON();
+
+                            writeHistory('endpoint: ' + PushSubscription.endpoint);
                             writeHistory('public_key: ' + toJSON.keys.p256dh);
                             writeHistory('authentication_secret: ' + toJSON.keys.auth);
                         }
@@ -213,9 +227,10 @@ function unsubscribe() {
             ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
                 console.log(PushSubscription);
 
-                if(PushSubscription) {
+                if(PushSubscription && typeof PushSubscription === 'object') {
                     PushSubscription.unsubscribe().then(function() {
                         writeHistory('unsubcribe done');
+                        setChip('title-pushapi', 'red');
                     });
                 }
             });
@@ -299,8 +314,10 @@ function share() {
             url: window.location.href
         }).then(function() {
             writeHistory('share');
+            setChip('title-webshareapi', 'green');
         });
     } else {
+        setChip('title-webshareapi', 'red');
         setSnackbar('share not supported');
     }
 }
@@ -311,11 +328,13 @@ function geolocationGet() {
         navigator.geolocation.getCurrentPosition(
             function(Geoposition) {
                 console.log(Geoposition);
+                setChip('title-geolocationapi', 'green');
                 writeHistory(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
                 setSnackbar(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
             },
             function(PositionError) {
                 console.log(PositionError);
+                setChip('title-geolocationapi', 'red');
                 writeHistory(PositionError.message);
                 setSnackbar(PositionError.message);
             },
@@ -326,9 +345,12 @@ function geolocationGet() {
     }
 }
 
-function showNotification(title, body, tag) {
+function showNotificationPage(title, body, tag) {
     if(Notification.permission == 'denied') {
         setSnackbar(Notification.permission);
+        setChip('title-notificationsapi', 'red');
+    } else {
+        setChip('title-notificationsapi', 'green');
     }
 
     var notification = new Notification(title, {
@@ -353,7 +375,11 @@ function showNotificationWorker() {
             ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
                 writeHistory('permissionState: ' + permissionState);
                 if(permissionState != 'denied') {
+                    setChip('title-notificationsapi', 'green');
                     message({command: 'send-notification', content: 'body'});
+                } else {
+                    setSnackbar(permissionState);
+                    setChip('title-notificationsapi', 'red');
                 }
             });
         });
@@ -381,49 +407,11 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 function setSnackbar(message) {
-    if(typeof message !== undefined) {
+    if(typeof message !== 'undefined') {
         snackbarContainer.MaterialSnackbar.showSnackbar({message: message, timeout: 1000});
     }
 }
 
-function checkConfig() {
-    if(typeof self.fetch == 'undefined') {
-        setCheck('check-fetch', 'red');
-    } else {
-        setCheck('check-fetch', 'green');
-    }
-
-    if('serviceWorker' in navigator === false) {
-        setCheck('check-serviceworker', 'red');
-    } else {
-        setCheck('check-serviceworker', 'green');
-    }
-
-    if('localStorage' in window === false) {
-        setCheck('check-localstorage', 'red');
-    } else {
-        setCheck('check-localstorage', 'green');
-    }
-
-    if('indexedDB' in window === false) {
-        setCheck('check-indexeddb', 'red');
-    } else {
-        setCheck('check-indexeddb', 'green');
-    }
-
-    if('FileReader' in window === false) {
-        setCheck('check-filereader', 'red');
-    } else {
-        setCheck('check-filereader', 'green');
-    }
-
-    if('geolocation' in navigator === false) {
-        setCheck('check-geolocation', 'red');
-    } else {
-        setCheck('check-geolocation', 'green');
-    }
-}
-
-function setCheck(id, color) {
-    document.getElementById(id).className += ' mdl-color--' + color;
+function setChip(id, color) {
+    document.getElementById(id).className = 'mdl-chip mdl-color--' + color;
 }
