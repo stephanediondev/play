@@ -7,7 +7,7 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
 
     register();
 
-    navigator.serviceWorker.onmessage = function (ServiceWorkerMessageEvent) {
+    navigator.serviceWorker.addEventListener('message', function(ServiceWorkerMessageEvent) {
         console.log(ServiceWorkerMessageEvent);
 
         if(ServiceWorkerMessageEvent.data.type == 'snackbar') {
@@ -17,13 +17,15 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
         if(ServiceWorkerMessageEvent.data.type == 'history') {
             writeHistory(ServiceWorkerMessageEvent.data.content);
         }
-    };
+    });
 
 } else {
     var serviceWorkerEnabled = false;
 
     if('serviceWorker' in navigator === false) {
-        writeHistory('serviceWorker not supported');
+        setChip('title-serviceworker', 'red');
+        setChip('title-pushapi', 'red');
+        setChip('title-channelmessaging', 'red');
     }
 
     if(window.location.protocol !== 'https:') {
@@ -38,7 +40,7 @@ var buttonUnregister = document.getElementById('btn_unregister');
 
 var buttonSubscribe = document.getElementById('btn_subscribe');
 var buttonUnsubscribe = document.getElementById('btn_unsubscribe');
-var buttonPermissionState = document.getElementById('btn_permission_state');
+var buttonPermissionStatePush = document.getElementById('btn_permission_state_push');
 
 var buttonUpdate = document.getElementById('btn_update');
 
@@ -54,6 +56,9 @@ var buttonNotificationWorker = document.getElementById('btn_notification_worker'
 var buttonShare = document.getElementById('btn_share');
 
 var buttonGeolocationGet = document.getElementById('btn_geolocation_get');
+var buttonGeolocationState = document.getElementById('btn_geolocation_state');
+
+var buttonScreenOrientation = document.getElementById('btn_screen_orientation');
 
 var buttonClearHistory = document.getElementById('btn_clear_history');
 
@@ -73,8 +78,8 @@ buttonUnsubscribe.addEventListener('click', function() {
     unsubscribe();
 });
 
-buttonPermissionState.addEventListener('click', function() {
-    permissionState();
+buttonPermissionStatePush.addEventListener('click', function() {
+    permissionStatePush();
 });
 
 buttonUpdate.addEventListener('click', function() {
@@ -90,7 +95,7 @@ buttonPeriodicSync.addEventListener('click', function() {
 });
 
 buttonMessageCache.addEventListener('click', function() {
-    message({command: 'reload-cache'});
+    messageToServiceWorker({command: 'reload-cache'});
 });
 
 buttonNotificationPage.addEventListener('click', function() {
@@ -111,6 +116,14 @@ buttonShare.addEventListener('click', function() {
 
 buttonGeolocationGet.addEventListener('click', function() {
     geolocationGet();
+});
+
+buttonGeolocationState.addEventListener('click', function() {
+    geolocationState();
+});
+
+buttonScreenOrientation.addEventListener('click', function() {
+    screenOrientation();
 });
 
 buttonClearHistory.addEventListener('click', function() {
@@ -135,6 +148,7 @@ function updateOnlineStatus() {
 
 function register() {
     if(serviceWorkerEnabled) {
+        setChip('title-serviceworker', 'orange');
         navigator.serviceWorker.register('serviceworker.js').then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
 
@@ -160,7 +174,7 @@ function register() {
 
             ServiceWorkerRegistration.addEventListener('updatefound', function() {
                 writeHistory('updatefound');
-                message({command: 'reload-cache'});
+                messageToServiceWorker({command: 'reload-cache'});
             });
 
             if(ServiceWorkerRegistration.installing) {
@@ -193,6 +207,7 @@ function unregister() {
 
 function subscribe() {
     if(serviceWorkerEnabled) {
+        setChip('title-pushapi', 'orange');
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
             ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
                 writeHistory('permissionState: ' + permissionState);
@@ -238,7 +253,7 @@ function unsubscribe() {
     }
 }
 
-function permissionState() {
+function permissionStatePush() {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
             ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
@@ -249,7 +264,7 @@ function permissionState() {
     }
 }
 
-function message(content) {
+function messageToServiceWorker(content) {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.ready.then(function() {
             return new Promise(function(resolve, reject) {
@@ -261,7 +276,9 @@ function message(content) {
                         resolve(event.data);
                     }
                 };
-                navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
+                if(navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
+                }
             });
         });
     }
@@ -318,13 +335,13 @@ function share() {
         });
     } else {
         setChip('title-webshareapi', 'red');
-        setSnackbar('share not supported');
+        setSnackbar('Web Share API not supported');
     }
 }
 
 function geolocationGet() {
     if(navigator.geolocation) {
-        setSnackbar('In progress');
+        setChip('title-geolocationapi', 'orange');
         navigator.geolocation.getCurrentPosition(
             function(Geoposition) {
                 console.log(Geoposition);
@@ -341,32 +358,58 @@ function geolocationGet() {
             {'enableHighAccuracy': true, 'timeout': 10000}
         );
     } else {
-        setSnackbar('geolocation not supported');
+        setSnackbar('Geolocation API not supported');
+    }
+}
+
+function geolocationState() {
+    if(navigator.permissions) {
+        navigator.permissions.query({
+            'name': 'geolocation'
+        }).then(function(permission) {
+            setSnackbar(permission.state);
+        });
+    } else {
+        setSnackbar('Permissions API not supported');
+    }
+}
+
+function screenOrientation() {
+    if('screen' in window && 'orientation' in screen) {
+        setChip('title-screenorientationapi', 'green');
+        setSnackbar(window.screen.orientation.type);
+    } else {
+        setChip('title-screenorientationapi', 'red');
+        setSnackbar('Screen Orientation API not supported');
     }
 }
 
 function showNotificationPage(title, body, tag) {
-    if(Notification.permission == 'denied') {
-        setSnackbar(Notification.permission);
-        setChip('title-notificationsapi', 'red');
+    if('Notification' in window) {
+        if(Notification.permission == 'denied') {
+            setSnackbar(Notification.permission);
+            setChip('title-notificationsapi', 'red');
+        } else {
+            setChip('title-notificationsapi', 'green');
+        }
+
+        var notification = new Notification(title, {
+            body: body,
+            tag: tag,
+            badge: 'app/icons/icon-32x32.png',
+            icon: 'app/icons/icon-192x192.png',
+            image: 'app/icons/icon-512x512.png'
+        });
+        notification.addEventListener('click', function(Event) {
+            console.log(Event);
+
+            setSnackbar('close notification from page');
+
+            notification.close();
+        });
     } else {
-        setChip('title-notificationsapi', 'green');
+        setSnackbar('Notifications API not supported');
     }
-
-    var notification = new Notification(title, {
-        body: body,
-        tag: tag,
-        badge: 'app/icons/icon-32x32.png',
-        icon: 'app/icons/icon-192x192.png',
-        image: 'app/icons/icon-512x512.png'
-    });
-    notification.addEventListener('click', function(Event) {
-        console.log(Event);
-
-        setSnackbar('close notification from page');
-
-        notification.close();
-    });
 }
 
 function showNotificationWorker() {
@@ -376,7 +419,7 @@ function showNotificationWorker() {
                 writeHistory('permissionState: ' + permissionState);
                 if(permissionState != 'denied') {
                     setChip('title-notificationsapi', 'green');
-                    message({command: 'send-notification', content: 'body'});
+                    messageToServiceWorker({command: 'send-notification', content: 'body'});
                 } else {
                     setSnackbar(permissionState);
                     setChip('title-notificationsapi', 'red');
