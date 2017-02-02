@@ -61,17 +61,17 @@ self.addEventListener('activate', function(ExtendableEvent) {
 self.addEventListener('fetch', function(FetchEvent) {
     console.log(FetchEvent);
 
-    messageToClient('history', 'fetch event from service worker');
-
-    messageToClient('history', FetchEvent.request.url);
-
     FetchEvent.respondWith(
         caches.match(FetchEvent.request).then(function(response) {
             if(response) {
-                messageToClient('history', 'from service worker');
+                messageToClient('history', 'fetch event from service worker');
+                messageToClient('history', FetchEvent.request.url);
+                messageToClient('history', 'cache');
                 return response;
             }
-            messageToClient('history', 'from server');
+            messageToClient('history', 'fetch event from service worker');
+            messageToClient('history', FetchEvent.request.url);
+            messageToClient('history', 'fetch');
             return fetch(FetchEvent.request);
         })
     );

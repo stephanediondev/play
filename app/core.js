@@ -10,6 +10,8 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     navigator.serviceWorker.addEventListener('message', function(ServiceWorkerMessageEvent) {
         console.log(ServiceWorkerMessageEvent);
 
+        writeHistory('message event from client');
+
         if(ServiceWorkerMessageEvent.data.type == 'snackbar') {
             setSnackbar(ServiceWorkerMessageEvent.data.content);
         }
@@ -172,8 +174,10 @@ function register() {
                 }
             });
 
-            ServiceWorkerRegistration.addEventListener('updatefound', function() {
-                writeHistory('updatefound');
+            ServiceWorkerRegistration.addEventListener('updatefound', function(Event) {
+                console.log(Event);
+                setSnackbar('update found');
+                writeHistory('updatefound event from client');
                 messageToServiceWorker({command: 'reload-cache'});
             });
 
@@ -278,6 +282,7 @@ function messageToServiceWorker(content) {
                 };
                 if(navigator.serviceWorker.controller) {
                     navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
+                    setChip('title-channelmessaging', 'green');
                 }
             });
         });
@@ -325,13 +330,13 @@ function periodic_sync_register() {
 
 function share() {
     if('share' in navigator) {
+        setChip('title-webshareapi', 'green');
         navigator.share({
             title: document.title,
             text: 'Hello World',
             url: window.location.href
         }).then(function() {
             writeHistory('share');
-            setChip('title-webshareapi', 'green');
         });
     } else {
         setChip('title-webshareapi', 'red');
