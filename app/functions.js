@@ -71,7 +71,9 @@ function pushManagerSubscribe() {
                 }
 
                 if(permissionState == 'prompt' || permissionState == 'granted') {
-                    ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}).then(function(PushSubscription) {
+                    ServiceWorkerRegistration.pushManager.subscribe(
+                        {applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}
+                    ).then(function(PushSubscription) {
                         console.log(PushSubscription);
 
                         if(PushSubscription && typeof PushSubscription === 'object') {
@@ -277,17 +279,20 @@ function fullscreenExit() {
 }
 
 function networkInformation() {
-    var info = navigator.connection || navigator.mozConnection || navigator.webkitConnection || navigator.msConnection;
-    if(info) {
-        console.log(info);
+    var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || navigator.msConnection;
+    if(connection) {
+        console.log(connection);
         setChip('title-networkinformation', 'green');
-        setSnackbar(info.type);
-        //info.addEventListener('change', updateNetworkInfo);
-  } else {
-    setChip('title-networkinformation', 'red');
-    setSnackbar('Network Information API not supported');
-  }
+        setSnackbar(connection.type);
+        connection.addEventListener('change', function(e) {
+            console.log(e);
+        });
+    } else {
+        setChip('title-networkinformation', 'red');
+        setSnackbar('Network Information API not supported');
+    }
 }
+
 function showNotificationPage() {
     if('Notification' in window) {
         if(Notification.permission == 'denied') {
