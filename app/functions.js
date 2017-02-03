@@ -132,7 +132,6 @@ function messageToServiceWorker(content) {
                 };
                 if(navigator.serviceWorker.controller) {
                     navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
-                    setChip('title-channelmessaging', 'green');
                 }
             });
         });
@@ -277,7 +276,7 @@ function fullscreenExit() {
     }
 }
 
-function showNotificationPage(title, body, tag) {
+function showNotificationPage() {
     if('Notification' in window) {
         if(Notification.permission == 'denied') {
             setSnackbar(Notification.permission);
@@ -286,9 +285,9 @@ function showNotificationPage(title, body, tag) {
             setChip('title-notificationsapi', 'green');
         }
 
-        var notification = new Notification(title, {
-            body: body,
-            tag: tag,
+        var notification = new Notification('from page', {
+            body: 'body',
+            tag: TAG,
             badge: 'app/icons/icon-32x32.png',
             icon: 'app/icons/icon-192x192.png',
             image: 'app/icons/icon-512x512.png'

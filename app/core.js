@@ -29,7 +29,6 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     if('serviceWorker' in navigator === false) {
         setChip('title-serviceworker', 'red');
         setChip('title-pushapi', 'red');
-        setChip('title-channelmessaging', 'red');
     }
 
     if(window.location.protocol !== 'https:') {
@@ -43,10 +42,6 @@ if(standalone.matches) {
 } else {
     setChip('title-standalone', 'red');
 }
-
-standalone.addEventListener('change', function(e) {
-    console.log(e);
-});
 
 window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent) {
     console.log(BeforeInstallPromptEvent);
@@ -70,74 +65,74 @@ document.addEventListener('DOMContentLoaded', function() {
     updateOnlineStatus();
 });
 
-document.getElementById('btn_clear_history').addEventListener('click', function() {
+document.getElementById('clearHistory').addEventListener('click', function() {
     document.getElementById('history').innerHTML = '';
 });
 
-document.getElementById('btn_register').addEventListener('click', function() {
+document.getElementById('serviceWorkerRegister').addEventListener('click', function() {
     serviceWorkerRegister();
 });
 
-document.getElementById('btn_unregister').addEventListener('click', function() {
+document.getElementById('serviceWorkerUnregister').addEventListener('click', function() {
     serviceWorkerUnregister();
 });
 
-document.getElementById('btn_subscribe').addEventListener('click', function() {
+document.getElementById('pushManagerSubscribe').addEventListener('click', function() {
     pushManagerSubscribe();
 });
 
-document.getElementById('btn_unsubscribe').addEventListener('click', function() {
+document.getElementById('pushManagerUnsubscribe').addEventListener('click', function() {
     pushManagerUnsubscribe();
 });
 
-document.getElementById('btn_permission_state_push').addEventListener('click', function() {
+document.getElementById('pushManagerPermissionState').addEventListener('click', function() {
     pushManagerPermissionState();
 });
 
-document.getElementById('btn_update').addEventListener('click', function() {
+document.getElementById('serviceWorkerUpdate').addEventListener('click', function() {
     serviceWorkerUpdate();
 });
 
-document.getElementById('btn_sync').addEventListener('click', function() {
+document.getElementById('serviceWorkerSyncRegister').addEventListener('click', function() {
     serviceWorkerSyncRegister();
 });
 
-document.getElementById('btn_periodic_sync').addEventListener('click', function() {
+document.getElementById('serviceWorkerPeriodSyncRegister').addEventListener('click', function() {
     serviceWorkerPeriodSyncRegister();
 });
 
-document.getElementById('btn_message_cache').addEventListener('click', function() {
+document.getElementById('serviceWorkerReloadCache').addEventListener('click', function() {
     messageToServiceWorker({command: 'reload-cache'});
 });
 
-document.getElementById('btn_notification_page').addEventListener('click', function() {
-    showNotificationPage('from page', 'body', TAG);
+document.getElementById('showNotificationPage').addEventListener('click', function() {
+    showNotificationPage();
 });
 
-document.getElementById('btn_notification_worker').addEventListener('click', function() {
+document.getElementById('showNotificationWorker').addEventListener('click', function() {
     showNotificationWorker();
 });
 
-document.getElementById('btn_share').addEventListener('click', function() {
+document.getElementById('share').addEventListener('click', function() {
     share();
 });
 
-document.getElementById('btn_geolocation_get').addEventListener('click', function() {
+document.getElementById('geolocationGet').addEventListener('click', function() {
     geolocationGet();
 });
 
-document.getElementById('btn_geolocation_state').addEventListener('click', function() {
+document.getElementById('geolocationState').addEventListener('click', function() {
     geolocationState();
 });
 
-document.getElementById('btn_screen_orientation').addEventListener('click', function() {
+document.getElementById('screenOrientation').addEventListener('click', function() {
     screenOrientation();
 });
 
-document.getElementById('btn_fullscreen_request').addEventListener('click', function() {
+document.getElementById('fullscreenRequest').addEventListener('click', function() {
     fullscreenRequest();
 });
 
-document.getElementById('btn_fullscreen_exit').addEventListener('click', function() {
+document.getElementById('fullscreenExit').addEventListener('click', function() {
     fullscreenExit();
 });

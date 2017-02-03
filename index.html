@@ -25,9 +25,6 @@
 <body>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header mdl-color--indigo">
-    </header>
-
     <main class="mdl-layout__content mdl-color--grey-100">
         <div class="mdl-snackbar mdl-js-snackbar">
             <div class="mdl-snackbar__text">
@@ -46,22 +43,22 @@
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_register" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Register</a>
+                            <a href="#" id="serviceWorkerRegister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Register</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_unregister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unregister</a>
+                            <a href="#" id="serviceWorkerUnregister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unregister</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_update" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Update</a>
+                            <a href="#" id="serviceWorkerUpdate" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Update</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Sync</a>
+                            <a href="#" id="serviceWorkerSyncRegister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Sync</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_periodic_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Periodic sync</a>
+                            <a href="#" id="serviceWorkerPeriodSyncRegister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Periodic sync</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_message_cache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Reload cache</a>
+                            <a href="#" id="serviceWorkerReloadCache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Reload cache</a>
                         </li>
                     </ul>
                 </div>
@@ -76,13 +73,13 @@
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_subscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Subscribe</a>
+                            <a href="#" id="pushManagerSubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Subscribe</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_unsubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unsubscribe</a>
+                            <a href="#" id="pushManagerUnsubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unsubscribe</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_permission_state_push" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
+                            <a href="#" id="pushManagerPermissionState" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
                         </li>
                     </ul>
                 </div>
@@ -97,10 +94,10 @@
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_notification_page" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from page)</a>
+                            <a href="#" id="showNotificationPage" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from page)</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_notification_worker" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from service worker)</a>
+                            <a href="#" id="showNotificationWorker" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from service worker)</a>
                         </li>
                     </ul>
                 </div>
@@ -115,7 +112,7 @@
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_share" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Share</a>
+                            <a href="#" id="share" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Share</a>
                         </li>
                     </ul>
                 </div>
@@ -130,10 +127,10 @@
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_geolocation_get" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get</a>
+                            <a href="#" id="geolocationGet" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_geolocation_state" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
+                            <a href="#" id="geolocationState" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
                         </li>
                     </ul>
                 </div>
@@ -148,7 +145,7 @@
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_screen_orientation" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get</a>
+                            <a href="#" id="screenOrientation" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get</a>
                         </li>
                     </ul>
                 </div>
@@ -163,10 +160,10 @@
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_fullscreen_request" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Request</a>
+                            <a href="#" id="fullscreenRequest" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Request</a>
                         </li>
                         <li class="mdl-list__item">
-                            <a href="#" id="btn_fullscreen_exit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Exit</a>
+                            <a href="#" id="fullscreenExit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Exit</a>
                         </li>
                     </ul>
                 </div>
@@ -193,7 +190,7 @@
                     </ul>
                 </div>
                 <div class="mdl-card__actions mdl-card--border">
-                    <a href="#" id="btn_clear_history" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Clear</a>
+                    <a href="#" id="clearHistory" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Clear</a>
                 </div>
             </div>
         </div>
