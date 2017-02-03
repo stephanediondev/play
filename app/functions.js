@@ -276,6 +276,18 @@ function fullscreenExit() {
     }
 }
 
+function networkInformation() {
+    var info = navigator.connection || navigator.mozConnection || navigator.webkitConnection || navigator.msConnection;
+    if(info) {
+        console.log(info);
+        setChip('title-networkinformation', 'green');
+        setSnackbar(info.type);
+        //info.addEventListener('change', updateNetworkInfo);
+  } else {
+    setChip('title-networkinformation', 'red');
+    setSnackbar('Network Information API not supported');
+  }
+}
 function showNotificationPage() {
     if('Notification' in window) {
         if(Notification.permission == 'denied') {

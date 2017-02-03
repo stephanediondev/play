@@ -136,3 +136,7 @@ document.getElementById('fullscreenRequest').addEventListener('click', function(
 document.getElementById('fullscreenExit').addEventListener('click', function() {
     fullscreenExit();
 });
+
+document.getElementById('networkInformation').addEventListener('click', function() {
+    networkInformation();
+});
