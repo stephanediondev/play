@@ -60,6 +60,9 @@
                         <li class="mdl-list__item">
                             <a href="#" id="btn_periodic_sync" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Periodic sync</a>
                         </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_message_cache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Reload cache</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -98,24 +101,6 @@
                         </li>
                         <li class="mdl-list__item">
                             <a href="#" id="btn_notification_worker" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from service worker)</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-channelmessaging">
-                            <span class="mdl-chip__text mdl-color-text--white">Channel messaging</span>
-                        </span>
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="btn_message_cache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Reload cache</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="btn_message_unknown" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unknown command</a>
                         </li>
                     </ul>
                 </div>
@@ -169,6 +154,34 @@
                 </div>
             </div>
 
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+                <div class="mdl-card__supporting-text">
+                    <h1 class="mdl-card__title-text">
+                        <span class="mdl-chip" id="title-fullscreen">
+                            <span class="mdl-chip__text mdl-color-text--white">Fullscreen API</span>
+                        </span>
+                    </h1>
+                    <ul>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_fullscreen_request" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Request</a>
+                        </li>
+                        <li class="mdl-list__item">
+                            <a href="#" id="btn_fullscreen_exit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Exit</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+                <div class="mdl-card__supporting-text">
+                    <h1 class="mdl-card__title-text">
+                        <span class="mdl-chip" id="title-standalone">
+                            <span class="mdl-chip__text mdl-color-text--white">Standalone</span>
+                        </span>
+                    </h1>
+                </div>
+            </div>
+
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
                 <div class="mdl-card__title">
                     <h1 class="mdl-card__title-text">
@@ -188,6 +201,7 @@
 </div>
 
 <script type="text/javascript" src="vendor/material-design-lite/material.min.js"></script>
+<script type="text/javascript" src="app/functions.js"></script>
 <script type="text/javascript" src="app/core.js"></script>
 
 </body>

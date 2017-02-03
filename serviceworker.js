@@ -4,6 +4,7 @@ var CACHE_FILES = [
     'index.html',
     'index.html?utm=homescreen',
     'app/core.css',
+    'app/functions.js',
     'app/core.js',
     'app/icons/icon-32x32.png',
     'app/icons/icon-192x192.png',
