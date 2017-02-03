@@ -347,10 +347,20 @@ function urlBase64ToUint8Array(base64String) {
 
 function updateOnlineStatus() {
     if(navigator.onLine) {
-        writeHistory('online');
+        hide('buttonOffline');
+        show('buttonOnline');
     } else {
-        writeHistory('offline');
+        hide('buttonOnline');
+        show('buttonOffline');
     }
+}
+
+function show(id) {
+    document.getElementById(id).style.display = 'block';
+}
+
+function hide(id) {
+    document.getElementById(id).style.display = 'none';
 }
 
 function writeHistory(message) {

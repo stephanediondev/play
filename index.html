@@ -25,6 +25,35 @@
 <body>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header mdl-color--black">
+        <div class="mdl-layout__header-row">
+            <div class="mdl-layout-spacer">
+            </div>
+
+            <nav class="mdl-navigation">
+                <span class="mdl-chip mdl-color--green" id="buttonStandalone">
+                    <span class="mdl-chip__text mdl-color-text--white">standalone</span>
+                </span>
+
+                <span class="mdl-chip mdl-color--green" id="buttonHttps">
+                    <span class="mdl-chip__text mdl-color-text--white">https</span>
+                </span>
+
+                <span class="mdl-chip mdl-color--red" id="buttonHttp">
+                    <span class="mdl-chip__text mdl-color-text--white">http</span>
+                </span>
+
+                <span class="mdl-chip mdl-color--green" id="buttonOnline">
+                    <span class="mdl-chip__text mdl-color-text--white">online</span>
+                </span>
+
+                <span class="mdl-chip mdl-color--red" id="buttonOffline">
+                    <span class="mdl-chip__text mdl-color-text--white">offline</span>
+                </span>
+            </nav
+        </div>
+    </header>
+
     <main class="mdl-layout__content mdl-color--grey-100">
         <div class="mdl-snackbar mdl-js-snackbar">
             <div class="mdl-snackbar__text">
@@ -181,16 +210,6 @@
                             <a href="#" id="networkInformation" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get</a>
                         </li>
                     </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-standalone">
-                            <span class="mdl-chip__text mdl-color-text--white">Standalone</span>
-                        </span>
-                    </h1>
                 </div>
             </div>
 

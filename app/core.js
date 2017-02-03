@@ -36,11 +36,17 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     }
 }
 
+if(window.location.protocol === 'https:') {
+    show('buttonHttps');
+} else {
+    show('buttonHttp');
+}
+
 var standalone = window.matchMedia('(display-mode: standalone)');
 if(standalone.matches) {
-    setChip('title-standalone', 'green');
+    show('buttonStandalone');
 } else {
-    setChip('title-standalone', 'red');
+    hide('buttonStandalone');
 }
 
 window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent) {
