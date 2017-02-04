@@ -126,6 +126,12 @@ self.addEventListener('notificationclick', function(NotificationEvent) {
     NotificationEvent.notification.close();
 });
 
+self.addEventListener('notificationclose', function(NotificationEvent) {
+    console.log(NotificationEvent);
+
+    messageToClient('history', 'notificationclose event from service worker');
+});
+
 self.addEventListener('message', function(ExtendableMessageEvent) {
     console.log(ExtendableMessageEvent);
 
@@ -150,7 +156,9 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
 });
 
 function showNotification(title, body, tag) {
-    self.registration.showNotification(title, {
+    messageToClient('history', 'Notification.maxActions: ' + Notification.maxActions);
+
+    return self.registration.showNotification(title, {
         body: body,
         tag: tag,
         badge: 'app/icons/icon-32x32.png',
