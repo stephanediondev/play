@@ -297,40 +297,47 @@ function paymentRequest() {
     if('PaymentRequest' in window) {
         setChip('title-paymentrequest', 'green');
         var methodData = [
-          {
-            supportedMethods: ['basic-card'],
-            data: {
-              supportedNetworks: ['visa', 'mastercard', 'amex'],
-              supportedTypes: ['credit']
+            {
+                supportedMethods: ['basic-card'],
+                data: {
+                    supportedNetworks: ['visa', 'mastercard', 'amex'],
+                    supportedTypes: ['credit']
+                }
             }
-          }
         ];
 
         var details =  {
-          displayItems: [
-            {
-              label: "Sub-total",
-              amount: { currency: "USD", value : "100.00" }, // US$100.00
-            },
-            {
-              label: "Sales Tax",
-              amount: { currency: "USD", value : "9.00" }, // US$9.00
+            displayItems: [
+                {
+                    label: "Sub-total",
+                    amount: { currency: "USD", value : "100.00" }, // US$100.00
+                },
+                {
+                    label: "Sales Tax",
+                    amount: { currency: "USD", value : "9.00" }, // US$9.00
+                },
+                {
+                    label: "Shipping",
+                    amount: { currency: "USD", value : "9.00" }, // US$9.00
+                    pending: true // The price is not determined yet
+                }
+            ],
+            total:  {
+                label: "Total due",
+                amount: { currency: "USD", value : "109.00" }, // US$109.00
             }
-          ],
-          total:  {
-            label: "Total due",
-            amount: { currency: "USD", value : "109.00" }, // US$109.00
-          }
         };
 
         var options = {
-          requestShipping: true
+            requestShipping: true,
+            shippingType: "shipping"
         };
 
         var payment = new PaymentRequest(methodData, details, options);
+        payment.show();
     } else {
         setChip('title-paymentrequest', 'red');
-        setSnackbar('Payment Request API');
+        setSnackbar('Payment Request API not supported');
     }
 }
 

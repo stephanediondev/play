@@ -3,7 +3,6 @@ var CACHE_FILES = [
     'manifest.json',
     'index.html',
     'index.html?utm=homescreen',
-    'app/core.css',
     'app/functions.js',
     'app/core.js',
     'app/icons/icon-32x32.png',

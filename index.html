@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>playground-pwa</title>
+<title>playground</title>
 <meta http-equiv="origin-trial" data-feature="Web Share" data-expires="2017-03-14" content="AkcBqr9zSDGbqYYqtIcqZkvOyJFIwAbkVMAUUuwT+lM6vqOZYsKbBHdfKxjqeJn2kb+1Pb/osfkunh+rlW43ZgUAAABLeyJvcmlnaW4iOiJodHRwczovL3NkaW9uLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViU2hhcmUiLCJleHBpcnkiOjE0ODk1MDUzOTN9">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -17,9 +17,32 @@
 <link rel="apple-touch-icon-precomposed" sizes="512x512" href="app/icons/icon-512x512.png">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" type="text/css" href="vendor/material-design-lite/material.min.css">
-<link rel="stylesheet" type="text/css" href="app/core.css">
+<style type="text/css">
+.mdl-navigation .mdl-chip {
+    display: none;
+    margin-left: 5px;
+}
+.mdl-card {
+    min-height: inherit;
+}
+.mdl-list__item {
+    min-height: inherit;
+    padding: 0px;
+}
+.mdl-button {
+    min-width: inherit;
+    padding: 0px 8px;
+    text-align: left;
+}
+ul {
+    margin: 0px;
+    -webkit-padding-start: 0px;
+}
+ul li {
+    list-style-type: none;
+}
+</style>
 </head>
 
 <body>
@@ -262,6 +285,12 @@
                     </p>
                     <p>
                         <a href="https://web-push-book.gauntface.com/">Web Push Book</a>
+                    </p>
+                    <p>
+                        <a href="https://jakearchibald.github.io/isserviceworkerready/">Is ServiceWorker ready?</a>
+                    </p>
+                    <p>
+                        <a href="https://pwa-directory.appspot.com/">PWA Directory</a>
                     </p>
                 </div>
             </div>
