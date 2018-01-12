@@ -28,6 +28,7 @@ if('storage' in navigator) {
 
 var serviceWorkerEnabled = false;
 var pushManagerEnabled = false;
+var imageCapture = false;
 
 if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     serviceWorkerEnabled = true;
@@ -96,6 +97,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.getElementById('clearHistory').addEventListener('click', function() {
     document.getElementById('history').innerHTML = '';
+});
+
+document.getElementById('getStream').addEventListener('click', function() {
+    getStream();
+});
+
+document.getElementById('takePhoto').addEventListener('click', function() {
+    takePhoto();
 });
 
 document.getElementById('serviceWorkerRegister').addEventListener('click', function() {

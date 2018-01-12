@@ -1,3 +1,70 @@
+function getStream() {
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        setChip('title-mediastreamapi', 'orange');
+
+        navigator.mediaDevices.getUserMedia({'video': true})
+        .then(function(MediaStream) {
+            console.log(MediaStream);
+
+            var video = document.getElementById('video');
+            video.srcObject = MediaStream;
+
+            if('ImageCapture' in window) {
+                var track = MediaStream.getVideoTracks()[0];
+                imageCapture = new ImageCapture(track);
+            }
+
+            setChip('title-mediastreamapi', 'green');
+        })
+        .catch(function(NavigatorUserMediaError) {
+            console.log(NavigatorUserMediaError);
+
+            setChip('title-mediastreamapi', 'red');
+
+            if('DevicesNotFoundError' == NavigatorUserMediaError.name) {
+                setSnackbar('Device not found');
+            }
+
+            if('PermissionDeniedError' == NavigatorUserMediaError.name) {
+                setSnackbar('Permission denied');
+            }
+        });
+    }
+}
+
+function takePhoto() {
+    if(imageCapture) {
+        imageCapture.getPhotoCapabilities()
+        .then(function(photoCapabilities) {
+            console.log(photoCapabilities);
+            return imageCapture.getPhotoSettings();
+        })
+        .then(function(photoSettings) {
+            console.log(photoSettings);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+
+        imageCapture.takePhoto()
+        .then(function(blob) {
+            console.log(blob);
+
+            var image = document.getElementById('image');
+            image.src = URL.createObjectURL(blob);
+
+            setChip('title-imagecaptureapi', 'green');
+        })
+        .catch(function(err) {
+            console.log(err);
+
+            setChip('title-imagecaptureapi', 'red');
+        });
+    } else {
+        setChip('title-imagecaptureapi', 'red');
+    }
+}
+
 function serviceWorkerRegister() {
     if(serviceWorkerEnabled) {
         setChip('title-serviceworker', 'orange');
@@ -434,7 +501,6 @@ function paymentRequest() {
         })
         .catch(function(err) {
             console.log(err);
-            setChip('title-paymentrequest', 'red');
         });
     } else {
         setChip('title-paymentrequest', 'red');
