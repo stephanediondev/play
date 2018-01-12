@@ -1,4 +1,4 @@
-var CACHE_KEY = 'playground-pwa-v1';
+var CACHE_KEY = 'playground-pwa-v3';
 var CACHE_FILES = [
     'manifest.json',
     'index.html',
@@ -159,7 +159,6 @@ function showNotification(title, body, tag) {
 
     return self.registration.showNotification(title, {
         body: body,
-        tag: tag,
         badge: 'app/icons/icon-32x32.png',
         icon: 'app/icons/icon-192x192.png',
         image: 'app/icons/icon-512x512.png',

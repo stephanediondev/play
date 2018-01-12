@@ -4,8 +4,34 @@ var snackbarContainer = document.querySelector('.mdl-snackbar');
 
 var TAG = 'playground-pwa';
 
+if('storage' in navigator) {
+    if('persist' in navigator.storage) {
+        navigator.storage.persist().then(function(granted) {
+            if(granted) {
+                writeHistory('Storage will not be cleared except by explicit user action');
+            } else {
+                writeHistory('Storage may be cleared by the UA under storage pressure');
+            }
+        });
+    }
+
+    if('estimate' in navigator.storage) {
+        navigator.storage.estimate().then(function(data) {
+            var percentUsed = Math.round(data.usage / data.quota * 100);
+            var usageInMib = Math.round(data.usage / (1024 * 1024));
+            var quotaInMib = Math.round(data.quota / (1024 * 1024));
+            writeHistory('Using ' + usageInMib + ' out of ' + quotaInMib + ' MiB used (' + percentUsed + '%)');
+        });
+    }
+}
+
+
+var serviceWorkerEnabled = false;
+var pushManagerEnabled = false;
+var imageCapture = false;
+
 if('serviceWorker' in navigator && window.location.protocol == 'https:') {
-    var serviceWorkerEnabled = true;
+    serviceWorkerEnabled = true;
 
     serviceWorkerRegister();
 
@@ -24,8 +50,6 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     });
 
 } else {
-    var serviceWorkerEnabled = false;
-
     if('serviceWorker' in navigator === false) {
         setChip('title-serviceworker', 'red');
         setChip('title-pushapi', 'red');
@@ -73,6 +97,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.getElementById('clearHistory').addEventListener('click', function() {
     document.getElementById('history').innerHTML = '';
+});
+
+document.getElementById('getStream').addEventListener('click', function() {
+    getStream();
+});
+
+document.getElementById('takePhoto').addEventListener('click', function() {
+    takePhoto();
 });
 
 document.getElementById('serviceWorkerRegister').addEventListener('click', function() {

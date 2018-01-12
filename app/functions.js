@@ -1,28 +1,90 @@
+function getStream() {
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        setChip('title-mediastreamapi', 'orange');
+
+        navigator.mediaDevices.getUserMedia({'video': true})
+        .then(function(MediaStream) {
+            console.log(MediaStream);
+
+            var video = document.getElementById('video');
+            video.srcObject = MediaStream;
+
+            if('ImageCapture' in window) {
+                var track = MediaStream.getVideoTracks()[0];
+                imageCapture = new ImageCapture(track);
+            }
+
+            setChip('title-mediastreamapi', 'green');
+        })
+        .catch(function(NavigatorUserMediaError) {
+            console.log(NavigatorUserMediaError);
+
+            setChip('title-mediastreamapi', 'red');
+
+            if('DevicesNotFoundError' == NavigatorUserMediaError.name) {
+                setSnackbar('Device not found');
+            }
+
+            if('PermissionDeniedError' == NavigatorUserMediaError.name) {
+                setSnackbar('Permission denied');
+            }
+        });
+    }
+}
+
+function takePhoto() {
+    if(imageCapture) {
+        imageCapture.getPhotoCapabilities()
+        .then(function(photoCapabilities) {
+            console.log(photoCapabilities);
+            return imageCapture.getPhotoSettings();
+        })
+        .then(function(photoSettings) {
+            console.log(photoSettings);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+
+        imageCapture.takePhoto()
+        .then(function(blob) {
+            console.log(blob);
+
+            var image = document.getElementById('image');
+            image.src = URL.createObjectURL(blob);
+
+            setChip('title-imagecaptureapi', 'green');
+        })
+        .catch(function(err) {
+            console.log(err);
+
+            setChip('title-imagecaptureapi', 'red');
+        });
+    } else {
+        setChip('title-imagecaptureapi', 'red');
+    }
+}
+
 function serviceWorkerRegister() {
     if(serviceWorkerEnabled) {
         setChip('title-serviceworker', 'orange');
-        navigator.serviceWorker.register('serviceworker.js').then(function(ServiceWorkerRegistration) {
+        navigator.serviceWorker.register('serviceworker.js')
+        .then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
 
             setChip('title-serviceworker', 'green');
 
-            ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
-                console.log(PushSubscription);
+            if('pushManager' in ServiceWorkerRegistration) {
+                ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
+                    console.log(PushSubscription);
 
-                if(PushSubscription && typeof PushSubscription === 'object') {
-                    setChip('title-pushapi', 'green');
-                } else {
-                    setChip('title-pushapi', 'red');
-                }
-            });
-
-            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-                if(permissionState != 'denied') {
-                    setChip('title-notificationsapi', 'green');
-                } else {
-                    setChip('title-notificationsapi', 'red');
-                }
-            });
+                    if(PushSubscription && typeof PushSubscription === 'object') {
+                        setChip('title-pushapi', 'green');
+                    } else {
+                        setChip('title-pushapi', 'red');
+                    }
+                });
+            }
 
             ServiceWorkerRegistration.addEventListener('updatefound', function(Event) {
                 console.log(Event);
@@ -41,7 +103,8 @@ function serviceWorkerRegister() {
                 writeHistory('register active');
             }
 
-        }).catch(function(TypeError) {
+        })
+        .catch(function(TypeError) {
             console.log(TypeError);
         });
     }
@@ -61,33 +124,39 @@ function serviceWorkerUnregister() {
 
 function pushManagerSubscribe() {
     if(serviceWorkerEnabled) {
-        setChip('title-pushapi', 'orange');
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-                writeHistory('permissionState: ' + permissionState);
+            if('pushManager' in ServiceWorkerRegistration) {
+                setChip('title-pushapi', 'orange');
 
-                if(permissionState == 'denied') {
-                    setSnackbar(permissionState);
-                }
+                ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                    writeHistory('permissionState: ' + permissionState);
 
-                if(permissionState == 'prompt' || permissionState == 'granted') {
-                    ServiceWorkerRegistration.pushManager.subscribe(
-                        {applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}
-                    ).then(function(PushSubscription) {
-                        console.log(PushSubscription);
+                    if(permissionState == 'denied') {
+                        setSnackbar(permissionState);
+                    }
 
-                        if(PushSubscription && typeof PushSubscription === 'object') {
-                            setChip('title-pushapi', 'green');
+                    if(permissionState == 'prompt' || permissionState == 'granted') {
+                        ServiceWorkerRegistration.pushManager.subscribe(
+                            {applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}
+                        ).then(function(PushSubscription) {
+                            console.log(PushSubscription);
 
-                            var toJSON = PushSubscription.toJSON();
+                            if(PushSubscription && typeof PushSubscription === 'object') {
+                                setChip('title-pushapi', 'green');
 
-                            writeHistory('endpoint: ' + PushSubscription.endpoint);
-                            writeHistory('public_key: ' + toJSON.keys.p256dh);
-                            writeHistory('authentication_secret: ' + toJSON.keys.auth);
-                        }
-                    });
-                }
-            });
+                                var toJSON = PushSubscription.toJSON();
+
+                                writeHistory('endpoint: ' + PushSubscription.endpoint);
+                                writeHistory('public_key: ' + toJSON.keys.p256dh);
+                                writeHistory('authentication_secret: ' + toJSON.keys.auth);
+                            }
+                        });
+                    }
+                });
+            } else {
+                setSnackbar('Push API not supported');
+                setChip('title-pushapi', 'red');
+            }
         });
     }
 }
@@ -95,16 +164,21 @@ function pushManagerSubscribe() {
 function pushManagerUnsubscribe() {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
-                console.log(PushSubscription);
+            if('pushManager' in ServiceWorkerRegistration) {
+                ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
+                    console.log(PushSubscription);
 
-                if(PushSubscription && typeof PushSubscription === 'object') {
-                    PushSubscription.unsubscribe().then(function() {
-                        writeHistory('unsubcribe done');
-                        setChip('title-pushapi', 'red');
-                    });
-                }
-            });
+                    if(PushSubscription && typeof PushSubscription === 'object') {
+                        PushSubscription.unsubscribe().then(function() {
+                            writeHistory('unsubcribe done');
+                            setChip('title-pushapi', 'red');
+                        });
+                    }
+                });
+            } else {
+                setSnackbar('Push API not supported');
+                setChip('title-pushapi', 'red');
+            }
         });
     }
 }
@@ -112,10 +186,15 @@ function pushManagerUnsubscribe() {
 function pushManagerPermissionState() {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-                writeHistory('permissionState: ' + permissionState);
-                setSnackbar(permissionState);
-            });
+            if('pushManager' in ServiceWorkerRegistration) {
+                ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                    writeHistory('permissionState: ' + permissionState);
+                    setSnackbar(permissionState);
+                });
+            } else {
+                setSnackbar('Push API not supported');
+                setChip('title-pushapi', 'red');
+            }
         });
     }
 }
@@ -283,7 +362,11 @@ function networkInformation() {
     if(connection) {
         console.log(connection);
         setChip('title-networkinformation', 'green');
-        setSnackbar(connection.type);
+        if(typeof connection.type !== 'undefined') {
+            setSnackbar(connection.type);
+        } else if(typeof connection.effectiveType !== 'undefined') {
+            setSnackbar(connection.effectiveType);
+        }
         connection.addEventListener('change', function(e) {
             console.log(e);
         });
@@ -310,22 +393,32 @@ function paymentRequest() {
             displayItems: [
                 {
                     label: "Sub-total",
-                    amount: { currency: "USD", value : "100.00" }, // US$100.00
+                    amount: { currency: "USD", value : 90 }, // US$100.00
                 },
                 {
                     label: "Sales Tax",
-                    amount: { currency: "USD", value : "9.00" }, // US$9.00
+                    amount: { currency: "USD", value : 10 }, // US$9.00
                 },
                 {
                     label: "Shipping",
-                    amount: { currency: "USD", value : "9.00" }, // US$9.00
-                    pending: true // The price is not determined yet
+                    amount: { currency: "USD", value : 10 }, // US$9.00
                 }
             ],
             total:  {
                 label: "Total due",
-                amount: { currency: "USD", value : "109.00" }, // US$109.00
-            }
+                amount: { currency: "USD", value : 110 }, // US$109.00
+            },
+            shippingOptions: [
+              {
+                id: 'economy',
+                selected: true,
+                label: 'Economy Shipping (5-7 Days)',
+                amount: {
+                  currency: 'USD',
+                  value: 10,
+                },
+              }
+            ]
         };
 
         var options = {
@@ -333,8 +426,82 @@ function paymentRequest() {
             shippingType: "shipping"
         };
 
-        var payment = new PaymentRequest(methodData, details, options);
-        payment.show();
+        var paymentRequest = new PaymentRequest(methodData, details, options);
+
+        paymentRequest.addEventListener('shippingaddresschange', function(PaymentRequestUpdateEvent) {
+            console.log(PaymentRequestUpdateEvent);
+
+            event.updateWith({
+                displayItems: [
+                    {
+                        label: "Sub-total",
+                        amount: { currency: "USD", value : 90 }, // US$100.00
+                    },
+                    {
+                        label: "Sales Tax",
+                        amount: { currency: "USD", value : 10 }, // US$9.00
+                    },
+                    {
+                        label: "Shipping",
+                        amount: { currency: "USD", value : 10 }, // US$9.00
+                    }
+                ],
+              total: {
+                label: 'Total',
+                amount: {
+                  currency: 'USD',
+                  value: 110,
+                },
+              },
+              shippingOptions: [
+                {
+                  id: 'economy',
+                  label: 'Economy Shipping (5-7 Days)',
+                  amount: {
+                    currency: 'USD',
+                    value: 10,
+                  },
+                }
+              ]
+          });
+        });
+
+        paymentRequest.addEventListener('shippingoptionchange', function(event) {
+            console.log(event);
+
+            event.updateWith({
+              total: {
+                label: 'Total',
+                amount: {
+                  currency: 'USD',
+                  value: 110,
+                },
+              },
+              shippingOptions: [
+                {
+                  id: 'economy',
+                  label: 'Economy Shipping (5-7 Days)',
+                  amount: {
+                    currency: 'USD',
+                    value: 10,
+                  },
+                }
+              ]
+            });
+        });
+
+        paymentRequest.show()
+        .then(function(paymentResponse) {
+            console.log(paymentResponse);
+
+            return paymentResponse.complete()
+            .then(function() {
+                setSnackbar('Payment done');
+            });
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
     } else {
         setChip('title-paymentrequest', 'red');
         setSnackbar('Payment Request API not supported');
@@ -346,13 +513,10 @@ function showNotificationPage() {
         if(Notification.permission == 'denied') {
             setSnackbar(Notification.permission);
             setChip('title-notificationsapi', 'red');
-        } else {
-            setChip('title-notificationsapi', 'green');
         }
 
         var notification = new Notification('from page', {
             body: 'body',
-            tag: TAG,
             badge: 'app/icons/icon-32x32.png',
             icon: 'app/icons/icon-192x192.png',
             image: 'app/icons/icon-512x512.png'
@@ -364,6 +528,16 @@ function showNotificationPage() {
 
             notification.close();
         });
+        notification.onshow = function(Event) {
+            console.log(Event);
+
+            setChip('title-notificationsapi', 'green');
+        };
+        notification.onerror = function(Event) {
+            console.log(Event);
+
+            setChip('title-notificationsapi', 'red');
+        };
     } else {
         setSnackbar('Notifications API not supported');
     }
@@ -372,16 +546,21 @@ function showNotificationPage() {
 function showNotificationWorker() {
     if(serviceWorkerEnabled) {
         navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-                writeHistory('permissionState: ' + permissionState);
-                if(permissionState != 'denied') {
-                    setChip('title-notificationsapi', 'green');
-                    messageToServiceWorker({command: 'send-notification', content: 'body'});
-                } else {
-                    setSnackbar(permissionState);
-                    setChip('title-notificationsapi', 'red');
-                }
-            });
+            if('pushManager' in ServiceWorkerRegistration) {
+                ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                    writeHistory('permissionState: ' + permissionState);
+                    if(permissionState != 'denied') {
+                        setChip('title-notificationsapi', 'green');
+                        messageToServiceWorker({command: 'send-notification', content: 'body'});
+                    } else {
+                        setSnackbar(permissionState);
+                        setChip('title-notificationsapi', 'red');
+                    }
+                });
+            } else {
+                setSnackbar('Push API not supported');
+                setChip('title-notificationsapi', 'red');
+            }
         });
     }
 }
