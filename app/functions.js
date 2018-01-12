@@ -76,9 +76,8 @@ function serviceWorkerRegister() {
 
             if('pushManager' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
-                    console.log(PushSubscription);
-
                     if(PushSubscription && typeof PushSubscription === 'object') {
+                        console.log(PushSubscription);
                         setChip('title-pushapi', 'green');
                     } else {
                         setChip('title-pushapi', 'red');
