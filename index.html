@@ -88,38 +88,6 @@ ul li {
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-mediastreamapi">
-                            <span class="mdl-chip__text mdl-color-text--white">MediaStream API</span>
-                        </span>
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="getStream" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get stream</a>
-                        </li>
-                    </ul>
-                    <video id="video" width="320" height="240" autoplay></video>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-imagecaptureapi">
-                            <span class="mdl-chip__text mdl-color-text--white">Image Capture API</span>
-                        </span>
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="takePhoto" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Take photo</a>
-                        </li>
-                    </ul>
-                    <img id="image" width="320" height="240">
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
                         <span class="mdl-chip" id="title-serviceworker">
                             <span class="mdl-chip__text mdl-color-text--white">Service Worker</span>
                         </span>
@@ -237,24 +205,6 @@ ul li {
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-fullscreen">
-                            <span class="mdl-chip__text mdl-color-text--white">Fullscreen API</span>
-                        </span>
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="fullscreenRequest" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Request</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="fullscreenExit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Exit</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
                         <span class="mdl-chip" id="title-networkinformation">
                             <span class="mdl-chip__text mdl-color-text--white">Network Information API</span>
                         </span>
@@ -283,18 +233,34 @@ ul li {
             </div>
 
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__title">
-                    <h1 class="mdl-card__title-text">
-                        Flags
-                    </h1>
-                </div>
                 <div class="mdl-card__supporting-text">
-                    <p>
-                        <a href="chrome://flags/#bypass-app-banner-engagement-checks">chrome://flags/#bypass-app-banner-engagement-checks</a>
-                    </p>
-                    <p>
-                        <a href="chrome://flags/#enable-improved-a2hs">chrome://flags/#enable-improved-a2hs</a>
-                    </p>
+                    <h1 class="mdl-card__title-text">
+                        <span class="mdl-chip" id="title-mediastreamapi">
+                            <span class="mdl-chip__text mdl-color-text--white">MediaStream API</span>
+                        </span>
+                    </h1>
+                    <ul>
+                        <li class="mdl-list__item">
+                            <a href="#" id="getStream" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get stream</a>
+                        </li>
+                    </ul>
+                    <video id="video" width="320" height="240" autoplay></video>
+                </div>
+            </div>
+
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+                <div class="mdl-card__supporting-text">
+                    <h1 class="mdl-card__title-text">
+                        <span class="mdl-chip" id="title-imagecaptureapi">
+                            <span class="mdl-chip__text mdl-color-text--white">Image Capture API</span>
+                        </span>
+                    </h1>
+                    <ul>
+                        <li class="mdl-list__item">
+                            <a href="#" id="takePhoto" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Take photo</a>
+                        </li>
+                    </ul>
+                    <img id="image" width="320" height="240">
                 </div>
             </div>
 
@@ -307,6 +273,9 @@ ul li {
                 <div class="mdl-card__supporting-text">
                     <p>
                         <a href="https://developers.google.com/web/progressive-web-apps/">Google Developers | Progressive Web Apps</a>
+                    </p>
+                    <p>
+                        <a href="https://tomayac.github.io/pwa-feature-detector/">Progressive Web App Feature Detector</a>
                     </p>
                     <p>
                         <a href="https://whatwebcando.today/">What Web Can Do Today</a>
@@ -325,7 +294,6 @@ ul li {
                     </p>
                 </div>
             </div>
-
 
             <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
                 <div class="mdl-card__title">

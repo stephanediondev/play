@@ -6,8 +6,8 @@ var TAG = 'playground-pwa';
 
 if('storage' in navigator) {
     if('persist' in navigator.storage) {
-        navigator.storage.persist().then(function(granted) {
-            if(granted) {
+        navigator.storage.persist().then(function(persistent) {
+            if(persistent) {
                 writeHistory('Storage will not be cleared except by explicit user action');
             } else {
                 writeHistory('Storage may be cleared by the UA under storage pressure');
@@ -17,14 +17,28 @@ if('storage' in navigator) {
 
     if('estimate' in navigator.storage) {
         navigator.storage.estimate().then(function(data) {
-            var percentUsed = Math.round(data.usage / data.quota * 100);
-            var usageInMib = Math.round(data.usage / (1024 * 1024));
-            var quotaInMib = Math.round(data.quota / (1024 * 1024));
-            writeHistory('Using ' + usageInMib + ' out of ' + quotaInMib + ' MiB used (' + percentUsed + '%)');
+            writeHistory(convert_size(data.usage) + ' used out of ' + convert_size(data.quota) + ' storage quota');
         });
     }
 }
 
+if('deviceMemory' in navigator) {
+    writeHistory(navigator.deviceMemory + ' MB device memory');
+}
+
+if('getBattery' in navigator) {
+    navigator.getBattery().then(function(BatteryManager) {
+        console.log(BatteryManager);
+
+        writeHistory('Battery ' + BatteryManager.level*100 + '%');
+
+        BatteryManager.addEventListener('levelchange', function(event) {
+            console.log(event);
+
+            writeHistory('Battery ' + event.level*100 + '%');
+        });
+    });
+}
 
 var serviceWorkerEnabled = false;
 var pushManagerEnabled = false;
@@ -165,14 +179,6 @@ document.getElementById('geolocationState').addEventListener('click', function()
 
 document.getElementById('screenOrientation').addEventListener('click', function() {
     screenOrientation();
-});
-
-document.getElementById('fullscreenRequest').addEventListener('click', function() {
-    fullscreenRequest();
-});
-
-document.getElementById('fullscreenExit').addEventListener('click', function() {
-    fullscreenExit();
 });
 
 document.getElementById('networkInformation').addEventListener('click', function() {

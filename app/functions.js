@@ -21,6 +21,10 @@ function getStream() {
 
             setChip('title-mediastreamapi', 'red');
 
+            if('NotFoundError' == NavigatorUserMediaError.name) {
+                setSnackbar('Not found');
+            }
+
             if('DevicesNotFoundError' == NavigatorUserMediaError.name) {
                 setSnackbar('Device not found');
             }
@@ -61,6 +65,7 @@ function takePhoto() {
             setChip('title-imagecaptureapi', 'red');
         });
     } else {
+        setSnackbar('Image Capture API not supported');
         setChip('title-imagecaptureapi', 'red');
     }
 }
@@ -274,7 +279,7 @@ function share() {
 }
 
 function geolocationGet() {
-    if(navigator.geolocation) {
+    if('geolocation' in navigator) {
         setChip('title-geolocationapi', 'orange');
         navigator.geolocation.getCurrentPosition(
             function(Geoposition) {
@@ -297,7 +302,7 @@ function geolocationGet() {
 }
 
 function geolocationState() {
-    if(navigator.permissions) {
+    if('permissions' in navigator) {
         navigator.permissions.query({
             'name': 'geolocation'
         }).then(function(permission) {
@@ -315,44 +320,6 @@ function screenOrientation() {
     } else {
         setChip('title-screenorientationapi', 'red');
         setSnackbar('Screen Orientation API not supported');
-    }
-}
-
-function fullscreenRequest() {
-    var requestFullscreen = false;
-    if('requestFullscreen' in document.documentElement) {
-        requestFullscreen = 'requestFullscreen';
-    } else if('mozRequestFullScreen' in document.documentElement) {
-        requestFullscreen = 'mozRequestFullScreen';
-    } else if('webkitRequestFullscreen' in document.documentElement) {
-        requestFullscreen = 'webkitRequestFullscreen';
-    } else if('msRequestFullscreen') {
-        requestFullscreen = 'msRequestFullscreen';
-    }
-    if(requestFullscreen) {
-        setChip('title-fullscreen', 'green');
-        document.documentElement[requestFullscreen]();
-    } else {
-        setChip('title-fullscreen', 'red');
-    }
-}
-
-function fullscreenExit() {
-    var exitFullscreen = false;
-    if('exitFullscreen' in document) {
-        exitFullscreen = 'exitFullscreen';
-    } else if('mozCancelFullScreen' in document) {
-        exitFullscreen = 'mozCancelFullScreen';
-    } else if('webkitExitFullscreen' in document) {
-        exitFullscreen = 'webkitExitFullscreen';
-    } else if('msExitFullscreen') {
-        exitFullscreen = 'msExitFullscreen';
-    }
-    if(exitFullscreen) {
-        setChip('title-fullscreen', 'green');
-        document[exitFullscreen]();
-    } else {
-        setChip('title-fullscreen', 'red');
     }
 }
 
@@ -610,4 +577,20 @@ function setSnackbar(message) {
 
 function setChip(id, color) {
     document.getElementById(id).className = 'mdl-chip mdl-color--' + color;
+}
+
+function convert_size(result) {
+    if(result >= 1073741824) {
+        result = Math.round(result/1073741824) + ' GB';
+    } else if(result >= 1048576) {
+        result = Math.round(result/1048576) + ' MB';
+    } else if(result >= 1024) {
+        result = Math.round(result/1024) + ' KB';
+    } else {
+        result = result + ' B';
+    }
+    if(result == 0) {
+        result = '-';
+    }
+    return result;
 }
