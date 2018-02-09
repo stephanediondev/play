@@ -15,7 +15,6 @@
 <link rel="apple-touch-icon" sizes="512x512" href="app/icons/icon-512x512.png">
 <link rel="apple-touch-icon-precomposed" sizes="512x512" href="app/icons/icon-512x512.png">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
 <link rel="stylesheet" type="text/css" href="vendor/material-design-lite/material.min.css">
 <style type="text/css">
 .mdl-navigation .mdl-chip {
@@ -57,6 +56,10 @@ ul li {
                     <span class="mdl-chip__text mdl-color-text--white">standalone</span>
                 </span>
 
+                <span class="mdl-chip mdl-color--green" id="buttonNetwork">
+                    <span class="mdl-chip__text mdl-color-text--white" id="buttonNetworkResult"></span>
+                </span>
+
                 <span class="mdl-chip mdl-color--green" id="buttonHttps">
                     <span class="mdl-chip__text mdl-color-text--white">https</span>
                 </span>
@@ -85,12 +88,10 @@ ul li {
         </div>
 
         <div class="mdl-grid" id="top">
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-serviceworker">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-serviceworker">
-                            <span class="mdl-chip__text mdl-color-text--white">Service Worker</span>
-                        </span>
+                        Service Worker
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -115,12 +116,10 @@ ul li {
                 </div>
             </div>
 
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-pushapi">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-pushapi">
-                            <span class="mdl-chip__text mdl-color-text--white">Push API</span>
-                        </span>
+                        Push API
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -132,34 +131,17 @@ ul li {
                         <li class="mdl-list__item">
                             <a href="#" id="pushManagerPermissionState" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
                         </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-notificationsapi">
-                            <span class="mdl-chip__text mdl-color-text--white">Notifications API</span>
-                        </span>
-                    </h1>
-                    <ul>
                         <li class="mdl-list__item">
-                            <a href="#" id="showNotificationPage" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from page)</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="showNotificationWorker" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Send (from service worker)</a>
+                            <a href="#" id="pushEvent" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Push event</a>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-webshareapi">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-webshareapi">
-                            <span class="mdl-chip__text mdl-color-text--white">Web Share API</span>
-                        </span>
+                        Web Share API
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -169,12 +151,10 @@ ul li {
                 </div>
             </div>
 
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-geolocationapi">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-geolocationapi">
-                            <span class="mdl-chip__text mdl-color-text--white">Geolocation API</span>
-                        </span>
+                        Geolocation API
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -187,12 +167,10 @@ ul li {
                 </div>
             </div>
 
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-screenorientationapi">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-screenorientationapi">
-                            <span class="mdl-chip__text mdl-color-text--white">Screen Orientation API</span>
-                        </span>
+                        Screen Orientation API
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -202,27 +180,10 @@ ul li {
                 </div>
             </div>
 
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-paymentrequest">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-networkinformation">
-                            <span class="mdl-chip__text mdl-color-text--white">Network Information API</span>
-                        </span>
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="networkInformation" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-paymentrequest">
-                            <span class="mdl-chip__text mdl-color-text--white">Payment Request API</span>
-                        </span>
+                        Payment Request API
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -232,12 +193,10 @@ ul li {
                 </div>
             </div>
 
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-mediastreamapi">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-mediastreamapi">
-                            <span class="mdl-chip__text mdl-color-text--white">MediaStream API</span>
-                        </span>
+                        MediaStream API
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -248,12 +207,10 @@ ul li {
                 </div>
             </div>
 
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-imagecaptureapi">
                 <div class="mdl-card__supporting-text">
                     <h1 class="mdl-card__title-text">
-                        <span class="mdl-chip" id="title-imagecaptureapi">
-                            <span class="mdl-chip__text mdl-color-text--white">Image Capture API</span>
-                        </span>
+                        Image Capture API
                     </h1>
                     <ul>
                         <li class="mdl-list__item">
@@ -285,6 +242,9 @@ ul li {
                     </p>
                     <p>
                         <a href="https://web-push-book.gauntface.com/">Web Push Book</a>
+                    </p>
+                    <p>
+                        <a href="https://serviceworke.rs/">ServiceWorker Cookbook</a>
                     </p>
                     <p>
                         <a href="https://jakearchibald.github.io/isserviceworkerready/">Is ServiceWorker ready?</a>

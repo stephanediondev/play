@@ -1,8 +1,8 @@
 var CACHE_KEY = 'playground-pwa-v3';
 var CACHE_FILES = [
+    '.',
     'manifest.json',
     'index.html',
-    'index.html?utm=homescreen',
     'app/functions.js',
     'app/core.js',
     'app/icons/icon-32x32.png',
@@ -23,8 +23,6 @@ self.addEventListener('install', function(InstallEvent) {
             cacheAddAll()
         );
     }
-
-    self.skipWaiting();
 });
 
 self.addEventListener('activate', function(ExtendableEvent) {
@@ -61,20 +59,20 @@ self.addEventListener('activate', function(ExtendableEvent) {
 self.addEventListener('fetch', function(FetchEvent) {
     console.log(FetchEvent);
 
-    FetchEvent.respondWith(
-        caches.match(FetchEvent.request).then(function(response) {
-            if(response) {
-                messageToClient('history', 'fetch event from service worker');
-                messageToClient('history', FetchEvent.request.url);
-                messageToClient('history', 'cache');
-                return response;
-            }
-            messageToClient('history', 'fetch event from service worker');
-            messageToClient('history', FetchEvent.request.url);
-            messageToClient('history', 'fetch');
-            return fetch(FetchEvent.request);
-        })
-    );
+    if(FetchEvent.request.url.indexOf('notification.php') === -1) {
+        FetchEvent.respondWith(
+            caches.match(FetchEvent.request).then(function(Response) {
+                if(Response) {
+                    console.log(Response);
+                    return Response;
+                }
+                return fetch(FetchEvent.request).then(function(Response) {
+                    console.log(Response);
+                    return Response;
+                });
+            })
+        );
+    }
 });
 
 self.addEventListener('sync', function(SyncEvent) {
@@ -109,9 +107,21 @@ self.addEventListener('push', function(PushEvent) {
     messageToClient('history', 'push event from service worker');
 
     if('waitUntil' in PushEvent) {
-        PushEvent.waitUntil(
-            showNotification('from service worker (push event)', 'body', TAG)
-        );
+        if(PushEvent.data) {
+            var data = PushEvent.data.json();
+            PushEvent.waitUntil(
+                self.registration.showNotification(data.title, {
+                    body: data.body,
+                    badge: 'app/icons/icon-32x32.png',
+                    icon: 'app/icons/icon-192x192.png',
+                    image: 'app/icons/icon-512x512.png',
+                    actions: [
+                        { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
+                        { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }
+                    ]
+                })
+            );
+        }
     }
 });
 
@@ -145,29 +155,10 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
             cacheAddAll();
         break;
 
-        case 'send-notification':
-            showNotification('from service worker (message event)', ExtendableMessageEvent.data.content, TAG);
-        break;
-
         default:
             messageToClient('history', 'unknown command: ' + ExtendableMessageEvent.data.command);
     }
 });
-
-function showNotification(title, body, tag) {
-    messageToClient('history', 'Notification.maxActions: ' + Notification.maxActions);
-
-    return self.registration.showNotification(title, {
-        body: body,
-        badge: 'app/icons/icon-32x32.png',
-        icon: 'app/icons/icon-192x192.png',
-        image: 'app/icons/icon-512x512.png',
-        actions: [
-            { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
-            { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }
-        ]
-    });
-}
 
 function cacheAddAll() {
     caches.delete(CACHE_KEY);

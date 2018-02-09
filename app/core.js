@@ -1,4 +1,4 @@
-var applicationServerKey = 'BPjjzF6mMnplDTu3U8XVwkrgxK7cclGZpiqM3iICEhWa8HyaowqKCXeANyND9+ikuXN0+cnjsSrDPkwd6T/w8tA=';
+var applicationServerKey = 'BOQ0NVE+w6/fJYX3co0H8w1zre4T7uT4ssMOLfWd1rWzMmuowf7NC/pz5X9roHNTu2Qhvt0pAcKnvjnM3Aw/ssA=';
 
 var snackbarContainer = document.querySelector('.mdl-snackbar');
 
@@ -22,8 +22,55 @@ if('storage' in navigator) {
     }
 }
 
+if('localStorage' in window) {
+    localStorage.setItem('playground_local_storage', 'localStorage available');
+    writeHistory(localStorage.getItem('playground_local_storage'));
+}
+
+if('sessionStorage' in window) {
+    sessionStorage.setItem('playground_session_storage', 'sessionStorage available');
+    writeHistory(sessionStorage.getItem('playground_session_storage'));
+}
+
+if('indexedDB' in window) {
+    var IDBOpenDBRequest = window.indexedDB.open('playground', 1);
+    console.log(IDBOpenDBRequest);
+
+    IDBOpenDBRequest.onupgradeneeded = function(IDBVersionChangeEvent) {
+        console.log(IDBVersionChangeEvent);
+
+        var IDBDatabase = IDBVersionChangeEvent.target.result;
+
+        if(!IDBDatabase.objectStoreNames.contains('data')) {
+            var IDBObjectStore = IDBDatabase.createObjectStore('data', {keyPath: 'id'});
+            console.log(IDBObjectStore);
+            IDBObjectStore.createIndex('date_created', 'date_created', { unique: false });
+        }
+    };
+
+    IDBOpenDBRequest.onerror = function(event) {
+        console.log(event);
+        writeHistory(event.target.error);
+    };
+
+    IDBOpenDBRequest.onsuccess = function(event) {
+        console.log(event);
+
+        var IDBDatabase = event.target.result;
+        IDBDatabase.transaction('data', 'readwrite').objectStore('data').put({'id': 1, 'label': 'indexedDB available', 'date_created': utcDate()});
+
+        var IDBRequest = IDBDatabase.transaction('data', 'readonly').objectStore('data').get(1);
+        console.log(IDBRequest);
+        IDBRequest.onsuccess = function(event) {
+            console.log(event);
+            writeHistory(event.target.result.label);
+        };
+    };
+}
+
+
 if('deviceMemory' in navigator) {
-    writeHistory(navigator.deviceMemory + ' MB device memory');
+    writeHistory(navigator.deviceMemory + ' GB device memory');
 }
 
 if('getBattery' in navigator) {
@@ -35,7 +82,7 @@ if('getBattery' in navigator) {
         BatteryManager.addEventListener('levelchange', function(event) {
             console.log(event);
 
-            writeHistory('Battery ' + event.level*100 + '%');
+            writeHistory('Battery ' + event.target.level*100 + '%');
         });
     });
 }
@@ -49,32 +96,57 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
 
     serviceWorkerRegister();
 
-    navigator.serviceWorker.addEventListener('message', function(ServiceWorkerMessageEvent) {
-        console.log(ServiceWorkerMessageEvent);
+    navigator.serviceWorker.addEventListener('message', function(MessageEvent) {
+        console.log(MessageEvent);
 
         writeHistory('message event from client');
 
-        if(ServiceWorkerMessageEvent.data.type == 'snackbar') {
-            setSnackbar(ServiceWorkerMessageEvent.data.content);
+        if(MessageEvent.data.type == 'snackbar') {
+            setSnackbar(MessageEvent.data.content);
         }
 
-        if(ServiceWorkerMessageEvent.data.type == 'history') {
-            writeHistory(ServiceWorkerMessageEvent.data.content);
+        if(MessageEvent.data.type == 'history') {
+            writeHistory(MessageEvent.data.content);
         }
     });
-
-} else {
-    if('serviceWorker' in navigator === false) {
-        setChip('title-serviceworker', 'red');
-        setChip('title-pushapi', 'red');
-    }
-
-    if(window.location.protocol !== 'https:') {
-        writeHistory('https only');
-    }
 }
 
-if(window.location.protocol === 'https:') {
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    document.getElementById('detect-mediastreamapi').classList.remove('hidden');
+}
+
+if('ImageCapture' in window) {
+    document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
+}
+
+if('share' in navigator) {
+    document.getElementById('detect-webshareapi').classList.remove('hidden');
+}
+
+if('geolocation' in navigator) {
+    document.getElementById('detect-geolocationapi').classList.remove('hidden');
+}
+
+if('connection' in navigator) {
+    console.log(navigator.connection);
+
+    networkInformation();
+
+    navigator.connection.addEventListener('change', function(e) {
+        console.log(e);
+        networkInformation();
+    });
+}
+
+if('screen' in window && 'orientation' in screen) {
+    document.getElementById('detect-screenorientationapi').classList.remove('hidden');
+}
+
+if('PaymentRequest' in window) {
+    document.getElementById('detect-paymentrequest').classList.remove('hidden');
+}
+
+if('https:' === window.location.protocol) {
     show('buttonHttps');
 } else {
     show('buttonHttp');
@@ -157,12 +229,8 @@ document.getElementById('serviceWorkerReloadCache').addEventListener('click', fu
     messageToServiceWorker({command: 'reload-cache'});
 });
 
-document.getElementById('showNotificationPage').addEventListener('click', function() {
-    showNotificationPage();
-});
-
-document.getElementById('showNotificationWorker').addEventListener('click', function() {
-    showNotificationWorker();
+document.getElementById('pushEvent').addEventListener('click', function() {
+    pushEvent();
 });
 
 document.getElementById('share').addEventListener('click', function() {
@@ -179,10 +247,6 @@ document.getElementById('geolocationState').addEventListener('click', function()
 
 document.getElementById('screenOrientation').addEventListener('click', function() {
     screenOrientation();
-});
-
-document.getElementById('networkInformation').addEventListener('click', function() {
-    networkInformation();
 });
 
 document.getElementById('paymentRequest').addEventListener('click', function() {
