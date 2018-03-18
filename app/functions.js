@@ -64,6 +64,8 @@ function serviceWorkerRegister() {
         .then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
 
+            messageToServiceWorker({command: 'cache-key'});
+
             document.getElementById('detect-serviceworker').classList.remove('hidden');
 
             if('pushManager' in ServiceWorkerRegistration) {
@@ -77,8 +79,6 @@ function serviceWorkerRegister() {
 
             ServiceWorkerRegistration.addEventListener('updatefound', function(Event) {
                 console.log(Event);
-                setSnackbar('update found');
-                writeHistory('updatefound event from client');
                 messageToServiceWorker({command: 'reload-cache'});
             });
 
@@ -275,15 +275,16 @@ function geolocationState() {
 }
 
 function screenOrientation() {
+    hide('buttonOrientation');
     if('screen' in window && 'orientation' in screen) {
-        console.log(window.screen.orientation);
-        setSnackbar(window.screen.orientation.type);
+        document.getElementById('buttonOrientationResult').textContent = window.screen.orientation.type;
+        show('buttonOrientation');
     }
 }
 
 function networkInformation() {
+    hide('buttonNetwork');
     if('connection' in navigator) {
-        hide('buttonNetwork');
         if(typeof navigator.connection.type !== 'undefined') {
             document.getElementById('buttonNetworkResult').textContent = navigator.connection.type;
             show('buttonNetwork');
@@ -430,7 +431,12 @@ function pushEvent() {
                     if(PushSubscription && 'object' === typeof PushSubscription) {
                         var toJSON = PushSubscription.toJSON();
                         var url = 'notification.php';
-                        var data = {endpoint: PushSubscription.endpoint, public_key: toJSON.keys.p256dh, authentication_secret: toJSON.keys.auth};
+                        var data = {
+                            endpoint: PushSubscription.endpoint,
+                            public_key: toJSON.keys.p256dh,
+                            authentication_secret: toJSON.keys.auth,
+                            content_encoding: (PushManager.supportedContentEncodings || ['aesgcm'])[0]
+                        };
 
                         fetch(url, {
                             method: 'POST',

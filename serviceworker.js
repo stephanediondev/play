@@ -1,4 +1,10 @@
-var CACHE_KEY = 'playground-pwa-v3';
+var LOG_ENABLED = true;
+var FETCH_IN_CACHE = false;
+var FETCH_EXCLUDE = [
+    'notification.php',
+];
+var VERSION = '2';
+var CACHE_KEY = 'playground-pwa-v' + VERSION;
 var CACHE_FILES = [
     '.',
     'manifest.json',
@@ -9,24 +15,25 @@ var CACHE_FILES = [
     'app/icons/icon-192x192.png',
     'app/icons/icon-512x512.png',
     'vendor/material-design-lite/material.min.css',
-    'vendor/material-design-lite/material.min.js'
+    'vendor/material-design-lite/material.min.js',
 ];
-var TAG = 'playground-pwa';
 
 self.addEventListener('install', function(InstallEvent) {
-    console.log(InstallEvent);
+    sendLog(InstallEvent);
+
+    self.skipWaiting();
 
     messageToClient('history', 'install event from service worker');
 
     if('waitUntil' in InstallEvent) {
-        InstallEvent.waitUntil(
-            cacheAddAll()
-        );
+        InstallEvent.waitUntil(function() {
+            cacheAddAll();
+        });
     }
 });
 
 self.addEventListener('activate', function(ExtendableEvent) {
-    console.log(ExtendableEvent);
+    sendLog(ExtendableEvent);
 
     messageToClient('history', 'activate event from service worker');
 
@@ -39,7 +46,7 @@ self.addEventListener('activate', function(ExtendableEvent) {
     });
 
     if('waitUntil' in ExtendableEvent) {
-        ExtendableEvent.waitUntil(
+        ExtendableEvent.waitUntil(function() {
             caches.keys().then(function(cacheNames) {
                 return Promise.all(
                     cacheNames.map(function(cacheName) {
@@ -52,23 +59,35 @@ self.addEventListener('activate', function(ExtendableEvent) {
             }).then(function() {
                 return self.clients.claim();
             })
-        );
+        });
     }
 });
 
 self.addEventListener('fetch', function(FetchEvent) {
-    console.log(FetchEvent);
+    sendLog(FetchEvent);
 
-    if(FetchEvent.request.url.indexOf('notification.php') === -1) {
+    var fetchAllowed = true;
+    FETCH_EXCLUDE.forEach(function(item, i) {
+        if(FetchEvent.request.url.indexOf(item) !== -1) {
+            fetchAllowed = false;
+        }
+    });
+
+    if(fetchAllowed) {
         FetchEvent.respondWith(
-            caches.match(FetchEvent.request).then(function(Response) {
-                if(Response) {
-                    console.log(Response);
-                    return Response;
-                }
-                return fetch(FetchEvent.request).then(function(Response) {
-                    console.log(Response);
-                    return Response;
+            caches.open(CACHE_KEY).then(function(cache) {
+                return cache.match(FetchEvent.request).then(function(Response) {
+                    if(Response) {
+                        sendLog(Response);
+                        return Response;
+                    }
+                    return fetch(FetchEvent.request).then(function(Response) {
+                        sendLog(Response);
+                        if(FETCH_IN_CACHE) {
+                            cache.put(FetchEvent.request, Response.clone());
+                        }
+                        return Response;
+                    });
                 });
             })
         );
@@ -76,7 +95,7 @@ self.addEventListener('fetch', function(FetchEvent) {
 });
 
 self.addEventListener('sync', function(SyncEvent) {
-    console.log(SyncEvent);
+    sendLog(SyncEvent);
 
     messageToClient('history', SyncEvent.tag);
 
@@ -90,19 +109,19 @@ self.addEventListener('sync', function(SyncEvent) {
 });
 
 self.addEventListener('periodicsync', function(PeriodicSyncEvent) {
-    console.log(PeriodicSyncEvent);
+    sendLog(PeriodicSyncEvent);
 
     messageToClient('history', 'periodicsync event from service worker');
 });
 
 self.addEventListener('pushsubscriptionchange', function(PushEvent) {
-    console.log(PushEvent);
+    sendLog(PushEvent);
 
     messageToClient('history', 'pushsubscriptionchange event from service worker');
 });
 
 self.addEventListener('push', function(PushEvent) {
-    console.log(PushEvent);
+    sendLog(PushEvent);
 
     messageToClient('history', 'push event from service worker');
 
@@ -126,7 +145,7 @@ self.addEventListener('push', function(PushEvent) {
 });
 
 self.addEventListener('notificationclick', function(NotificationEvent) {
-    console.log(NotificationEvent);
+    sendLog(NotificationEvent);
 
     messageToClient('history', 'notificationclick event from service worker');
 
@@ -136,13 +155,13 @@ self.addEventListener('notificationclick', function(NotificationEvent) {
 });
 
 self.addEventListener('notificationclose', function(NotificationEvent) {
-    console.log(NotificationEvent);
+    sendLog(NotificationEvent);
 
     messageToClient('history', 'notificationclose event from service worker');
 });
 
 self.addEventListener('message', function(ExtendableMessageEvent) {
-    console.log(ExtendableMessageEvent);
+    sendLog(ExtendableMessageEvent);
 
     messageToClient('history', 'message event from service worker');
 
@@ -152,7 +171,12 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
 
     switch(ExtendableMessageEvent.data.command) {
         case 'reload-cache':
-            cacheAddAll();
+            cacheAddAll().then(function() {
+                messageToClient('reload', true);
+            });
+        break;
+        case 'cache-key':
+            messageToClient('snackbar', CACHE_KEY);
         break;
 
         default:
@@ -162,7 +186,7 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
 
 function cacheAddAll() {
     caches.delete(CACHE_KEY);
-    caches.open(CACHE_KEY).then(function(cache) {
+    return caches.open(CACHE_KEY).then(function(cache) {
         return cache.addAll(CACHE_FILES);
     });
 }
@@ -173,4 +197,10 @@ function messageToClient(type, content) {
             client.postMessage({type: type, content: content});
         });
     });
+}
+
+function sendLog(log) {
+    if(LOG_ENABLED) {
+        console.log(log);
+    }
 }

@@ -108,6 +108,17 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
         if(MessageEvent.data.type == 'history') {
             writeHistory(MessageEvent.data.content);
         }
+
+        if(MessageEvent.data.type == 'reload') {
+            setSnackbar('reload');
+            document.location.reload(MessageEvent.data.content);
+        }
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', function(Event) {
+        console.log(Event);
+
+        writeHistory('controllerchange event from client');
     });
 }
 
@@ -127,6 +138,17 @@ if('geolocation' in navigator) {
     document.getElementById('detect-geolocationapi').classList.remove('hidden');
 }
 
+if('screen' in window && 'orientation' in screen) {
+    console.log(window.screen.orientation);
+
+    screenOrientation();
+
+    window.screen.orientation.addEventListener('change', function(e) {
+        console.log(e);
+        screenOrientation();
+    });
+}
+
 if('connection' in navigator) {
     console.log(navigator.connection);
 
@@ -136,10 +158,6 @@ if('connection' in navigator) {
         console.log(e);
         networkInformation();
     });
-}
-
-if('screen' in window && 'orientation' in screen) {
-    document.getElementById('detect-screenorientationapi').classList.remove('hidden');
 }
 
 if('PaymentRequest' in window) {
@@ -243,10 +261,6 @@ document.getElementById('geolocationGet').addEventListener('click', function() {
 
 document.getElementById('geolocationState').addEventListener('click', function() {
     geolocationState();
-});
-
-document.getElementById('screenOrientation').addEventListener('click', function() {
-    screenOrientation();
 });
 
 document.getElementById('paymentRequest').addEventListener('click', function() {

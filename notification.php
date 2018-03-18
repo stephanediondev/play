@@ -3,6 +3,7 @@
 include('vendor/autoload.php');
 
 use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\Subscription;
 
 header('Content-Type: application/json');
 
@@ -23,12 +24,13 @@ if(isset($postdata['endpoint']) && isset($postdata['public_key']) && isset($post
 
     $webPush = new WebPush($apiKeys);
 
-    $result = $webPush->sendNotification(
-        $postdata['endpoint'],
-        $payload,
-        $postdata['public_key'],
-        $postdata['authentication_secret'],
-        true
-    );
+    $subcription = Subscription::create([
+        'endpoint' => $postdata['endpoint'],
+        'publicKey' => $postdata['public_key'],
+        'authToken' => $postdata['authentication_secret'],
+        'contentEncoding' => $postdata['content_encoding'],
+    ]);
+
+    $result = $webPush->sendNotification($subcription, $payload, true);
 }
 echo json_encode($result);
