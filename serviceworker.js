@@ -21,15 +21,15 @@ var CACHE_FILES = [
 self.addEventListener('install', function(InstallEvent) {
     sendLog(InstallEvent);
 
-    self.skipWaiting();
-
     messageToClient('history', 'install event from service worker');
 
-    if('waitUntil' in InstallEvent) {
-        InstallEvent.waitUntil(function() {
-            cacheAddAll();
-        });
-    }
+    InstallEvent.waitUntil(
+        caches.open(CACHE_KEY).then(function(cache) {
+            return cacheAddAll().then(function() {
+                self.skipWaiting();
+            });
+        })
+    );
 });
 
 self.addEventListener('activate', function(ExtendableEvent) {

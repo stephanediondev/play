@@ -359,16 +359,16 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v1.6.0",
+            "version": "v1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "1f6e5682eff4a5a6a394b14331a1904f1740e432"
+                "reference": "9857e17bf9c1464485d8cc804eb13f2bcddc4cf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/1f6e5682eff4a5a6a394b14331a1904f1740e432",
-                "reference": "1f6e5682eff4a5a6a394b14331a1904f1740e432",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/9857e17bf9c1464485d8cc804eb13f2bcddc4cf0",
+                "reference": "9857e17bf9c1464485d8cc804eb13f2bcddc4cf0",
                 "shasum": ""
             },
             "require": {
@@ -437,7 +437,7 @@
                 "secret-key cryptography",
                 "side-channel resistant"
             ],
-            "time": "2018-02-15T05:50:20+00:00"
+            "time": "2018-03-21T17:08:08+00:00"
         },
         {
             "name": "psr/http-message",

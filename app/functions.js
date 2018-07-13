@@ -1,7 +1,8 @@
 function getStream() {
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         setSnackbar('in progress');
-        navigator.mediaDevices.getUserMedia({'video': true})
+        var constraints = {video: {'facingMode': 'environment'}};
+        navigator.mediaDevices.getUserMedia(constraints)
         .then(function(MediaStream) {
             console.log(MediaStream);
 
@@ -9,6 +10,7 @@ function getStream() {
             video.srcObject = MediaStream;
 
             if('ImageCapture' in window) {
+                console.log(MediaStream.getVideoTracks());
                 var track = MediaStream.getVideoTracks()[0];
                 imageCapture = new ImageCapture(track);
             }
@@ -74,6 +76,7 @@ function serviceWorkerRegister() {
                     if(PushSubscription && 'object' === typeof PushSubscription) {
                         console.log(PushSubscription);
                     }
+                    console.log(PushManager.supportedContentEncodings);
                 });
             }
 

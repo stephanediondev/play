@@ -123,11 +123,32 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
 }
 
 if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    document.getElementById('detect-mediastreamapi').classList.remove('hidden');
-}
+    var videoDevices = 0;
+    navigator.mediaDevices.enumerateDevices()
+    .then(function(gotDevices) {
+        console.log(gotDevices);
 
-if('ImageCapture' in window) {
-    document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
+        for(var i = 0; i !== gotDevices.length; ++i) {
+            var deviceInfo = deviceInfos[i];
+            if(deviceInfo.kind === 'videoinput') {
+                if(deviceInfo.label) {
+                    videoDevices++;
+                    writeHistory(deviceInfo.label);
+                }
+            }
+        }
+    })
+    .catch(function(handleError) {
+        console.log(handleError);
+    });
+
+    //if(0 < videoDevices) {
+        document.getElementById('detect-mediastreamapi').classList.remove('hidden');
+
+        if('ImageCapture' in window) {
+            document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
+        }
+    //}
 }
 
 if('share' in navigator) {
@@ -180,11 +201,23 @@ if(standalone.matches) {
 window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent) {
     console.log(BeforeInstallPromptEvent);
 
-    BeforeInstallPromptEvent.userChoice.then(function(AppBannerPromptResult) {
-        console.log(AppBannerPromptResult);
+    BeforeInstallPromptEvent.preventDefault();
 
-        setSnackbar(AppBannerPromptResult.outcome);
+    document.getElementById('install').addEventListener('click', function() {
+        BeforeInstallPromptEvent.userChoice.then(function(AppBannerPromptResult) {
+            console.log(AppBannerPromptResult);
+
+            setSnackbar(AppBannerPromptResult.outcome);
+        });
+
+        BeforeInstallPromptEvent.prompt();
     });
+
+    document.getElementById('detect-promptinstall').classList.remove('hidden');
+});
+
+window.addEventListener('appinstalled', function(appinstalled) {
+    console.log(appinstalled);
 });
 
 window.addEventListener('online', function() {
