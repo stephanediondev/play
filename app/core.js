@@ -4,6 +4,8 @@ var snackbarContainer = document.querySelector('.mdl-snackbar');
 
 var TAG = 'playground-pwa';
 
+writeHistory(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
 if('storage' in navigator) {
     if('persist' in navigator.storage) {
         navigator.storage.persist().then(function(persistent) {
@@ -129,7 +131,7 @@ if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         console.log(gotDevices);
 
         for(var i = 0; i !== gotDevices.length; ++i) {
-            var deviceInfo = deviceInfos[i];
+            var deviceInfo = gotDevices[i];
             if(deviceInfo.kind === 'videoinput') {
                 if(deviceInfo.label) {
                     videoDevices++;
@@ -183,6 +185,10 @@ if('connection' in navigator) {
 
 if('PaymentRequest' in window) {
     document.getElementById('detect-paymentrequest').classList.remove('hidden');
+}
+
+if('bluetooth' in navigator) {
+    document.getElementById('detect-bluetooth').classList.remove('hidden');
 }
 
 if('https:' === window.location.protocol) {
@@ -288,6 +294,10 @@ document.getElementById('share').addEventListener('click', function() {
     share();
 });
 
+document.getElementById('bluetooth').addEventListener('click', function() {
+    bluetooth();
+});
+
 document.getElementById('geolocationGet').addEventListener('click', function() {
     geolocationGet();
 });
@@ -299,3 +309,5 @@ document.getElementById('geolocationState').addEventListener('click', function()
 document.getElementById('paymentRequest').addEventListener('click', function() {
     paymentRequest();
 });
+
+setBadge(24);

@@ -1,3 +1,29 @@
+function setBadge(value) {
+    if (navigator.setExperimentalAppBadge) {
+        navigator.setExperimentalAppBadge(value).catch(function(error) {
+            console.log(error);
+        });
+    } else if (navigator.setAppBadge) {
+        navigator.setAppBadge(value).catch(function(error) {
+            console.log(error);
+        });
+    } else {
+        setSnackbar('badge api not supported');
+    }
+}
+
+function bluetooth() {
+    navigator.bluetooth.requestDevice({
+        acceptAllDevices: true
+    })
+    .then(function(BluetoothDevice) {
+        console.log(BluetoothDevice);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
 function getStream() {
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         setSnackbar('in progress');

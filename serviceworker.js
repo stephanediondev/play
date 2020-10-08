@@ -3,19 +3,22 @@ var FETCH_IN_CACHE = false;
 var FETCH_EXCLUDE = [
     'notification.php',
 ];
-var VERSION = '2';
+var VERSION = '4';
 var CACHE_KEY = 'playground-pwa-v' + VERSION;
 var CACHE_FILES = [
     '.',
-    'manifest.json',
+    'manifest.webmanifest',
     'index.html',
     'app/functions.js',
     'app/core.js',
+    'app/icons/icon-16x16.png',
     'app/icons/icon-32x32.png',
-    'app/icons/icon-192x192.png',
+    'app/icons/icon-64x64.png',
+    'app/icons/icon-128x128.png',
+    'app/icons/icon-256x256.png',
     'app/icons/icon-512x512.png',
-    'vendor/material-design-lite/material.min.css',
-    'vendor/material-design-lite/material.min.js',
+    'node_modules/material-design-lite/material.min.css',
+    'node_modules/material-design-lite/material.min.js',
 ];
 
 self.addEventListener('install', function(InstallEvent) {
