@@ -1,6 +1,6 @@
 <?php
 
-include('vendor/autoload.php');
+include('../vendor/autoload.php');
 
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
