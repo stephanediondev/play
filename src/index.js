@@ -26,10 +26,52 @@ function bluetooth() {
     });
 }
 
+function getCameras() {
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        var videoDevices = 0;
+        var constraints = {'video': {'facingMode': 'environment'}};
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then(function(MediaStream) {
+            navigator.mediaDevices.enumerateDevices()
+            .then(function(gotDevices) {
+                console.log(gotDevices);
+
+                document.getElementById('selectStream').innerHTML = '';
+
+                for(var i = 0; i !== gotDevices.length; ++i) {
+                    var deviceInfo = gotDevices[i];
+                    if(deviceInfo.kind === 'videoinput') {
+                        videoDevices++;
+                        if(deviceInfo.label) {
+                            writeHistory(deviceInfo.label);
+                            document.getElementById('selectStream').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
+                        }
+                    }
+                }
+
+                document.getElementById('detect-mediastreamapi').classList.remove('hidden');
+
+                if('ImageCapture' in window) {
+                    document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
+                }
+            })
+            .catch(function(handleError) {
+                console.log(handleError);
+            });
+        });
+    }
+}
+
 function getStream() {
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         setSnackbar('in progress');
-        var constraints = {'video': {'facingMode': 'environment', 'deviceId': { 'exact': document.getElementById('selectStream').value }}};
+        var camera = document.getElementById('selectStream').value;
+
+        if ('' !== camera) {
+            var constraints = {'video': {'facingMode': 'environment'}};
+        } else {
+            var constraints = {'video': {'facingMode': 'environment', 'deviceId': { 'exact': document.getElementById('selectStream').value}}};
+        }
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(MediaStream) {
             console.log(MediaStream);
@@ -709,38 +751,6 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     });
 }
 
-if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    var videoDevices = 0;
-    navigator.mediaDevices.enumerateDevices()
-    .then(function(gotDevices) {
-        console.log(gotDevices);
-
-        document.getElementById('selectStream').innerHTML = '';
-
-        for(var i = 0; i !== gotDevices.length; ++i) {
-            var deviceInfo = gotDevices[i];
-            if(deviceInfo.kind === 'videoinput') {
-                if(deviceInfo.label) {
-                    videoDevices++;
-                    writeHistory(deviceInfo.label);
-                    document.getElementById('selectStream').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
-                }
-            }
-        }
-
-        if(0 < videoDevices) {
-            document.getElementById('detect-mediastreamapi').classList.remove('hidden');
-
-            if('ImageCapture' in window) {
-                document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
-            }
-        }
-    })
-    .catch(function(handleError) {
-        console.log(handleError);
-    });
-}
-
 if('share' in navigator) {
     document.getElementById('detect-webshareapi').classList.remove('hidden');
 }
@@ -828,6 +838,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.getElementById('clearHistory').addEventListener('click', function() {
     document.getElementById('history').innerHTML = '';
+});
+
+document.getElementById('getCameras').addEventListener('click', function() {
+    getCameras();
 });
 
 document.getElementById('getStream').addEventListener('click', function() {
