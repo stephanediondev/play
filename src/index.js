@@ -29,7 +29,7 @@ function bluetooth() {
 function getStream() {
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         setSnackbar('in progress');
-        var constraints = {video: {'facingMode': 'environment'}};
+        var constraints = {'video': {'facingMode': 'environment', 'deviceId': { 'exact': document.getElementById('selectStream').value }}};
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(MediaStream) {
             console.log(MediaStream);
@@ -305,6 +305,18 @@ function geolocationState() {
     }
 }
 
+function cameraState() {
+    if('permissions' in navigator) {
+        navigator.permissions.query({
+            'name': 'camera'
+        }).then(function(permission) {
+            setSnackbar(permission.state);
+        });
+    } else {
+        setSnackbar('Permissions API not supported');
+    }
+}
+
 function screenOrientation() {
     hide('buttonOrientation');
     if('screen' in window && 'orientation' in screen) {
@@ -565,8 +577,6 @@ var applicationServerKey = 'BOQ0NVE+w6/fJYX3co0H8w1zre4T7uT4ssMOLfWd1rWzMmuowf7N
 
 var snackbarContainer = document.querySelector('.mdl-snackbar');
 
-var TAG = 'playground-pwa';
-
 writeHistory(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
 if('storage' in navigator) {
@@ -581,8 +591,20 @@ if('storage' in navigator) {
     }
 
     if('estimate' in navigator.storage) {
-        navigator.storage.estimate().then(function(data) {
-            writeHistory(convert_size(data.usage) + ' used out of ' + convert_size(data.quota) + ' storage quota');
+        navigator.storage.estimate().then(function(estimate) {
+            console.log(estimate);
+
+            var percent = (estimate.usage / estimate.quota * 100).toFixed(2);
+
+            writeHistory('Quota: ' + convert_size(estimate.quota));
+            writeHistory('Usage: ' + convert_size(estimate.usage) + ' (' + percent + '%)');
+
+            if (typeof estimate.usageDetails != 'undefined') {
+                for (const property in estimate.usageDetails) {
+                    var percent = (estimate.usageDetails[property] / estimate.usage * 100).toFixed(2);
+                    writeHistory(property + ': ' + convert_size(estimate.usageDetails[property]) + ' (' + percent + '%)');
+                }
+            }
         });
     }
 }
@@ -693,27 +715,30 @@ if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     .then(function(gotDevices) {
         console.log(gotDevices);
 
+        document.getElementById('selectStream').innerHTML = '';
+
         for(var i = 0; i !== gotDevices.length; ++i) {
             var deviceInfo = gotDevices[i];
             if(deviceInfo.kind === 'videoinput') {
                 if(deviceInfo.label) {
                     videoDevices++;
                     writeHistory(deviceInfo.label);
+                    document.getElementById('selectStream').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
                 }
+            }
+        }
+
+        if(0 < videoDevices) {
+            document.getElementById('detect-mediastreamapi').classList.remove('hidden');
+
+            if('ImageCapture' in window) {
+                document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
             }
         }
     })
     .catch(function(handleError) {
         console.log(handleError);
     });
-
-    //if(0 < videoDevices) {
-        document.getElementById('detect-mediastreamapi').classList.remove('hidden');
-
-        if('ImageCapture' in window) {
-            document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
-        }
-    //}
 }
 
 if('share' in navigator) {
@@ -807,6 +832,10 @@ document.getElementById('clearHistory').addEventListener('click', function() {
 
 document.getElementById('getStream').addEventListener('click', function() {
     getStream();
+});
+
+document.getElementById('cameraState').addEventListener('click', function() {
+    cameraState();
 });
 
 document.getElementById('takePhoto').addEventListener('click', function() {

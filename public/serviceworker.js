@@ -1,5 +1,5 @@
 var LOG_ENABLED = true;
-var FETCH_IN_CACHE = false;
+var FETCH_IN_CACHE = true;
 var FETCH_EXCLUDE = [
     'notification.php',
 ];
@@ -113,10 +113,25 @@ self.addEventListener('periodicsync', function(PeriodicSyncEvent) {
     messageToClient('history', 'periodicsync event from service worker');
 });
 
-self.addEventListener('pushsubscriptionchange', function(PushEvent) {
-    sendLog(PushEvent);
+self.addEventListener('pushsubscriptionchange', function(PushSubscriptionChangeEvent) {
+    sendLog(PushSubscriptionChangeEvent);
 
     messageToClient('history', 'pushsubscriptionchange event from service worker');
+
+    if('waitUntil' in PushSubscriptionChangeEvent) {
+        PushSubscriptionChangeEvent.waitUntil(
+            self.registration.showNotification('pushsubscriptionchange', {
+                body: 'pushsubscriptionchange',
+                badge: 'app/icons/icon-32x32.png',
+                icon: 'app/icons/icon-192x192.png',
+                image: 'app/icons/icon-512x512.png',
+                actions: [
+                    { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
+                    { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }
+                ]
+            })
+        );
+    }
 });
 
 self.addEventListener('push', function(PushEvent) {
