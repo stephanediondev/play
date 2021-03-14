@@ -36,7 +36,7 @@ function getCameras() {
             .then(function(gotDevices) {
                 console.log(gotDevices);
 
-                document.getElementById('selectStream').innerHTML = '';
+                document.getElementById('selectCamera').innerHTML = '';
 
                 for(var i = 0; i !== gotDevices.length; ++i) {
                     var deviceInfo = gotDevices[i];
@@ -44,7 +44,7 @@ function getCameras() {
                         videoDevices++;
                         if(deviceInfo.label) {
                             writeHistory(deviceInfo.label);
-                            document.getElementById('selectStream').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
+                            document.getElementById('selectCamera').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
                         }
                     }
                 }
@@ -65,12 +65,12 @@ function getCameras() {
 function getStream() {
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         setSnackbar('in progress');
-        var camera = document.getElementById('selectStream').value;
+        var camera = document.getElementById('selectCamera').value;
 
         if ('' !== camera) {
-            var constraints = {'video': {'facingMode': 'environment'}};
+            var constraints = {'video': {'facingMode': 'environment', 'deviceId': { 'exact': document.getElementById('selectCamera').value}}};
         } else {
-            var constraints = {'video': {'facingMode': 'environment', 'deviceId': { 'exact': document.getElementById('selectStream').value}}};
+            var constraints = {'video': {'facingMode': 'environment'}};
         }
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(MediaStream) {
