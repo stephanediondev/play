@@ -31,6 +31,6 @@ if(isset($postdata['endpoint']) && isset($postdata['public_key']) && isset($post
         'contentEncoding' => $postdata['content_encoding'],
     ]);
 
-    $result = $webPush->sendNotification($subcription, $payload, true);
+    $result = $webPush->sendOneNotification($subcription, $payload);
 }
 echo json_encode($result);

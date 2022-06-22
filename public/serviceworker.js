@@ -123,11 +123,11 @@ self.addEventListener('pushsubscriptionchange', function(PushSubscriptionChangeE
             self.registration.showNotification('pushsubscriptionchange', {
                 body: 'pushsubscriptionchange',
                 badge: 'app/icons/icon-32x32.png',
-                icon: 'app/icons/icon-192x192.png',
+                icon: 'app/icons/icon-128x128.png',
                 image: 'app/icons/icon-512x512.png',
                 actions: [
-                    { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
-                    { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }
+                    { action: 'action1', title: 'action 1', icon: 'app/icons/icon-128x128.png' },
+                    { action: 'action2', title: 'action 2', icon: 'app/icons/icon-128x128.png' }
                 ]
             })
         );
@@ -146,11 +146,11 @@ self.addEventListener('push', function(PushEvent) {
                 self.registration.showNotification(data.title, {
                     body: data.body,
                     badge: 'app/icons/icon-32x32.png',
-                    icon: 'app/icons/icon-192x192.png',
+                    icon: 'app/icons/icon-128x128.png',
                     image: 'app/icons/icon-512x512.png',
                     actions: [
-                        { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
-                        { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }
+                        { action: 'action1', title: 'action 1', icon: 'app/icons/icon-128x128.png' },
+                        { action: 'action2', title: 'action 2', icon: 'app/icons/icon-128x128.png' }
                     ]
                 })
             );
