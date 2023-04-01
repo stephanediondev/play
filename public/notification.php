@@ -24,9 +24,6 @@ if(isset($postdata['endpoint']) && isset($postdata['public_key']) && isset($post
     ];
 
     $payload = [
-        //'aud' => 'https://web.push.apple.com',
-        //'exp' => 1680379437,
-        //'sub' => 'mailto:divers@sdion.net',
         'title' => 'Push event',
         'body' => $_SERVER['REMOTE_ADDR'],
     ];
