@@ -142,11 +142,15 @@ function serviceWorkerRegister() {
 
             if('pushManager' in ServiceWorkerRegistration) {
                 document.getElementById('detect-pushapi').classList.remove('hidden');
-                ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
+                ServiceWorkerRegistration.pushManager.getSubscription()
+                .then(function(PushSubscription) {
                     if(PushSubscription && 'object' === typeof PushSubscription) {
                         console.log(PushSubscription);
                     }
                     console.log(PushManager.supportedContentEncodings);
+                })
+                .catch(function(TypeError) {
+                    console.log(TypeError);
                 });
             }
 
@@ -174,8 +178,10 @@ function serviceWorkerRegister() {
 
 function serviceWorkerUnregister() {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.unregister().then(function() {
+        navigator.serviceWorker.ready
+        .then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.unregister()
+            .then(function() {
                 setSnackbar('done');
             });
         });
@@ -184,7 +190,8 @@ function serviceWorkerUnregister() {
 
 function pushManagerSubscribe() {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+        navigator.serviceWorker.ready
+        .then(function(ServiceWorkerRegistration) {
             if('pushManager' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
                     writeHistory('permissionState: ' + permissionState);
@@ -192,9 +199,8 @@ function pushManagerSubscribe() {
                     setSnackbar(permissionState);
 
                     if(permissionState == 'prompt' || permissionState == 'granted') {
-                        ServiceWorkerRegistration.pushManager.subscribe(
-                            {applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true}
-                        ).then(function(PushSubscription) {
+                        ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true})
+                        .then(function(PushSubscription) {
                             console.log(PushSubscription);
 
                             if(PushSubscription && 'object' === typeof PushSubscription) {
@@ -206,6 +212,9 @@ function pushManagerSubscribe() {
                                 writeHistory('public_key: ' + toJSON.keys.p256dh);
                                 writeHistory('authentication_secret: ' + toJSON.keys.auth);
                             }
+                        })
+                        .catch(function(err) {
+                            console.log(err);
                         });
                     }
                 });
@@ -216,13 +225,16 @@ function pushManagerSubscribe() {
 
 function pushManagerUnsubscribe() {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+        navigator.serviceWorker.ready
+        .then(function(ServiceWorkerRegistration) {
             if('pushManager' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
+                ServiceWorkerRegistration.pushManager.getSubscription()
+                .then(function(PushSubscription) {
                     console.log(PushSubscription);
 
                     if(PushSubscription && 'object' === typeof PushSubscription) {
-                        PushSubscription.unsubscribe().then(function() {
+                        PushSubscription.unsubscribe()
+                        .then(function() {
                             setSnackbar('done');
                         });
                     }
@@ -234,9 +246,11 @@ function pushManagerUnsubscribe() {
 
 function pushManagerPermissionState() {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+        navigator.serviceWorker.ready
+        .then(function(ServiceWorkerRegistration) {
             if('pushManager' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
+                ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true})
+                .then(function(permissionState) {
                     writeHistory('permissionState: ' + permissionState);
                     setSnackbar(permissionState);
                 });
@@ -247,7 +261,8 @@ function pushManagerPermissionState() {
 
 function messageToServiceWorker(content) {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function() {
+        navigator.serviceWorker.ready
+        .then(function() {
             return new Promise(function(resolve, reject) {
                 var messageChannel = new MessageChannel();
                 messageChannel.port1.onmessage = function(event) {
@@ -267,8 +282,10 @@ function messageToServiceWorker(content) {
 
 function serviceWorkerUpdate() {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.update().then(function() {
+        navigator.serviceWorker.ready
+        .then(function(ServiceWorkerRegistration) {
+            ServiceWorkerRegistration.update()
+            .then(function() {
                 writeHistory('update done');
             });
         });
@@ -277,9 +294,11 @@ function serviceWorkerUpdate() {
 
 function serviceWorkerSyncRegister() {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+        navigator.serviceWorker.ready
+        .then(function(ServiceWorkerRegistration) {
             if('sync' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.sync.register('playground-pwa-sync').then();
+                ServiceWorkerRegistration.sync.register('playground-pwa-sync')
+                .then();
             } else {
                 setSnackbar('sync not supported');
             }
@@ -289,14 +308,16 @@ function serviceWorkerSyncRegister() {
 
 function serviceWorkerPeriodSyncRegister() {
     if(serviceWorkerEnabled) {
-        navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
+        navigator.serviceWorker.ready
+        .then(function(ServiceWorkerRegistration) {
             if('periodicSync' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.periodicSync.register({
                     tag: 'playground-pwa-periodicSync', // default: ''
                     minPeriod: 12 * 60 * 60 * 1000, // default: 0
                     powerState: 'avoid-draining', // default: 'auto'
                     networkState: 'avoid-cellular' // default: 'online'
-                }).then();
+                })
+                .then();
             } else {
                 setSnackbar('periodic sync not supported');
             }
@@ -310,7 +331,8 @@ function share() {
             title: document.title,
             text: 'Hello World',
             url: window.location.href
-        }).then(function() {
+        })
+        .then(function() {
             writeHistory('share');
         });
     }
@@ -339,7 +361,8 @@ function geolocationState() {
     if('permissions' in navigator) {
         navigator.permissions.query({
             'name': 'geolocation'
-        }).then(function(permission) {
+        })
+        .then(function(permission) {
             setSnackbar(permission.state);
         });
     } else {
@@ -351,7 +374,8 @@ function cameraState() {
     if('permissions' in navigator) {
         navigator.permissions.query({
             'name': 'camera'
-        }).then(function(permission) {
+        })
+        .then(function(permission) {
             setSnackbar(permission.state);
         });
     } else {
@@ -511,8 +535,10 @@ function paymentRequest() {
 function pushEvent() {
     if('Notification' in window) {
         if(serviceWorkerEnabled) {
-            navigator.serviceWorker.ready.then(function(ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.pushManager.getSubscription().then(function(PushSubscription) {
+            navigator.serviceWorker.ready
+            .then(function(ServiceWorkerRegistration) {
+                ServiceWorkerRegistration.pushManager.getSubscription()
+                .then(function(PushSubscription) {
                     if(PushSubscription && 'object' === typeof PushSubscription) {
                         var toJSON = PushSubscription.toJSON();
                         var url = 'notification.php';
@@ -529,13 +555,17 @@ function pushEvent() {
                             headers: new Headers({
                                 'Content-Type': 'application/json'
                             })
-                        }).then(function(Response) {
+                        })
+                        .then(function(Response) {
                             console.log(Response);
                         })
                         .catch(function(error) {
                             console.log(error);
                         });
                     }
+                })
+                .catch(function(err) {
+                    console.log(err);
                 });
             });
         }
@@ -615,7 +645,7 @@ function utcDate() {
     }
 }
 
-var applicationServerKey = 'BOQ0NVE+w6/fJYX3co0H8w1zre4T7uT4ssMOLfWd1rWzMmuowf7NC/pz5X9roHNTu2Qhvt0pAcKnvjnM3Aw/ssA=';
+var applicationServerKey = 'BOL1MjOgSneIArw6ZdxxL1UqSdnDnsxGT8WaNqBVgwtSPSHJdlY3tLffFwLzPiuUWr_87KyxLKcUsAImyBKTusU';
 
 var snackbarContainer = document.querySelector('.mdl-snackbar');
 
@@ -623,7 +653,8 @@ writeHistory(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
 if('storage' in navigator) {
     if('persist' in navigator.storage) {
-        navigator.storage.persist().then(function(persistent) {
+        navigator.storage.persist()
+        .then(function(persistent) {
             if(persistent) {
                 writeHistory('Storage will not be cleared except by explicit user action');
             } else {
@@ -633,7 +664,8 @@ if('storage' in navigator) {
     }
 
     if('estimate' in navigator.storage) {
-        navigator.storage.estimate().then(function(estimate) {
+        navigator.storage.estimate()
+        .then(function(estimate) {
             console.log(estimate);
 
             var percent = (estimate.usage / estimate.quota * 100).toFixed(2);
@@ -697,13 +729,13 @@ if('indexedDB' in window) {
     };
 }
 
-
 if('deviceMemory' in navigator) {
     writeHistory(navigator.deviceMemory + ' GB device memory');
 }
 
 if('getBattery' in navigator) {
-    navigator.getBattery().then(function(BatteryManager) {
+    navigator.getBattery()
+    .then(function(BatteryManager) {
         console.log(BatteryManager);
 
         writeHistory('Battery ' + BatteryManager.level*100 + '%');
@@ -808,10 +840,14 @@ window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent
     BeforeInstallPromptEvent.preventDefault();
 
     document.getElementById('install').addEventListener('click', function() {
-        BeforeInstallPromptEvent.userChoice.then(function(AppBannerPromptResult) {
+        BeforeInstallPromptEvent.userChoice
+        .then(function(AppBannerPromptResult) {
             console.log(AppBannerPromptResult);
 
             setSnackbar(AppBannerPromptResult.outcome);
+        })
+        .catch(function(error) {
+            console.log(error);
         });
 
         BeforeInstallPromptEvent.prompt();

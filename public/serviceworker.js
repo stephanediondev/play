@@ -3,7 +3,7 @@ var FETCH_IN_CACHE = true;
 var FETCH_EXCLUDE = [
     'notification.php',
 ];
-var VERSION = '4';
+var VERSION = '5';
 var CACHE_KEY = 'playground-pwa-v' + VERSION;
 var CACHE_FILES = [
     '.',
@@ -71,6 +71,10 @@ self.addEventListener('fetch', function(FetchEvent) {
             fetchAllowed = false;
         }
     });
+
+
+    fetchAllowed = false;
+
 
     if(fetchAllowed) {
         FetchEvent.respondWith(
