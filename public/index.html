@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-bs-theme="dark">
 <head>
 <meta charset="UTF-8">
 <title>St&eacute;phane Dion - play</title>
@@ -11,1261 +11,195 @@
 <link rel="apple-touch-icon" sizes="512x512" href="app/icons/icon-512x512.png">
 <link rel="apple-touch-icon-precomposed" sizes="512x512" href="app/icons/icon-512x512.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" sizes="16x16" href="app/icons/icon-16x16.png">
-<link rel="icon" sizes="32x32" href="app/icons/icon-32x32.png">
-<link rel="icon" sizes="64x64" href="app/icons/icon-64x64.png">
-<link rel="icon" sizes="128x128" href="app/icons/icon-128x128.png">
-<link rel="icon" sizes="256x256" href="app/icons/icon-256x256.png">
-<link rel="icon" sizes="512x512" href="app/icons/icon-512x512.png">
-<link rel="stylesheet" type="text/css" href="app_css.css">
-<style type="text/css">
-.mdl-navigation .mdl-chip {
-    display: none;
-    margin-left: 5px;
-}
-.mdl-card {
-    min-height: inherit;
-}
-.mdl-list__item {
-    min-height: inherit;
-    padding: 0px;
-}
-.mdl-button {
-    min-width: inherit;
-    padding: 0px 8px;
-    text-align: left;
-}
-ul {
-    margin: 0px;
-    -webkit-padding-start: 0px;
-}
-ul li {
-    list-style-type: none;
-}
-</style>
-<link rel="icon" sizes="16x16" href="app/icons/icon-16x16.png"><link rel="icon" sizes="32x32" href="app/icons/icon-32x32.png"><link rel="icon" sizes="64x64" href="app/icons/icon-64x64.png"><link rel="icon" sizes="128x128" href="app/icons/icon-128x128.png"><link rel="icon" sizes="256x256" href="app/icons/icon-256x256.png"><link rel="icon" sizes="512x512" href="app/icons/icon-512x512.png"></head>
+<link rel="stylesheet" type="text/css" href="build/style.min.css">
+</head>
 
 <body>
 
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header mdl-color--black">
-        <div class="mdl-layout__header-row">
-            <div class="mdl-layout-spacer">
-            </div>
-
-            <nav class="mdl-navigation">
-                <span class="mdl-chip mdl-color--green" id="buttonStandalone">
-                    <span class="mdl-chip__text mdl-color-text--white">standalone</span>
-                </span>
-
-                <span class="mdl-chip mdl-color--green" id="buttonOrientation">
-                    <span class="mdl-chip__text mdl-color-text--white" id="buttonOrientationResult"></span>
-                </span>
-
-                <span class="mdl-chip mdl-color--green" id="buttonNetwork">
-                    <span class="mdl-chip__text mdl-color-text--white" id="buttonNetworkResult"></span>
-                </span>
-
-                <span class="mdl-chip mdl-color--green" id="buttonHttps">
-                    <span class="mdl-chip__text mdl-color-text--white">https</span>
-                </span>
-
-                <span class="mdl-chip mdl-color--red" id="buttonHttp">
-                    <span class="mdl-chip__text mdl-color-text--white">http</span>
-                </span>
-
-                <span class="mdl-chip mdl-color--green" id="buttonOnline">
-                    <span class="mdl-chip__text mdl-color-text--white">online</span>
-                </span>
-
-                <span class="mdl-chip mdl-color--red" id="buttonOffline">
-                    <span class="mdl-chip__text mdl-color-text--white">offline</span>
-                </span>
-            </nav>
-        </div>
-    </header>
-
-    <main class="mdl-layout__content mdl-color--grey-100">
-        <div class="mdl-snackbar mdl-js-snackbar">
-            <div class="mdl-snackbar__text">
-            </div>
-            <button type="button" class="mdl-snackbar__action">
-            </button>
-        </div>
-
-        <div class="mdl-grid" id="top">
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-serviceworker">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        Service Worker
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="serviceWorkerRegister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Register</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="serviceWorkerUnregister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unregister</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="serviceWorkerUpdate" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Update</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="serviceWorkerSyncRegister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Sync</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="serviceWorkerPeriodSyncRegister" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Periodic sync</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="serviceWorkerReloadCache" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Reload cache</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-pushapi">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        Push API
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="pushManagerSubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Subscribe</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="pushManagerUnsubscribe" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Unsubscribe</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="pushManagerPermissionState" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="pushEvent" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Push event</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-promptinstall">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        promptinstall
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="install" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Install</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-webshareapi">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        Web Share API
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="share" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Share</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-geolocationapi">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        Geolocation API
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="geolocationGet" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="geolocationState" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-paymentrequest">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        Payment Request API
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="paymentRequest" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Request</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect" id="detect-mediastreamapi">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        MediaStream API
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="getCameras" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get cameras</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <select id="selectCamera">
-                            </select>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="getStream" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get stream</a>
-                        </li>
-                        <li class="mdl-list__item">
-                            <a href="#" id="cameraState" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Permission state</a>
-                        </li>
-                    </ul>
-                    <video id="video" width="320" height="240" autoplay></video>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-imagecaptureapi">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        Image Capture API
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="takePhoto" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Take photo</a>
-                        </li>
-                    </ul>
-                    <img id="image" width="320" height="240">
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone detect hidden" id="detect-bluetooth">
-                <div class="mdl-card__supporting-text">
-                    <h1 class="mdl-card__title-text">
-                        Web Bluetooth
-                    </h1>
-                    <ul>
-                        <li class="mdl-list__item">
-                            <a href="#" id="bluetooth" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Devices</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-                <div class="mdl-card__title">
-                    <h1 class="mdl-card__title-text">
-                        Links
-                    </h1>
-                </div>
-                <div class="mdl-card__supporting-text">
-                    <p>
-                        <a href="https://developers.google.com/web/progressive-web-apps/">Google Developers | Progressive Web Apps</a>
-                    </p>
-                    <p>
-                        <a href="https://tomayac.github.io/pwa-feature-detector/">Progressive Web App Feature Detector</a>
-                    </p>
-                    <p>
-                        <a href="https://whatpwacando.today/">What PWA Can Do Today</a>
-                    </p>
-                    <p>
-                        <a href="https://whatwebcando.today/">What Web Can Do Today</a>
-                    </p>
-                    <p>
-                        <a href="http://caniuse.com/">Can I use... Support tables for HTML5, CSS3, etc</a>
-                    </p>
-                    <p>
-                        <a href="https://web-push-book.gauntface.com/">Web Push Book</a>
-                    </p>
-                    <p>
-                        <a href="https://serviceworke.rs/">ServiceWorker Cookbook</a>
-                    </p>
-                    <p>
-                        <a href="https://jakearchibald.github.io/isserviceworkerready/">Is ServiceWorker ready?</a>
-                    </p>
-                    <p>
-                        <a href="https://pwa-directory.appspot.com/">PWA Directory</a>
-                    </p>
-                    <p>
-                        <a href="https://ionicframework.com/pwa">Ionic Framework - Progressive Web Apps</a>
-                    </p>
-                </div>
-            </div>
-
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-                <div class="mdl-card__title">
-                    <h1 class="mdl-card__title-text">
-                        History
-                    </h1>
-                </div>
-                <div class="mdl-card__supporting-text">
-                    <ul id="history">
-                    </ul>
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a href="#" id="clearHistory" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Clear</a>
-                </div>
-            </div>
-        </div>
-    </main>
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container top-0 end-0 p-3">
+    </div>
 </div>
 
-<script>
-    function setBadge(value) {
-    if (navigator.setExperimentalAppBadge) {
-        navigator.setExperimentalAppBadge(value).catch(function(error) {
-            console.log(error);
-        });
-    } else if (navigator.setAppBadge) {
-        navigator.setAppBadge(value).catch(function(error) {
-            console.log(error);
-        });
-    } else {
-        setSnackbar('badge api not supported');
-    }
-}
-
-function bluetooth() {
-    navigator.bluetooth.requestDevice({
-        acceptAllDevices: true
-    })
-    .then(function(BluetoothDevice) {
-        console.log(BluetoothDevice);
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function getCameras() {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        var videoDevices = 0;
-        var constraints = {'video': {'facingMode': 'environment'}};
-        navigator.mediaDevices.getUserMedia(constraints)
-        .then(function(MediaStream) {
-            navigator.mediaDevices.enumerateDevices()
-            .then(function(gotDevices) {
-                console.log(gotDevices);
-
-                document.getElementById('selectCamera').innerHTML = '';
-
-                for(var i = 0; i !== gotDevices.length; ++i) {
-                    var deviceInfo = gotDevices[i];
-                    if (deviceInfo.kind === 'videoinput') {
-                        videoDevices++;
-                        if (deviceInfo.label) {
-                            writeHistory(deviceInfo.label);
-                            document.getElementById('selectCamera').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
-                        }
-                    }
-                }
-
-                document.getElementById('detect-mediastreamapi').classList.remove('hidden');
-
-                if ('ImageCapture' in window) {
-                    document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
-                }
-            })
-            .catch(function(handleError) {
-                console.log(handleError);
-            });
-        });
-    }
-}
-
-function getStream() {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        setSnackbar('in progress');
-        var camera = document.getElementById('selectCamera').value;
-
-        if ('' !== camera) {
-            var constraints = {'video': {'facingMode': 'environment', 'deviceId': { 'exact': document.getElementById('selectCamera').value}}};
-        } else {
-            var constraints = {'video': {'facingMode': 'environment'}};
-        }
-        navigator.mediaDevices.getUserMedia(constraints)
-        .then(function(MediaStream) {
-            console.log(MediaStream);
-
-            var video = document.getElementById('video');
-            video.srcObject = MediaStream;
-
-            if ('ImageCapture' in window) {
-                console.log(MediaStream.getVideoTracks());
-                var track = MediaStream.getVideoTracks()[0];
-                imageCapture = new ImageCapture(track);
-            }
-        })
-        .catch(function(NavigatorUserMediaError) {
-            console.log(NavigatorUserMediaError);
-
-            if ('NotFoundError' == NavigatorUserMediaError.name) {
-                setSnackbar('Not found');
-            }
-
-            if ('DevicesNotFoundError' == NavigatorUserMediaError.name) {
-                setSnackbar('Device not found');
-            }
-
-            if ('PermissionDeniedError' == NavigatorUserMediaError.name) {
-                setSnackbar('Permission denied');
-            }
-        });
-    }
-}
-
-function takePhoto() {
-    if (imageCapture) {
-        imageCapture.getPhotoCapabilities()
-        .then(function(photoCapabilities) {
-            console.log(photoCapabilities);
-            return imageCapture.getPhotoSettings();
-        })
-        .then(function(photoSettings) {
-            console.log(photoSettings);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
-
-        imageCapture.takePhoto()
-        .then(function(blob) {
-            console.log(blob);
-
-            var image = document.getElementById('image');
-            image.src = URL.createObjectURL(blob);
-        })
-        .catch(function(err) {
-            console.log(err);
-        });
-    }
-}
-
-function serviceWorkerRegister() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.register('serviceworker.js')
-        .then(function(ServiceWorkerRegistration) {
-            console.log(ServiceWorkerRegistration);
-
-            messageToServiceWorker({command: 'cache-key'});
-
-            document.getElementById('detect-serviceworker').classList.remove('hidden');
-
-            if ('pushManager' in ServiceWorkerRegistration) {
-                document.getElementById('detect-pushapi').classList.remove('hidden');
-                ServiceWorkerRegistration.pushManager.getSubscription()
-                .then(function(PushSubscription) {
-                    if (PushSubscription && 'object' === typeof PushSubscription) {
-                        console.log(PushSubscription);
-                    }
-                    console.log(PushManager.supportedContentEncodings);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-            }
-
-            ServiceWorkerRegistration.addEventListener('updatefound', function(Event) {
-                console.log(Event);
-                messageToServiceWorker({command: 'reload-cache'});
-            });
-
-            if (ServiceWorkerRegistration.installing) {
-                writeHistory('register installing');
-
-            } else if (ServiceWorkerRegistration.waiting) {
-                writeHistory('register waiting');
-
-            } else if (ServiceWorkerRegistration.active) {
-                writeHistory('register active');
-            }
-
-        })
-        .catch(function(TypeError) {
-            console.log(TypeError);
-        });
-    }
-}
-
-function serviceWorkerUnregister() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.unregister()
-            .then(function() {
-                setSnackbar('done');
-            });
-        });
-    }
-}
-
-function pushManagerSubscribe() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function(ServiceWorkerRegistration) {
-            if ('pushManager' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
-                    writeHistory('permissionState: ' + permissionState);
-
-                    setSnackbar(permissionState);
-
-                    if (permissionState == 'prompt' || permissionState == 'granted') {
-                        ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true})
-                        .then(function(PushSubscription) {
-                            console.log(PushSubscription);
-
-                            if (PushSubscription && 'object' === typeof PushSubscription) {
-                                setSnackbar('done');
-
-                                var toJSON = PushSubscription.toJSON();
-
-                                writeHistory('endpoint: ' + PushSubscription.endpoint);
-                                writeHistory('public_key: ' + toJSON.keys.p256dh);
-                                writeHistory('authentication_secret: ' + toJSON.keys.auth);
-                            }
-                        })
-                        .catch(function(err) {
-                            console.log(err);
-                        });
-                    }
-                });
-            }
-        });
-    }
-}
-
-function pushManagerUnsubscribe() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function(ServiceWorkerRegistration) {
-            if ('pushManager' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.pushManager.getSubscription()
-                .then(function(PushSubscription) {
-                    console.log(PushSubscription);
-
-                    if (PushSubscription && 'object' === typeof PushSubscription) {
-                        PushSubscription.unsubscribe()
-                        .then(function() {
-                            setSnackbar('done');
-                        });
-                    }
-                });
-            }
-        });
-    }
-}
-
-function pushManagerPermissionState() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function(ServiceWorkerRegistration) {
-            if ('pushManager' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true})
-                .then(function(permissionState) {
-                    writeHistory('permissionState: ' + permissionState);
-                    setSnackbar(permissionState);
-                });
-            }
-        });
-    }
-}
-
-function messageToServiceWorker(content) {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function() {
-            return new Promise(function(resolve, reject) {
-                var messageChannel = new MessageChannel();
-                messageChannel.port1.onmessage = function(event) {
-                    if (event.data.error) {
-                        reject(event.data.error);
-                    } else {
-                        resolve(event.data);
-                    }
-                };
-                if (navigator.serviceWorker.controller) {
-                    navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
-                }
-            });
-        });
-    }
-}
-
-function serviceWorkerUpdate() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function(ServiceWorkerRegistration) {
-            ServiceWorkerRegistration.update()
-            .then(function() {
-                writeHistory('update done');
-            });
-        });
-    }
-}
-
-function serviceWorkerSyncRegister() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function(ServiceWorkerRegistration) {
-            if ('sync' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.sync.register('playground-pwa-sync')
-                .then();
-            } else {
-                setSnackbar('sync not supported');
-            }
-        });
-    }
-}
-
-function serviceWorkerPeriodSyncRegister() {
-    if (serviceWorkerEnabled) {
-        navigator.serviceWorker.ready
-        .then(function(ServiceWorkerRegistration) {
-            if ('periodicSync' in ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.periodicSync.register({
-                    tag: 'playground-pwa-periodicSync', // default: ''
-                    minPeriod: 12 * 60 * 60 * 1000, // default: 0
-                    powerState: 'avoid-draining', // default: 'auto'
-                    networkState: 'avoid-cellular' // default: 'online'
-                })
-                .then();
-            } else {
-                setSnackbar('periodic sync not supported');
-            }
-        });
-    }
-}
-
-function share() {
-    if ('share' in navigator) {
-        navigator.share({
-            title: document.title,
-            text: 'Hello World',
-            url: window.location.href
-        })
-        .then(function() {
-            writeHistory('share');
-        });
-    }
-}
-
-function geolocationGet() {
-    if ('geolocation' in navigator) {
-        setSnackbar('in progress');
-        navigator.geolocation.getCurrentPosition(
-            function(Geoposition) {
-                console.log(Geoposition);
-                writeHistory(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
-                setSnackbar(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
-            },
-            function(PositionError) {
-                console.log(PositionError);
-                writeHistory(PositionError.message);
-                setSnackbar(PositionError.message);
-            },
-            {'enableHighAccuracy': true, 'timeout': 10000}
-        );
-    }
-}
-
-function geolocationState() {
-    if ('permissions' in navigator) {
-        navigator.permissions.query({
-            'name': 'geolocation'
-        })
-        .then(function(permission) {
-            setSnackbar(permission.state);
-        });
-    } else {
-        setSnackbar('Permissions API not supported');
-    }
-}
-
-function cameraState() {
-    if ('permissions' in navigator) {
-        navigator.permissions.query({
-            'name': 'camera'
-        })
-        .then(function(permission) {
-            setSnackbar(permission.state);
-        });
-    } else {
-        setSnackbar('Permissions API not supported');
-    }
-}
-
-function screenOrientation() {
-    hide('buttonOrientation');
-    if ('screen' in window && 'orientation' in screen) {
-        document.getElementById('buttonOrientationResult').textContent = window.screen.orientation.type;
-        show('buttonOrientation');
-    }
-}
-
-function networkInformation() {
-    hide('buttonNetwork');
-    if ('connection' in navigator) {
-        if (typeof navigator.connection.type !== 'undefined') {
-            document.getElementById('buttonNetworkResult').textContent = navigator.connection.type;
-            show('buttonNetwork');
-        } else if (typeof navigator.connection.effectiveType !== 'undefined') {
-            document.getElementById('buttonNetworkResult').textContent = navigator.connection.effectiveType;
-            show('buttonNetwork');
-        }
-    }
-}
-
-function paymentRequest() {
-    if ('PaymentRequest' in window) {
-        var methodData = [
-            {
-                supportedMethods: ['basic-card'],
-                data: {
-                    supportedNetworks: ['visa', 'mastercard', 'amex'],
-                    supportedTypes: ['credit']
-                }
-            }
-        ];
-
-        var details =  {
-            displayItems: [
-                {
-                    label: "Sub-total",
-                    amount: { currency: "USD", value : 90 }, // US$100.00
-                },
-                {
-                    label: "Sales Tax",
-                    amount: { currency: "USD", value : 10 }, // US$9.00
-                },
-                {
-                    label: "Shipping",
-                    amount: { currency: "USD", value : 10 }, // US$9.00
-                }
-            ],
-            total:  {
-                label: "Total due",
-                amount: { currency: "USD", value : 110 }, // US$109.00
-            },
-            shippingOptions: [
-              {
-                id: 'economy',
-                selected: true,
-                label: 'Economy Shipping (5-7 Days)',
-                amount: {
-                  currency: 'USD',
-                  value: 10,
-                },
-              }
-            ]
-        };
-
-        var options = {
-            requestShipping: true,
-            shippingType: "shipping"
-        };
-
-        var paymentRequest = new PaymentRequest(methodData, details, options);
-
-        paymentRequest.addEventListener('shippingaddresschange', function(PaymentRequestUpdateEvent) {
-            console.log(PaymentRequestUpdateEvent);
-
-            event.updateWith({
-                displayItems: [
-                    {
-                        label: "Sub-total",
-                        amount: { currency: "USD", value : 90 }, // US$100.00
-                    },
-                    {
-                        label: "Sales Tax",
-                        amount: { currency: "USD", value : 10 }, // US$9.00
-                    },
-                    {
-                        label: "Shipping",
-                        amount: { currency: "USD", value : 10 }, // US$9.00
-                    }
-                ],
-              total: {
-                label: 'Total',
-                amount: {
-                  currency: 'USD',
-                  value: 110,
-                },
-              },
-              shippingOptions: [
-                {
-                  id: 'economy',
-                  label: 'Economy Shipping (5-7 Days)',
-                  amount: {
-                    currency: 'USD',
-                    value: 10,
-                  },
-                }
-              ]
-          });
-        });
-
-        paymentRequest.addEventListener('shippingoptionchange', function(event) {
-            console.log(event);
-
-            event.updateWith({
-              total: {
-                label: 'Total',
-                amount: {
-                  currency: 'USD',
-                  value: 110,
-                },
-              },
-              shippingOptions: [
-                {
-                  id: 'economy',
-                  label: 'Economy Shipping (5-7 Days)',
-                  amount: {
-                    currency: 'USD',
-                    value: 10,
-                  },
-                }
-              ]
-            });
-        });
-
-        paymentRequest.show()
-        .then(function(paymentResponse) {
-            console.log(paymentResponse);
-
-            return paymentResponse.complete()
-            .then(function() {
-                setSnackbar('Payment done');
-            });
-        })
-        .catch(function(err) {
-            console.log(err);
-        });
-    }
-}
-
-function pushEvent() {
-    if ('Notification' in window) {
-        if (serviceWorkerEnabled) {
-            navigator.serviceWorker.ready
-            .then(function(ServiceWorkerRegistration) {
-                ServiceWorkerRegistration.pushManager.getSubscription()
-                .then(function(PushSubscription) {
-                    if (PushSubscription && 'object' === typeof PushSubscription) {
-                        var toJSON = PushSubscription.toJSON();
-                        var url = 'notification.php';
-                        var data = {
-                            endpoint: PushSubscription.endpoint,
-                            public_key: toJSON.keys.p256dh,
-                            authentication_secret: toJSON.keys.auth,
-                            content_encoding: (PushManager.supportedContentEncodings || ['aesgcm'])[0]
-                        };
-
-                        fetch(url, {
-                            method: 'POST',
-                            body: JSON.stringify(data),
-                            headers: new Headers({
-                                'Content-Type': 'application/json'
-                            })
-                        })
-                        .then(function(Response) {
-                            console.log(Response);
-                        })
-                        .catch(function(error) {
-                            console.log(error);
-                        });
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
-            });
-        }
-    }
-}
-
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (var i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-}
-
-function updateOnlineStatus() {
-    if (navigator.onLine) {
-        hide('buttonOffline');
-        show('buttonOnline');
-    } else {
-        hide('buttonOnline');
-        show('buttonOffline');
-    }
-}
-
-function show(id) {
-    document.getElementById(id).style.display = 'block';
-}
-
-function hide(id) {
-    document.getElementById(id).style.display = 'none';
-}
-
-function writeHistory(message) {
-    var history = document.getElementById('history');
-    var node = document.createElement('li');
-    var textnode = document.createTextNode(message);
-    node.appendChild(textnode);
-    history.insertBefore(node, history.firstChild);
-}
-
-function setSnackbar(message) {
-    if (typeof message !== 'undefined') {
-        //snackbarContainer.MaterialSnackbar.showSnackbar({message: message, timeout: 1000});
-    }
-}
-
-function convert_size(result) {
-    if (result >= 1073741824) {
-        result = Math.round(result/1073741824) + ' GB';
-    } else if (result >= 1048576) {
-        result = Math.round(result/1048576) + ' MB';
-    } else if (result >= 1024) {
-        result = Math.round(result/1024) + ' KB';
-    } else {
-        result = result + ' B';
-    }
-    if (result == 0) {
-        result = '-';
-    }
-    return result;
-}
-
-function utcDate() {
-    var d = new Date();
-    var utc = d.getUTCFullYear() + '-' + addZero(d.getUTCMonth() + 1) + '-' + addZero(d.getUTCDate()) + ' ' + addZero(d.getUTCHours()) + ':' + addZero(d.getUTCMinutes()) + ':' + addZero(d.getUTCSeconds());
-    return utc;
-
-    function addZero(i) {
-        if (i < 10) {
-            i = '0' + i;
-        }
-        return i;
-    }
-}
-
-var applicationServerKey = 'BOL1MjOgSneIArw6ZdxxL1UqSdnDnsxGT8WaNqBVgwtSPSHJdlY3tLffFwLzPiuUWr_87KyxLKcUsAImyBKTusU';
-
-var snackbarContainer = document.querySelector('.mdl-snackbar');
-
-writeHistory(Intl.DateTimeFormat().resolvedOptions().timeZone);
-
-if ('storage' in navigator) {
-    if ('persist' in navigator.storage) {
-        navigator.storage.persist()
-        .then(function(persistent) {
-            if (persistent) {
-                writeHistory('Storage will not be cleared except by explicit user action');
-            } else {
-                writeHistory('Storage may be cleared by the UA under storage pressure');
-            }
-        });
-    }
-
-    if ('estimate' in navigator.storage) {
-        navigator.storage.estimate()
-        .then(function(estimate) {
-            console.log(estimate);
-
-            var percent = (estimate.usage / estimate.quota * 100).toFixed(2);
-
-            writeHistory('Quota: ' + convert_size(estimate.quota));
-            writeHistory('Usage: ' + convert_size(estimate.usage) + ' (' + percent + '%)');
-
-            if (typeof estimate.usageDetails != 'undefined') {
-                for (const property in estimate.usageDetails) {
-                    var percent = (estimate.usageDetails[property] / estimate.usage * 100).toFixed(2);
-                    writeHistory(property + ': ' + convert_size(estimate.usageDetails[property]) + ' (' + percent + '%)');
-                }
-            }
-        });
-    }
-}
-
-if ('localStorage' in window) {
-    localStorage.setItem('playground_local_storage', 'localStorage available');
-    writeHistory(localStorage.getItem('playground_local_storage'));
-}
-
-if ('sessionStorage' in window) {
-    sessionStorage.setItem('playground_session_storage', 'sessionStorage available');
-    writeHistory(sessionStorage.getItem('playground_session_storage'));
-}
-
-if ('indexedDB' in window) {
-    var IDBOpenDBRequest = window.indexedDB.open('playground', 1);
-    console.log(IDBOpenDBRequest);
-
-    IDBOpenDBRequest.onupgradeneeded = function(IDBVersionChangeEvent) {
-        console.log(IDBVersionChangeEvent);
-
-        var IDBDatabase = IDBVersionChangeEvent.target.result;
-
-        if (!IDBDatabase.objectStoreNames.contains('data')) {
-            var IDBObjectStore = IDBDatabase.createObjectStore('data', {keyPath: 'id'});
-            console.log(IDBObjectStore);
-            IDBObjectStore.createIndex('date_created', 'date_created', { unique: false });
-        }
-    };
-
-    IDBOpenDBRequest.onerror = function(event) {
-        console.log(event);
-        writeHistory(event.target.error);
-    };
-
-    IDBOpenDBRequest.onsuccess = function(event) {
-        console.log(event);
-
-        var IDBDatabase = event.target.result;
-        IDBDatabase.transaction('data', 'readwrite').objectStore('data').put({'id': 1, 'label': 'indexedDB available', 'date_created': utcDate()});
-
-        var IDBRequest = IDBDatabase.transaction('data', 'readonly').objectStore('data').get(1);
-        console.log(IDBRequest);
-        IDBRequest.onsuccess = function(event) {
-            console.log(event);
-            writeHistory(event.target.result.label);
-        };
-    };
-}
-
-if ('deviceMemory' in navigator) {
-    writeHistory(navigator.deviceMemory + ' GB device memory');
-}
-
-if ('getBattery' in navigator) {
-    navigator.getBattery()
-    .then(function(BatteryManager) {
-        console.log(BatteryManager);
-
-        writeHistory('Battery ' + BatteryManager.level*100 + '%');
-
-        BatteryManager.addEventListener('levelchange', function(event) {
-            console.log(event);
-
-            writeHistory('Battery ' + event.target.level*100 + '%');
-        });
-    });
-}
-
-var serviceWorkerEnabled = false;
-var pushManagerEnabled = false;
-var imageCapture = false;
-
-if ('serviceWorker' in navigator && window.location.protocol == 'https:') {
-    serviceWorkerEnabled = true;
-
-    serviceWorkerRegister();
-
-    navigator.serviceWorker.addEventListener('message', function(MessageEvent) {
-        console.log(MessageEvent);
-
-        writeHistory('message event from client');
-
-        if (MessageEvent.data.type == 'snackbar') {
-            setSnackbar(MessageEvent.data.content);
-        }
-
-        if (MessageEvent.data.type == 'history') {
-            writeHistory(MessageEvent.data.content);
-        }
-
-        if (MessageEvent.data.type == 'reload') {
-            setSnackbar('reload');
-            document.location.reload(MessageEvent.data.content);
-        }
-    });
-
-    navigator.serviceWorker.addEventListener('controllerchange', function(Event) {
-        console.log(Event);
-
-        writeHistory('controllerchange event from client');
-    });
-}
-
-if ('share' in navigator) {
-    document.getElementById('detect-webshareapi').classList.remove('hidden');
-}
-
-if ('geolocation' in navigator) {
-    document.getElementById('detect-geolocationapi').classList.remove('hidden');
-}
-
-if ('screen' in window && 'orientation' in screen) {
-    console.log(window.screen.orientation);
-
-    screenOrientation();
-
-    window.screen.orientation.addEventListener('change', function(e) {
-        console.log(e);
-        screenOrientation();
-    });
-}
-
-if ('connection' in navigator) {
-    console.log(navigator.connection);
-
-    networkInformation();
-
-    navigator.connection.addEventListener('change', function(e) {
-        console.log(e);
-        networkInformation();
-    });
-}
-
-if ('PaymentRequest' in window) {
-    document.getElementById('detect-paymentrequest').classList.remove('hidden');
-}
-
-if ('bluetooth' in navigator) {
-    document.getElementById('detect-bluetooth').classList.remove('hidden');
-}
-
-if ('https:' === window.location.protocol) {
-    show('buttonHttps');
-} else {
-    show('buttonHttp');
-}
-
-var standalone = window.matchMedia('(display-mode: standalone)');
-if (standalone.matches) {
-    show('buttonStandalone');
-} else {
-    hide('buttonStandalone');
-}
-
-window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent) {
-    console.log(BeforeInstallPromptEvent);
-
-    BeforeInstallPromptEvent.preventDefault();
-
-    document.getElementById('install').addEventListener('click', function() {
-        BeforeInstallPromptEvent.userChoice
-        .then(function(AppBannerPromptResult) {
-            console.log(AppBannerPromptResult);
-
-            setSnackbar(AppBannerPromptResult.outcome);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
-
-        BeforeInstallPromptEvent.prompt();
-    });
-
-    document.getElementById('detect-promptinstall').classList.remove('hidden');
-});
-
-window.addEventListener('appinstalled', function(appinstalled) {
-    console.log(appinstalled);
-});
-
-window.addEventListener('online', function() {
-    updateOnlineStatus();
-});
-
-window.addEventListener('offline', function() {
-    updateOnlineStatus();
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    updateOnlineStatus();
-});
-
-document.getElementById('clearHistory').addEventListener('click', function() {
-    document.getElementById('history').innerHTML = '';
-});
-
-document.getElementById('getCameras').addEventListener('click', function() {
-    getCameras();
-});
-
-document.getElementById('getStream').addEventListener('click', function() {
-    getStream();
-});
-
-document.getElementById('cameraState').addEventListener('click', function() {
-    cameraState();
-});
-
-document.getElementById('takePhoto').addEventListener('click', function() {
-    takePhoto();
-});
-
-document.getElementById('serviceWorkerRegister').addEventListener('click', function() {
-    serviceWorkerRegister();
-});
-
-document.getElementById('serviceWorkerUnregister').addEventListener('click', function() {
-    serviceWorkerUnregister();
-});
-
-document.getElementById('pushManagerSubscribe').addEventListener('click', function() {
-    pushManagerSubscribe();
-});
-
-document.getElementById('pushManagerUnsubscribe').addEventListener('click', function() {
-    pushManagerUnsubscribe();
-});
-
-document.getElementById('pushManagerPermissionState').addEventListener('click', function() {
-    pushManagerPermissionState();
-});
-
-document.getElementById('serviceWorkerUpdate').addEventListener('click', function() {
-    serviceWorkerUpdate();
-});
-
-document.getElementById('serviceWorkerSyncRegister').addEventListener('click', function() {
-    serviceWorkerSyncRegister();
-});
-
-document.getElementById('serviceWorkerPeriodSyncRegister').addEventListener('click', function() {
-    serviceWorkerPeriodSyncRegister();
-});
-
-document.getElementById('serviceWorkerReloadCache').addEventListener('click', function() {
-    messageToServiceWorker({command: 'reload-cache'});
-});
-
-document.getElementById('pushEvent').addEventListener('click', function() {
-    pushEvent();
-});
-
-document.getElementById('share').addEventListener('click', function() {
-    share();
-});
-
-document.getElementById('bluetooth').addEventListener('click', function() {
-    bluetooth();
-});
-
-document.getElementById('geolocationGet').addEventListener('click', function() {
-    geolocationGet();
-});
-
-document.getElementById('geolocationState').addEventListener('click', function() {
-    geolocationState();
-});
-
-document.getElementById('paymentRequest').addEventListener('click', function() {
-    paymentRequest();
-});
-
-setBadge(24);
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <div class="dropdown">
+            <button class="btn btn-lg dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-label="Menu" aria-expanded="false">
+                Theme
+            </button>
+            <ul class="dropdown-menu">
+                <li class="fs-5 nav-item">
+                    <a class="dropdown-item" href="#" data-bs-theme-value="light">Light</a>
+                </li>
+                <li class="fs-5 nav-item">
+                    <a class="dropdown-item" href="#" data-bs-theme-value="dark">Dark</a>
+                </li>
+                <li class="fs-5 nav-item">
+                    <a class="dropdown-item" href="#" data-bs-theme-value="auto">Auto</a>
+                </li>
+            </ul>
+        </div>
+
+        <span class="badge bg-success" id="buttonStandalone">standalone</span>
+        <span class="badge bg-success" id="buttonOrientation"></span>
+        <span class="badge bg-success" id="buttonNetwork"></span>
+        <span class="badge bg-success d-none" id="buttonHttps">https</span>
+        <span class="badge bg-danger d-none" id="buttonHttp">http</span>
+        <span class="badge bg-success d-none" id="buttonOnline">online</span>
+        <span class="badge bg-danger d-none" id="buttonOffline">offline</span>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-serviceworker">
+            <h1 class="fs-5">Service Worker</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerRegister">Register</a>
+                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUnregister">Unregister</a>
+                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUpdate">Update</a>
+                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerSyncRegister">Sync</a>
+                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerPeriodSyncRegister">Periodic sync</a>
+                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerReloadCache">Reload cache</a>
+            </div>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-pushapi">
+            <h1 class="fs-5">Push API</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="pushManagerSubscribe">Subscribe</a>
+                <a class="list-group-item list-group-item-action" href="#" id="pushManagerUnsubscribe">Unsubscribe</a>
+                <a class="list-group-item list-group-item-action" href="#" id="pushManagerPermissionState">Permission state</a>
+                <a class="list-group-item list-group-item-action" href="#" id="pushEvent">Push event</a>
+            </div>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-promptinstall">
+            <h1 class="fs-5">promptinstall</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="install">Install</a>
+            </div>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-webshareapi">
+            <h1 class="fs-5">Web Share API</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="share">Share</a>
+            </div>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-geolocationapi">
+            <h1 class="fs-5">Geolocation API</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="geolocationGet">Get</a>
+                <a class="list-group-item list-group-item-action" href="#" id="geolocationState">Permission state</a>
+            </div>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-paymentrequest">
+            <h1 class="fs-5">Payment Request API</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="paymentRequest">Request</a>
+            </div>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3" id="detect-mediastreamapi">
+            <h1 class="fs-5">MediaStream API</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="getCameras">Get cameras</a>
+                <a class="list-group-item list-group-item-action" href="#" id="getStream">Get stream</a>
+                <a class="list-group-item list-group-item-action" href="#" id="cameraState">Permission state</a>
+            </div>
+            <p>
+                <select id="selectCamera">
+                </select>
+            </p>
+            <p>
+                <video id="video" width="320" height="240" autoplay></video>
+            </p>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-imagecaptureapi">
+            <h1 class="fs-5">Image Capture API</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="takePhoto">Take photo</a>
+            </div>
+            <p>
+                <img id="image" width="320" height="240">
+            </p>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-bluetooth">
+            <h1 class="fs-5">Web Bluetooth</h1>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="#" id="bluetooth">Devices</a>
+            </div>
+        </div>
+
+        <div class="shadow bg-body-tertiary rounded-3 col col-3">
+            <h1 class="fs-5">Links</h1>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://developers.google.com/web/progressive-web-apps/">Google Developers | Progressive Web Apps</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://tomayac.github.io/pwa-feature-detector/">Progressive Web App Feature Detector</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://whatpwacando.today/">What PWA Can Do Today</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://whatwebcando.today/">What Web Can Do Today</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="http://caniuse.com/">Can I use... Support tables for HTML5, CSS3, etc</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://web-push-book.gauntface.com/">Web Push Book</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://serviceworke.rs/">ServiceWorker Cookbook</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://jakearchibald.github.io/isserviceworkerready/">Is ServiceWorker ready?</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://pwa-directory.appspot.com/">PWA Directory</a>
+            </p>
+            <p>
+                <a class="list-group-item list-group-item-action" href="https://ionicframework.com/pwa">Ionic Framework - Progressive Web Apps</a>
+            </p>
+        </div>
+
+        <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
+            <div class="mdl-card__title">
+                <h1 class="fs-5">
+                    History
+                </h1>
+            </div>
+
+                <ul id="history">
+                </ul>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a class="list-group-item list-group-item-action" href="#" id="clearHistory">Clear</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/template" id="view-toast">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="{{ id }}">
+        <div class="toast-header">
+            <strong class="me-auto">{{ title }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {{ body }}
+        </div>
+    </div>
 </script>
+
+<script type="text/javascript" src="build/app_js.js"></script>
 
 </body>
 </html>

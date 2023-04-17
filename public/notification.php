@@ -17,7 +17,7 @@ $result = [];
 if(isset($postdata['endpoint']) && isset($postdata['public_key']) && isset($postdata['authentication_secret'])) {
     $apiKeys = [
         'VAPID' => [
-            'subject' => 'mailto:divers@sdion.net',
+            'subject' => 'https://play.stephanedion.dev',
             'publicKey' => 'BOL1MjOgSneIArw6ZdxxL1UqSdnDnsxGT8WaNqBVgwtSPSHJdlY3tLffFwLzPiuUWr_87KyxLKcUsAImyBKTusU',
             'privateKey' => 'PLEgHetu5VUmMCHw1wDE8KBrIfb8nwJyeT1cGNUA83o',
         ],

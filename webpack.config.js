@@ -6,7 +6,7 @@ module.exports = {
     'mode': 'production',
     'entry': {
         'app_js': ['./src/index.js'],
-        'app_css': ['./src/style.js'],
+        'app_css': ['./src/style.scss'],
     },
     'plugins': [
         new WebpackNotifierPlugin({
@@ -19,23 +19,23 @@ module.exports = {
     ],
     'output': {
         'filename': '[name].js',
-        'path': path.resolve(__dirname, 'public'),
+        'path': path.resolve(__dirname, 'public/build'),
     },
     'module': {
         'rules': [
             {
-                'test': /\.css$/,
+                'test': /\.scss$/,
+                'exclude': '/node_modules/',
                 'use': [
                     {
-                        'loader': MiniCssExtractPlugin.loader,
+                        'loader': 'file-loader',
                         'options': {
-                            // you can specify a publicPath here
-                            // by default it uses publicPath in webpackOptions.output
-                            'publicPath': '.',
-                            //'hmr': process.env.NODE_ENV === 'development', // webpack 4 only
-                        },
+                            'name': '[name].min.css',
+                        }
                     },
-                    'css-loader',
+                    'sass-loader',
+                    //'style-loader',
+                    //'css-loader',
                 ],
             },
             {

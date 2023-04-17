@@ -1,16 +1,72 @@
-import MaterialSnackbar from 'material-design-lite';
+var bootstrap = require('bootstrap');
+
+import Handlebars from 'handlebars/dist/cjs/handlebars'
+
+const storedTheme = localStorage.getItem('theme')
+
+const getPreferredTheme = () => {
+    if (storedTheme) {
+        return storedTheme
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+setTheme(getPreferredTheme())
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (storedTheme !== 'light' || storedTheme !== 'dark') {
+        setTheme(getPreferredTheme());
+    }
+})
+
+function setTheme(theme) {
+    if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark')
+    } else {
+        document.documentElement.setAttribute('data-bs-theme', theme)
+    }
+}
+
+document.querySelectorAll('[data-bs-theme-value]').forEach(toggle => {
+    toggle.addEventListener('click', (event) => {
+        event.preventDefault();
+        const theme = toggle.getAttribute('data-bs-theme-value');
+        localStorage.setItem('theme', theme);
+        setTheme(theme);
+    });
+});
+
+function generateUniqueID(prefix) {
+    function chr4() {
+      return Math.random().toString(16).slice(-4);
+    }
+
+    return prefix + chr4() + chr4() +
+      '-' + chr4() +
+      '-' + chr4() +
+      '-' + chr4() +
+      '-' + chr4() + chr4() + chr4();
+}
+
+function getTemplate(key) {
+    return Handlebars.compile( document.getElementById(key).innerText );
+}
 
 function setBadge(value) {
     if (navigator.setExperimentalAppBadge) {
+        writeHistory('setExperimentalAppBadge available');
         navigator.setExperimentalAppBadge(value).catch(function(error) {
+            writeHistory(error);
             console.log(error);
         });
     } else if (navigator.setAppBadge) {
+        writeHistory('setAppBadge available');
         navigator.setAppBadge(value).catch(function(error) {
+            writeHistory(error);
             console.log(error);
         });
     } else {
-        setSnackbar('badge api not supported');
+        setToast({'title': 'badge api not supported'});
     }
 }
 
@@ -27,7 +83,7 @@ function bluetooth() {
 }
 
 function getCameras() {
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         var videoDevices = 0;
         var constraints = {'video': {'facingMode': 'environment'}};
         navigator.mediaDevices.getUserMedia(constraints)
@@ -40,19 +96,19 @@ function getCameras() {
 
                 for(var i = 0; i !== gotDevices.length; ++i) {
                     var deviceInfo = gotDevices[i];
-                    if(deviceInfo.kind === 'videoinput') {
+                    if (deviceInfo.kind === 'videoinput') {
                         videoDevices++;
-                        if(deviceInfo.label) {
+                        if (deviceInfo.label) {
                             writeHistory(deviceInfo.label);
                             document.getElementById('selectCamera').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
                         }
                     }
                 }
 
-                document.getElementById('detect-mediastreamapi').classList.remove('hidden');
+                show('detect-mediastreamapi');
 
-                if('ImageCapture' in window) {
-                    document.getElementById('detect-imagecaptureapi').classList.remove('hidden');
+                if ('ImageCapture' in window) {
+                    show('detect-imagecaptureapi');
                 }
             })
             .catch(function(handleError) {
@@ -63,8 +119,8 @@ function getCameras() {
 }
 
 function getStream() {
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        setSnackbar('in progress');
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        setToast({'title': 'in progress'});
         var camera = document.getElementById('selectCamera').value;
 
         if ('' !== camera) {
@@ -79,7 +135,7 @@ function getStream() {
             var video = document.getElementById('video');
             video.srcObject = MediaStream;
 
-            if('ImageCapture' in window) {
+            if ('ImageCapture' in window) {
                 console.log(MediaStream.getVideoTracks());
                 var track = MediaStream.getVideoTracks()[0];
                 imageCapture = new ImageCapture(track);
@@ -88,23 +144,23 @@ function getStream() {
         .catch(function(NavigatorUserMediaError) {
             console.log(NavigatorUserMediaError);
 
-            if('NotFoundError' == NavigatorUserMediaError.name) {
-                setSnackbar('Not found');
+            if ('NotFoundError' == NavigatorUserMediaError.name) {
+                setToast({'title': 'Not found'});
             }
 
-            if('DevicesNotFoundError' == NavigatorUserMediaError.name) {
-                setSnackbar('Device not found');
+            if ('DevicesNotFoundError' == NavigatorUserMediaError.name) {
+                setToast({'title': 'Device not found'});
             }
 
-            if('PermissionDeniedError' == NavigatorUserMediaError.name) {
-                setSnackbar('Permission denied');
+            if ('PermissionDeniedError' == NavigatorUserMediaError.name) {
+                setToast({'title': 'Permission denied'});
             }
         });
     }
 }
 
 function takePhoto() {
-    if(imageCapture) {
+    if (imageCapture) {
         imageCapture.getPhotoCapabilities()
         .then(function(photoCapabilities) {
             console.log(photoCapabilities);
@@ -131,26 +187,26 @@ function takePhoto() {
 }
 
 function serviceWorkerRegister() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.register('serviceworker.js')
         .then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
 
             messageToServiceWorker({command: 'cache-key'});
 
-            document.getElementById('detect-serviceworker').classList.remove('hidden');
+            show('detect-serviceworker');
 
-            if('pushManager' in ServiceWorkerRegistration) {
-                document.getElementById('detect-pushapi').classList.remove('hidden');
+            if ('pushManager' in ServiceWorkerRegistration) {
+                show('detect-pushapi');
                 ServiceWorkerRegistration.pushManager.getSubscription()
                 .then(function(PushSubscription) {
-                    if(PushSubscription && 'object' === typeof PushSubscription) {
+                    if (PushSubscription && 'object' === typeof PushSubscription) {
                         console.log(PushSubscription);
                     }
                     console.log(PushManager.supportedContentEncodings);
                 })
-                .catch(function(TypeError) {
-                    console.log(TypeError);
+                .catch(function(error) {
+                    console.log(error);
                 });
             }
 
@@ -159,13 +215,13 @@ function serviceWorkerRegister() {
                 messageToServiceWorker({command: 'reload-cache'});
             });
 
-            if(ServiceWorkerRegistration.installing) {
+            if (ServiceWorkerRegistration.installing) {
                 writeHistory('register installing');
 
-            } else if(ServiceWorkerRegistration.waiting) {
+            } else if (ServiceWorkerRegistration.waiting) {
                 writeHistory('register waiting');
 
-            } else if(ServiceWorkerRegistration.active) {
+            } else if (ServiceWorkerRegistration.active) {
                 writeHistory('register active');
             }
 
@@ -177,34 +233,34 @@ function serviceWorkerRegister() {
 }
 
 function serviceWorkerUnregister() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function(ServiceWorkerRegistration) {
             ServiceWorkerRegistration.unregister()
             .then(function() {
-                setSnackbar('done');
+                setToast({'title': 'done'});
             });
         });
     }
 }
 
 function pushManagerSubscribe() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function(ServiceWorkerRegistration) {
-            if('pushManager' in ServiceWorkerRegistration) {
+            if ('pushManager' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
                     writeHistory('permissionState: ' + permissionState);
 
-                    setSnackbar(permissionState);
+                    setToast({'title': permissionState});
 
-                    if(permissionState == 'prompt' || permissionState == 'granted') {
+                    if (permissionState == 'prompt' || permissionState == 'granted') {
                         ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true})
                         .then(function(PushSubscription) {
                             console.log(PushSubscription);
 
-                            if(PushSubscription && 'object' === typeof PushSubscription) {
-                                setSnackbar('done');
+                            if (PushSubscription && 'object' === typeof PushSubscription) {
+                                setToast({'title': 'done'});
 
                                 var toJSON = PushSubscription.toJSON();
 
@@ -224,18 +280,18 @@ function pushManagerSubscribe() {
 }
 
 function pushManagerUnsubscribe() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function(ServiceWorkerRegistration) {
-            if('pushManager' in ServiceWorkerRegistration) {
+            if ('pushManager' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.pushManager.getSubscription()
                 .then(function(PushSubscription) {
                     console.log(PushSubscription);
 
-                    if(PushSubscription && 'object' === typeof PushSubscription) {
+                    if (PushSubscription && 'object' === typeof PushSubscription) {
                         PushSubscription.unsubscribe()
                         .then(function() {
-                            setSnackbar('done');
+                            setToast({'title': 'done'});
                         });
                     }
                 });
@@ -245,14 +301,14 @@ function pushManagerUnsubscribe() {
 }
 
 function pushManagerPermissionState() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function(ServiceWorkerRegistration) {
-            if('pushManager' in ServiceWorkerRegistration) {
+            if ('pushManager' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true})
                 .then(function(permissionState) {
                     writeHistory('permissionState: ' + permissionState);
-                    setSnackbar(permissionState);
+                    setToast({'title': permissionState});
                 });
             }
         });
@@ -260,19 +316,19 @@ function pushManagerPermissionState() {
 }
 
 function messageToServiceWorker(content) {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function() {
             return new Promise(function(resolve, reject) {
                 var messageChannel = new MessageChannel();
                 messageChannel.port1.onmessage = function(event) {
-                    if(event.data.error) {
+                    if (event.data.error) {
                         reject(event.data.error);
                     } else {
                         resolve(event.data);
                     }
                 };
-                if(navigator.serviceWorker.controller) {
+                if (navigator.serviceWorker.controller) {
                     navigator.serviceWorker.controller.postMessage(content, [messageChannel.port2]);
                 }
             });
@@ -281,7 +337,7 @@ function messageToServiceWorker(content) {
 }
 
 function serviceWorkerUpdate() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function(ServiceWorkerRegistration) {
             ServiceWorkerRegistration.update()
@@ -293,24 +349,24 @@ function serviceWorkerUpdate() {
 }
 
 function serviceWorkerSyncRegister() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function(ServiceWorkerRegistration) {
-            if('sync' in ServiceWorkerRegistration) {
+            if ('sync' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.sync.register('playground-pwa-sync')
                 .then();
             } else {
-                setSnackbar('sync not supported');
+                setToast({'title': 'sync not supported'});
             }
         });
     }
 }
 
 function serviceWorkerPeriodSyncRegister() {
-    if(serviceWorkerEnabled) {
+    if (serviceWorkerEnabled) {
         navigator.serviceWorker.ready
         .then(function(ServiceWorkerRegistration) {
-            if('periodicSync' in ServiceWorkerRegistration) {
+            if ('periodicSync' in ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.periodicSync.register({
                     tag: 'playground-pwa-periodicSync', // default: ''
                     minPeriod: 12 * 60 * 60 * 1000, // default: 0
@@ -319,14 +375,14 @@ function serviceWorkerPeriodSyncRegister() {
                 })
                 .then();
             } else {
-                setSnackbar('periodic sync not supported');
+                setToast({'title': 'periodic sync not supported'});
             }
         });
     }
 }
 
 function share() {
-    if('share' in navigator) {
+    if ('share' in navigator) {
         navigator.share({
             title: document.title,
             text: 'Hello World',
@@ -339,18 +395,18 @@ function share() {
 }
 
 function geolocationGet() {
-    if('geolocation' in navigator) {
-        setSnackbar('in progress');
+    if ('geolocation' in navigator) {
+        setToast({'title': 'in progress'});
         navigator.geolocation.getCurrentPosition(
             function(Geoposition) {
                 console.log(Geoposition);
                 writeHistory(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
-                setSnackbar(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
+                setToast({'title': Geoposition.coords.latitude + ',' + Geoposition.coords.longitude});
             },
             function(PositionError) {
                 console.log(PositionError);
                 writeHistory(PositionError.message);
-                setSnackbar(PositionError.message);
+                setToast({'title': PositionError.message});
             },
             {'enableHighAccuracy': true, 'timeout': 10000}
         );
@@ -358,54 +414,54 @@ function geolocationGet() {
 }
 
 function geolocationState() {
-    if('permissions' in navigator) {
+    if ('permissions' in navigator) {
         navigator.permissions.query({
             'name': 'geolocation'
         })
         .then(function(permission) {
-            setSnackbar(permission.state);
+            setToast({'title': permission.state});
         });
     } else {
-        setSnackbar('Permissions API not supported');
+        setToast({'title': 'Permissions API not supported'});
     }
 }
 
 function cameraState() {
-    if('permissions' in navigator) {
+    if ('permissions' in navigator) {
         navigator.permissions.query({
             'name': 'camera'
         })
         .then(function(permission) {
-            setSnackbar(permission.state);
+            setToast({'title': permission.state});
         });
     } else {
-        setSnackbar('Permissions API not supported');
+        setToast({'title': 'Permissions API not supported'});
     }
 }
 
 function screenOrientation() {
     hide('buttonOrientation');
-    if('screen' in window && 'orientation' in screen) {
-        document.getElementById('buttonOrientationResult').textContent = window.screen.orientation.type;
+    if ('screen' in window && 'orientation' in screen) {
+        document.getElementById('buttonOrientation').textContent = window.screen.orientation.type;
         show('buttonOrientation');
     }
 }
 
 function networkInformation() {
     hide('buttonNetwork');
-    if('connection' in navigator) {
-        if(typeof navigator.connection.type !== 'undefined') {
-            document.getElementById('buttonNetworkResult').textContent = navigator.connection.type;
+    if ('connection' in navigator) {
+        if (typeof navigator.connection.type !== 'undefined') {
+            document.getElementById('buttonNetwork').textContent = navigator.connection.type;
             show('buttonNetwork');
-        } else if(typeof navigator.connection.effectiveType !== 'undefined') {
-            document.getElementById('buttonNetworkResult').textContent = navigator.connection.effectiveType;
+        } else if (typeof navigator.connection.effectiveType !== 'undefined') {
+            document.getElementById('buttonNetwork').textContent = navigator.connection.effectiveType;
             show('buttonNetwork');
         }
     }
 }
 
 function paymentRequest() {
-    if('PaymentRequest' in window) {
+    if ('PaymentRequest' in window) {
         var methodData = [
             {
                 supportedMethods: ['basic-card'],
@@ -523,7 +579,7 @@ function paymentRequest() {
 
             return paymentResponse.complete()
             .then(function() {
-                setSnackbar('Payment done');
+                setToast({'title': 'Payment done'});
             });
         })
         .catch(function(err) {
@@ -533,13 +589,13 @@ function paymentRequest() {
 }
 
 function pushEvent() {
-    if('Notification' in window) {
-        if(serviceWorkerEnabled) {
+    if ('Notification' in window) {
+        if (serviceWorkerEnabled) {
             navigator.serviceWorker.ready
             .then(function(ServiceWorkerRegistration) {
                 ServiceWorkerRegistration.pushManager.getSubscription()
                 .then(function(PushSubscription) {
-                    if(PushSubscription && 'object' === typeof PushSubscription) {
+                    if (PushSubscription && 'object' === typeof PushSubscription) {
                         var toJSON = PushSubscription.toJSON();
                         var url = 'notification.php';
                         var data = {
@@ -573,19 +629,22 @@ function pushEvent() {
 }
 
 function urlBase64ToUint8Array(base64String) {
-    var padding = '='.repeat((4 - base64String.length % 4) % 4);
-    var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-    var rawData = window.atob(base64);
-    var outputArray = new Uint8Array(rawData.length);
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
 
-    for(var i = 0; i < rawData.length; ++i) {
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (var i = 0; i < rawData.length; ++i) {
         outputArray[i] = rawData.charCodeAt(i);
     }
     return outputArray;
 }
 
 function updateOnlineStatus() {
-    if(navigator.onLine) {
+    if (navigator.onLine) {
         hide('buttonOffline');
         show('buttonOnline');
     } else {
@@ -595,11 +654,11 @@ function updateOnlineStatus() {
 }
 
 function show(id) {
-    document.getElementById(id).style.display = 'block';
+    document.getElementById(id).classList.remove('d-none');
 }
 
 function hide(id) {
-    document.getElementById(id).style.display = 'none';
+    document.getElementById(id).classList.add('d-none');
 }
 
 function writeHistory(message) {
@@ -610,23 +669,30 @@ function writeHistory(message) {
     history.insertBefore(node, history.firstChild);
 }
 
-function setSnackbar(message) {
-    if(typeof message !== 'undefined') {
-        snackbarContainer.MaterialSnackbar.showSnackbar({message: message, timeout: 1000});
+function setToast(content) {
+    var id = generateUniqueID('id-');
+    var dataReturn = {'id': id, 'title': content.title, 'body': content.body};
+    var template = getTemplate('view-toast');
+    document.querySelector('.toast-container').innerHTML = template(dataReturn);
+
+    var toastEl = document.getElementById(id);
+    if (toastEl) {
+        var toast = new bootstrap.Toast(toastEl, {'autohide': true, 'delay': 4000});
+        toast.show();
     }
 }
 
 function convert_size(result) {
-    if(result >= 1073741824) {
+    if (result >= 1073741824) {
         result = Math.round(result/1073741824) + ' GB';
-    } else if(result >= 1048576) {
+    } else if (result >= 1048576) {
         result = Math.round(result/1048576) + ' MB';
-    } else if(result >= 1024) {
+    } else if (result >= 1024) {
         result = Math.round(result/1024) + ' KB';
     } else {
         result = result + ' B';
     }
-    if(result == 0) {
+    if (result == 0) {
         result = '-';
     }
     return result;
@@ -638,7 +704,7 @@ function utcDate() {
     return utc;
 
     function addZero(i) {
-        if(i < 10) {
+        if (i < 10) {
             i = '0' + i;
         }
         return i;
@@ -647,15 +713,13 @@ function utcDate() {
 
 var applicationServerKey = 'BOL1MjOgSneIArw6ZdxxL1UqSdnDnsxGT8WaNqBVgwtSPSHJdlY3tLffFwLzPiuUWr_87KyxLKcUsAImyBKTusU';
 
-var snackbarContainer = document.querySelector('.mdl-snackbar');
-
 writeHistory(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
-if('storage' in navigator) {
-    if('persist' in navigator.storage) {
+if ('storage' in navigator) {
+    if ('persist' in navigator.storage) {
         navigator.storage.persist()
         .then(function(persistent) {
-            if(persistent) {
+            if (persistent) {
                 writeHistory('Storage will not be cleared except by explicit user action');
             } else {
                 writeHistory('Storage may be cleared by the UA under storage pressure');
@@ -663,7 +727,7 @@ if('storage' in navigator) {
         });
     }
 
-    if('estimate' in navigator.storage) {
+    if ('estimate' in navigator.storage) {
         navigator.storage.estimate()
         .then(function(estimate) {
             console.log(estimate);
@@ -683,17 +747,17 @@ if('storage' in navigator) {
     }
 }
 
-if('localStorage' in window) {
+if ('localStorage' in window) {
     localStorage.setItem('playground_local_storage', 'localStorage available');
     writeHistory(localStorage.getItem('playground_local_storage'));
 }
 
-if('sessionStorage' in window) {
+if ('sessionStorage' in window) {
     sessionStorage.setItem('playground_session_storage', 'sessionStorage available');
     writeHistory(sessionStorage.getItem('playground_session_storage'));
 }
 
-if('indexedDB' in window) {
+if ('indexedDB' in window) {
     var IDBOpenDBRequest = window.indexedDB.open('playground', 1);
     console.log(IDBOpenDBRequest);
 
@@ -702,7 +766,7 @@ if('indexedDB' in window) {
 
         var IDBDatabase = IDBVersionChangeEvent.target.result;
 
-        if(!IDBDatabase.objectStoreNames.contains('data')) {
+        if (!IDBDatabase.objectStoreNames.contains('data')) {
             var IDBObjectStore = IDBDatabase.createObjectStore('data', {keyPath: 'id'});
             console.log(IDBObjectStore);
             IDBObjectStore.createIndex('date_created', 'date_created', { unique: false });
@@ -729,11 +793,11 @@ if('indexedDB' in window) {
     };
 }
 
-if('deviceMemory' in navigator) {
+if ('deviceMemory' in navigator) {
     writeHistory(navigator.deviceMemory + ' GB device memory');
 }
 
-if('getBattery' in navigator) {
+if ('getBattery' in navigator) {
     navigator.getBattery()
     .then(function(BatteryManager) {
         console.log(BatteryManager);
@@ -752,7 +816,7 @@ var serviceWorkerEnabled = false;
 var pushManagerEnabled = false;
 var imageCapture = false;
 
-if('serviceWorker' in navigator && window.location.protocol == 'https:') {
+if ('serviceWorker' in navigator && window.location.protocol == 'https:') {
     serviceWorkerEnabled = true;
 
     serviceWorkerRegister();
@@ -762,16 +826,16 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
 
         writeHistory('message event from client');
 
-        if(MessageEvent.data.type == 'snackbar') {
-            setSnackbar(MessageEvent.data.content);
+        if (MessageEvent.data.type == 'snackbar') {
+            setToast({'title': MessageEvent.data.content});
         }
 
-        if(MessageEvent.data.type == 'history') {
+        if (MessageEvent.data.type == 'history') {
             writeHistory(MessageEvent.data.content);
         }
 
-        if(MessageEvent.data.type == 'reload') {
-            setSnackbar('reload');
+        if (MessageEvent.data.type == 'reload') {
+            setToast({'title': 'reload'});
             document.location.reload(MessageEvent.data.content);
         }
     });
@@ -783,15 +847,15 @@ if('serviceWorker' in navigator && window.location.protocol == 'https:') {
     });
 }
 
-if('share' in navigator) {
-    document.getElementById('detect-webshareapi').classList.remove('hidden');
+if ('share' in navigator) {
+    show('detect-webshareapi');
 }
 
-if('geolocation' in navigator) {
-    document.getElementById('detect-geolocationapi').classList.remove('hidden');
+if ('geolocation' in navigator) {
+    show('detect-geolocationapi');
 }
 
-if('screen' in window && 'orientation' in screen) {
+if ('screen' in window && 'orientation' in screen) {
     console.log(window.screen.orientation);
 
     screenOrientation();
@@ -802,7 +866,7 @@ if('screen' in window && 'orientation' in screen) {
     });
 }
 
-if('connection' in navigator) {
+if ('connection' in navigator) {
     console.log(navigator.connection);
 
     networkInformation();
@@ -813,22 +877,22 @@ if('connection' in navigator) {
     });
 }
 
-if('PaymentRequest' in window) {
-    document.getElementById('detect-paymentrequest').classList.remove('hidden');
+if ('PaymentRequest' in window) {
+    show('detect-paymentrequest');
 }
 
-if('bluetooth' in navigator) {
-    document.getElementById('detect-bluetooth').classList.remove('hidden');
+if ('bluetooth' in navigator) {
+    show('detect-bluetooth');
 }
 
-if('https:' === window.location.protocol) {
+if ('https:' === window.location.protocol) {
     show('buttonHttps');
 } else {
     show('buttonHttp');
 }
 
 var standalone = window.matchMedia('(display-mode: standalone)');
-if(standalone.matches) {
+if (standalone.matches) {
     show('buttonStandalone');
 } else {
     hide('buttonStandalone');
@@ -844,7 +908,7 @@ window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent
         .then(function(AppBannerPromptResult) {
             console.log(AppBannerPromptResult);
 
-            setSnackbar(AppBannerPromptResult.outcome);
+            setToast({'title': AppBannerPromptResult.outcome});
         })
         .catch(function(error) {
             console.log(error);
@@ -853,7 +917,7 @@ window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent
         BeforeInstallPromptEvent.prompt();
     });
 
-    document.getElementById('detect-promptinstall').classList.remove('hidden');
+    show('detect-promptinstall');
 });
 
 window.addEventListener('appinstalled', function(appinstalled) {
