@@ -48,6 +48,10 @@ function generateUniqueID(prefix) {
       '-' + chr4() + chr4() + chr4();
 }
 
+function reload() {
+    document.location.reload();
+}
+
 function getTemplate(key) {
     return Handlebars.compile( document.getElementById(key).innerText );
 }
@@ -929,4 +933,9 @@ document.getElementById('setBadge').addEventListener('click', function(event) {
 document.getElementById('clearBadge').addEventListener('click', function(event) {
     event.preventDefault();
     clearBadge();
+});
+
+document.getElementById('reload').addEventListener('click', function(event) {
+    event.preventDefault();
+    reload();
 });
