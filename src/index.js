@@ -563,32 +563,21 @@ function writeHistory(message) {
 }
 
 function setToast(content) {
-    var id = generateUniqueID('id-');
-    var dataReturn = {'id': id, 'title': content.title, 'body': content.body};
-    var template = getTemplate('view-toast');
-    document.querySelector('.toast-container').innerHTML = template(dataReturn);
-
-    var toastEl = document.getElementById(id);
-    if (toastEl) {
-        var toast = new bootstrap.Toast(toastEl, {'autohide': true, 'delay': 4000});
-        toast.show();
+    if (content.body) {
+        document.querySelector('.navbar-brand').innerText = content.title + ': ' + content.body;
+    } else {
+        document.querySelector('.navbar-brand').innerText = content.title;
     }
 }
 
-function convert_size(result) {
-    if (result >= 1073741824) {
-        result = Math.round(result/1073741824) + ' GB';
-    } else if (result >= 1048576) {
-        result = Math.round(result/1048576) + ' MB';
-    } else if (result >= 1024) {
-        result = Math.round(result/1024) + ' KB';
-    } else {
-        result = result + ' B';
-    }
-    if (result == 0) {
-        result = '-';
-    }
-    return result;
+function formatBytes(bytes, decimals) {
+    if(bytes == 0) return '0 B';
+    var k = 1024,
+        dm = decimals || 2,
+        sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+        i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+
 }
 
 function utcDate() {
@@ -627,13 +616,16 @@ if ('storage' in navigator) {
 
             var percent = (estimate.usage / estimate.quota * 100).toFixed(2);
 
-            writeHistory('Quota: ' + convert_size(estimate.quota));
-            writeHistory('Usage: ' + convert_size(estimate.usage) + ' (' + percent + '%)');
+            writeHistory('Quota: ' + formatBytes(estimate.quota));
+            writeHistory('Usage: ' + formatBytes(estimate.usage) + ' (' + percent + '%)');
+
+            document.getElementById('buttonUsage').textContent = formatBytes(estimate.usage);
+            show('buttonUsage');
 
             if (typeof estimate.usageDetails != 'undefined') {
                 for (const property in estimate.usageDetails) {
                     var percent = (estimate.usageDetails[property] / estimate.usage * 100).toFixed(2);
-                    writeHistory(property + ': ' + convert_size(estimate.usageDetails[property]) + ' (' + percent + '%)');
+                    writeHistory(property + ': ' + formatBytes(estimate.usageDetails[property]) + ' (' + percent + '%)');
                 }
             }
         });
