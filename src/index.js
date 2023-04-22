@@ -13,11 +13,6 @@ const getPreferredTheme = () => {
 
 setTheme(getPreferredTheme())
 
-cookieStore.getAll()
-.then(function(cookies) {
-    console.log(cookies);
-});
-
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (storedTheme !== 'light' || storedTheme !== 'dark') {
         setTheme(getPreferredTheme());
