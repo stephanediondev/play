@@ -145,6 +145,14 @@ self.addEventListener('push', function(PushEvent) {
 
     if('waitUntil' in PushEvent) {
         if(PushEvent.data) {
+            if ('setAppBadge' in navigator) {
+                navigator.setAppBadge(randomIntFromInterval(1, 99))
+                .catch(function(error) {
+                    writeHistory(error);
+                    console.log(error);
+                });
+            }
+
             var data = PushEvent.data.json();
             PushEvent.waitUntil(
                 self.registration.showNotification(data.title, {
@@ -201,6 +209,10 @@ self.addEventListener('message', function(ExtendableMessageEvent) {
             messageToClient('history', 'unknown command: ' + ExtendableMessageEvent.data.command);
     }
 });
+
+function randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 function cacheAddAll() {
     caches.delete(CACHE_KEY);

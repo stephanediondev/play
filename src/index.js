@@ -52,22 +52,18 @@ function reload() {
     document.location.reload();
 }
 
-function getTemplate(key) {
-    return Handlebars.compile( document.getElementById(key).innerText );
-}
-
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 function setBadge() {
-    if (navigator.setAppBadge) {
+    if ('setAppBadge' in navigator) {
         navigator.setAppBadge(randomIntFromInterval(1, 99))
         .catch(function(error) {
             writeHistory(error);
             console.log(error);
         });
-    } else if (navigator.setExperimentalAppBadge) {
+    } else if ('setExperimentalAppBadge' in navigator) {
         navigator.setExperimentalAppBadge(randomIntFromInterval(1, 99)).catch(function(error) {
             writeHistory(error);
             console.log(error);
