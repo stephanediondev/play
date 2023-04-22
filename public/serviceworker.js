@@ -9,11 +9,7 @@ var CACHE_FILES = [
     '.',
     'manifest.webmanifest',
     'index.html',
-    'app/icons/icon-16x16.png',
-    'app/icons/icon-32x32.png',
-    'app/icons/icon-64x64.png',
-    'app/icons/icon-128x128.png',
-    'app/icons/icon-256x256.png',
+    'app/icons/icon-192x192.png',
     'app/icons/icon-512x512.png',
 ];
 
@@ -126,12 +122,12 @@ self.addEventListener('pushsubscriptionchange', function(PushSubscriptionChangeE
         PushSubscriptionChangeEvent.waitUntil(
             self.registration.showNotification('pushsubscriptionchange', {
                 body: 'pushsubscriptionchange',
-                badge: 'app/icons/icon-32x32.png',
-                icon: 'app/icons/icon-128x128.png',
+                badge: 'app/icons/icon-192x192.png',
+                icon: 'app/icons/icon-192x192.png',
                 image: 'app/icons/icon-512x512.png',
                 actions: [
-                    { action: 'action1', title: 'action 1', icon: 'app/icons/icon-128x128.png' },
-                    { action: 'action2', title: 'action 2', icon: 'app/icons/icon-128x128.png' }
+                    { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
+                    { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }
                 ]
             })
         );
@@ -157,12 +153,12 @@ self.addEventListener('push', function(PushEvent) {
             PushEvent.waitUntil(
                 self.registration.showNotification(data.title, {
                     body: data.body,
-                    badge: 'app/icons/icon-32x32.png',
-                    icon: 'app/icons/icon-128x128.png',
+                    badge: 'app/icons/icon-192x192.png',
+                    icon: 'app/icons/icon-192x192.png',
                     image: 'app/icons/icon-512x512.png',
                     actions: [
-                        { action: 'action1', title: 'action 1', icon: 'app/icons/icon-128x128.png' },
-                        { action: 'action2', title: 'action 2', icon: 'app/icons/icon-128x128.png' }
+                        { action: 'action1', title: 'action 1', icon: 'app/icons/icon-192x192.png' },
+                        { action: 'action2', title: 'action 2', icon: 'app/icons/icon-192x192.png' }
                     ]
                 })
             );
