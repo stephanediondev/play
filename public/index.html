@@ -24,7 +24,7 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <div class="dropdown">
-            <button class="btn btn-lg dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-label="Menu" aria-expanded="false">
+            <button class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-label="Menu" aria-expanded="false">
                 Theme
             </button>
             <ul class="dropdown-menu">
@@ -40,148 +40,174 @@
             </ul>
         </div>
 
-        <span class="badge bg-success" id="buttonStandalone">standalone</span>
-        <span class="badge bg-success" id="buttonOrientation"></span>
-        <span class="badge bg-success" id="buttonNetwork"></span>
-        <span class="badge bg-success d-none" id="buttonHttps">https</span>
-        <span class="badge bg-danger d-none" id="buttonHttp">http</span>
-        <span class="badge bg-success d-none" id="buttonOnline">online</span>
-        <span class="badge bg-danger d-none" id="buttonOffline">offline</span>
+        <span class="navbar-text">
+            <span class="badge bg-success" id="buttonStandalone">standalone</span>
+            <span class="badge bg-success" id="buttonOrientation"></span>
+            <span class="badge bg-success" id="buttonNetwork"></span>
+            <span class="badge bg-success d-none" id="buttonBattery"></span>
+            <span class="badge bg-success d-none" id="buttonHttps">https</span>
+            <span class="badge bg-danger d-none" id="buttonHttp">http</span>
+            <span class="badge bg-success d-none" id="buttonOnline">online</span>
+            <span class="badge bg-danger d-none" id="buttonOffline">offline</span>
+        </span>
     </div>
 </nav>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-serviceworker">
-            <h1 class="fs-5">Service Worker</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerRegister">Register</a>
-                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUnregister">Unregister</a>
-                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUpdate">Update</a>
-                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerSyncRegister">Sync</a>
-                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerPeriodSyncRegister">Periodic sync</a>
-                <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerReloadCache">Reload cache</a>
+        <div class="col col-3 d-none" id="detect-serviceworker">
+            <div class="p-2">
+                <h1 class="fs-5">Service Worker</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerRegister">Register</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUnregister">Unregister</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUpdate">Update</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerSyncRegister">Sync</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerPeriodSyncRegister">Periodic sync</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerReloadCache">Reload cache</a>
+                </div>
             </div>
         </div>
 
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-pushapi">
-            <h1 class="fs-5">Push API</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="pushManagerSubscribe">Subscribe</a>
-                <a class="list-group-item list-group-item-action" href="#" id="pushManagerUnsubscribe">Unsubscribe</a>
-                <a class="list-group-item list-group-item-action" href="#" id="pushManagerPermissionState">Permission state</a>
-                <a class="list-group-item list-group-item-action" href="#" id="pushEvent">Push event</a>
+        <div class="col col-3 d-none" id="detect-pushapi">
+            <div class="p-2">
+                <h1 class="fs-5">Push API</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="pushManagerSubscribe">Subscribe</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="pushManagerUnsubscribe">Unsubscribe</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="pushManagerPermissionState">Permission state</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="pushEvent">Push event</a>
+                </div>
             </div>
         </div>
 
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-promptinstall">
-            <h1 class="fs-5">promptinstall</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="install">Install</a>
+        <div class="col col-3 d-none" id="detect-promptinstall">
+            <div class="p-2">
+                <h1 class="fs-5">promptinstall</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="install">Install</a>
+                </div>
             </div>
         </div>
 
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-webshareapi">
-            <h1 class="fs-5">Web Share API</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="share">Share</a>
+        <div class="col col-3 d-none" id="detect-webshareapi">
+            <div class="p-2">
+                <h1 class="fs-5">Web Share API</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="share">Share</a>
+                </div>
             </div>
         </div>
 
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-geolocationapi">
-            <h1 class="fs-5">Geolocation API</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="geolocationGet">Get</a>
-                <a class="list-group-item list-group-item-action" href="#" id="geolocationState">Permission state</a>
+        <div class="col col-3 d-none" id="detect-geolocationapi">
+            <div class="p-2">
+                <h1 class="fs-5">Geolocation API</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="geolocationGet">Get</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="geolocationState">Permission state</a>
+                </div>
             </div>
         </div>
 
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-paymentrequest">
-            <h1 class="fs-5">Payment Request API</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="paymentRequest">Request</a>
+        <div class="col col-3 d-none" id="detect-badgingapi">
+            <div class="p-2">
+                <h1 class="fs-5">Badging API</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="setBadge">Set badge</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="clearBadge">Clear badge</a>
+                </div>
             </div>
         </div>
 
-        <div class="shadow bg-body-tertiary rounded-3 col col-3" id="detect-mediastreamapi">
-            <h1 class="fs-5">MediaStream API</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="getCameras">Get cameras</a>
-                <a class="list-group-item list-group-item-action" href="#" id="getStream">Get stream</a>
-                <a class="list-group-item list-group-item-action" href="#" id="cameraState">Permission state</a>
-            </div>
-            <p>
-                <select id="selectCamera">
-                </select>
-            </p>
-            <p>
-                <video id="video" width="320" height="240" autoplay></video>
-            </p>
-        </div>
-
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-imagecaptureapi">
-            <h1 class="fs-5">Image Capture API</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="takePhoto">Take photo</a>
-            </div>
-            <p>
-                <img id="image" width="320" height="240">
-            </p>
-        </div>
-
-        <div class="shadow bg-body-tertiary rounded-3 col col-3 d-none" id="detect-bluetooth">
-            <h1 class="fs-5">Web Bluetooth</h1>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="#" id="bluetooth">Devices</a>
+        <div class="col col-3" id="detect-mediastreamapi">
+            <div class="p-2">
+                <h1 class="fs-5">MediaStream API</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="getCameras">Get cameras</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="getStream">Get stream</a>
+                    <a class="list-group-item list-group-item-action" href="#" id="cameraState">Permission state</a>
+                </div>
+                <p class="d-none">
+                    <select id="selectCamera">
+                    </select>
+                </p>
+                <p class="d-none">
+                    <video id="video" width="320" height="240" autoplay></video>
+                </p>
             </div>
         </div>
 
-        <div class="shadow bg-body-tertiary rounded-3 col col-3">
-            <h1 class="fs-5">Links</h1>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://developers.google.com/web/progressive-web-apps/">Google Developers | Progressive Web Apps</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://tomayac.github.io/pwa-feature-detector/">Progressive Web App Feature Detector</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://whatpwacando.today/">What PWA Can Do Today</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://whatwebcando.today/">What Web Can Do Today</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="http://caniuse.com/">Can I use... Support tables for HTML5, CSS3, etc</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://web-push-book.gauntface.com/">Web Push Book</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://serviceworke.rs/">ServiceWorker Cookbook</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://jakearchibald.github.io/isserviceworkerready/">Is ServiceWorker ready?</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://pwa-directory.appspot.com/">PWA Directory</a>
-            </p>
-            <p>
-                <a class="list-group-item list-group-item-action" href="https://ionicframework.com/pwa">Ionic Framework - Progressive Web Apps</a>
-            </p>
+        <div class="col col-3 d-none" id="detect-imagecaptureapi">
+            <div class="p-2">
+                <h1 class="fs-5">Image Capture API</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="takePhoto">Take photo</a>
+                </div>
+                <p>
+                    <img id="image" width="320" height="240">
+                </p>
+            </div>
         </div>
 
-        <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-            <div class="mdl-card__title">
-                <h1 class="fs-5">
-                    History
-                </h1>
+        <div class="col col-3 d-none" id="detect-bluetooth">
+            <div class="p-2">
+                <h1 class="fs-5">Web Bluetooth</h1>
+                <div class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#" id="bluetooth">Devices</a>
+                </div>
             </div>
+        </div>
+    </div>
 
-                <ul id="history">
+    <div class="row">
+        <div class="col col-12">
+            <div class="mb-2 p-2 shadow bg-body-tertiary rounded-3 ">
+                <h1 class="fs-5">History</h1>
+
+                <ul class="list-unstyled" id="history">
                 </ul>
+
+                <p>
+                    <a class="btn btn-primary" href="#" id="clearHistory">Clear</a>
+                </p>
             </div>
-            <div class="mdl-card__actions mdl-card--border">
-                <a class="list-group-item list-group-item-action" href="#" id="clearHistory">Clear</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-12">
+            <div class="p-2 shadow bg-body-tertiary rounded-3 ">
+                <h1 class="fs-5">Links</h1>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://developers.google.com/web/progressive-web-apps/">Google Developers | Progressive Web Apps</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://tomayac.github.io/pwa-feature-detector/">Progressive Web App Feature Detector</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://whatpwacando.today/">What PWA Can Do Today</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://whatwebcando.today/">What Web Can Do Today</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="http://caniuse.com/">Can I use... Support tables for HTML5, CSS3, etc</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://web-push-book.gauntface.com/">Web Push Book</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://serviceworke.rs/">ServiceWorker Cookbook</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://jakearchibald.github.io/isserviceworkerready/">Is ServiceWorker ready?</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://www.findpwa.com/">findPWA - Directory of Progressive Web Apps</a>
+                </p>
+                <p>
+                    <a class="list-group-item list-group-item-action" href="https://ionicframework.com/pwa">Ionic Framework - Progressive Web Apps</a>
+                </p>
             </div>
         </div>
     </div>

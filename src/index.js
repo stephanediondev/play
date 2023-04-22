@@ -13,6 +13,11 @@ const getPreferredTheme = () => {
 
 setTheme(getPreferredTheme())
 
+cookieStore.getAll()
+.then(function(cookies) {
+    console.log(cookies);
+});
+
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (storedTheme !== 'light' || storedTheme !== 'dark') {
         setTheme(getPreferredTheme());
@@ -52,21 +57,26 @@ function getTemplate(key) {
     return Handlebars.compile( document.getElementById(key).innerText );
 }
 
-function setBadge(value) {
-    if (navigator.setExperimentalAppBadge) {
-        writeHistory('setExperimentalAppBadge available');
-        navigator.setExperimentalAppBadge(value).catch(function(error) {
+function randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function setBadge() {
+    if (navigator.setAppBadge) {
+        navigator.setAppBadge(randomIntFromInterval(1, 99))
+        .catch(function(error) {
             writeHistory(error);
             console.log(error);
         });
-    } else if (navigator.setAppBadge) {
-        writeHistory('setAppBadge available');
-        navigator.setAppBadge(value).catch(function(error) {
+    }
+}
+
+function clearBadge() {
+    if (navigator.clearAppBadge) {
+        navigator.clearAppBadge().catch(function(error) {
             writeHistory(error);
             console.log(error);
         });
-    } else {
-        setToast({'title': 'badge api not supported'});
     }
 }
 
@@ -84,7 +94,6 @@ function bluetooth() {
 
 function getCameras() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        var videoDevices = 0;
         var constraints = {'video': {'facingMode': 'environment'}};
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(MediaStream) {
@@ -92,15 +101,17 @@ function getCameras() {
             .then(function(gotDevices) {
                 console.log(gotDevices);
 
-                document.getElementById('selectCamera').innerHTML = '';
+                var selectCamera = document.getElementById('selectCamera');
+                selectCamera.parentNode.classList.remove('d-none');
+                selectCamera.innerHTML = '';
 
                 for(var i = 0; i !== gotDevices.length; ++i) {
                     var deviceInfo = gotDevices[i];
                     if (deviceInfo.kind === 'videoinput') {
-                        videoDevices++;
+                        //console.log(deviceInfo.getCapabilities());
                         if (deviceInfo.label) {
                             writeHistory(deviceInfo.label);
-                            document.getElementById('selectCamera').innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
+                            selectCamera.innerHTML += '<option value="' + deviceInfo.deviceId + '">'+ deviceInfo.label + '</option>';
                         }
                     }
                 }
@@ -133,10 +144,12 @@ function getStream() {
             console.log(MediaStream);
 
             var video = document.getElementById('video');
+            video.parentNode.classList.remove('d-none');
             video.srcObject = MediaStream;
 
             if ('ImageCapture' in window) {
                 console.log(MediaStream.getVideoTracks());
+                console.log(MediaStream.getVideoTracks()[0].getSettings());
                 var track = MediaStream.getVideoTracks()[0];
                 imageCapture = new ImageCapture(track);
             }
@@ -178,6 +191,7 @@ function takePhoto() {
             console.log(blob);
 
             var image = document.getElementById('image');
+            image.parentNode.classList.remove('d-none');
             image.src = URL.createObjectURL(blob);
         })
         .catch(function(err) {
@@ -191,6 +205,8 @@ function serviceWorkerRegister() {
         navigator.serviceWorker.register('serviceworker.js')
         .then(function(ServiceWorkerRegistration) {
             console.log(ServiceWorkerRegistration);
+
+            setToast({'title': 'Service Worker', 'body': 'register'});
 
             messageToServiceWorker({command: 'cache-key'});
 
@@ -238,7 +254,7 @@ function serviceWorkerUnregister() {
         .then(function(ServiceWorkerRegistration) {
             ServiceWorkerRegistration.unregister()
             .then(function() {
-                setToast({'title': 'done'});
+                setToast({'title': 'Service Worker', 'body': 'unregister'});
             });
         });
     }
@@ -252,7 +268,7 @@ function pushManagerSubscribe() {
                 ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true}).then(function(permissionState) {
                     writeHistory('permissionState: ' + permissionState);
 
-                    setToast({'title': permissionState});
+                    setToast({'title': 'Push API', 'body': permissionState});
 
                     if (permissionState == 'prompt' || permissionState == 'granted') {
                         ServiceWorkerRegistration.pushManager.subscribe({applicationServerKey: urlBase64ToUint8Array(applicationServerKey), userVisibleOnly: true})
@@ -260,7 +276,7 @@ function pushManagerSubscribe() {
                             console.log(PushSubscription);
 
                             if (PushSubscription && 'object' === typeof PushSubscription) {
-                                setToast({'title': 'done'});
+                                setToast({'title': 'Push API', 'body': 'done'});
 
                                 var toJSON = PushSubscription.toJSON();
 
@@ -291,7 +307,7 @@ function pushManagerUnsubscribe() {
                     if (PushSubscription && 'object' === typeof PushSubscription) {
                         PushSubscription.unsubscribe()
                         .then(function() {
-                            setToast({'title': 'done'});
+                            setToast({'title': 'Push API', 'body': 'done'});
                         });
                     }
                 });
@@ -308,7 +324,7 @@ function pushManagerPermissionState() {
                 ServiceWorkerRegistration.pushManager.permissionState({userVisibleOnly: true})
                 .then(function(permissionState) {
                     writeHistory('permissionState: ' + permissionState);
-                    setToast({'title': permissionState});
+                    setToast({'title': 'Push API', 'body': permissionState});
                 });
             }
         });
@@ -356,7 +372,7 @@ function serviceWorkerSyncRegister() {
                 ServiceWorkerRegistration.sync.register('playground-pwa-sync')
                 .then();
             } else {
-                setToast({'title': 'sync not supported'});
+                setToast({'title': 'Service Worker', 'body': 'sync not supported'});
             }
         });
     }
@@ -375,7 +391,7 @@ function serviceWorkerPeriodSyncRegister() {
                 })
                 .then();
             } else {
-                setToast({'title': 'periodic sync not supported'});
+                setToast({'title': 'Service Worker', 'body': 'periodic sync not supported'});
             }
         });
     }
@@ -396,17 +412,17 @@ function share() {
 
 function geolocationGet() {
     if ('geolocation' in navigator) {
-        setToast({'title': 'in progress'});
+        setToast({'title': 'Geolocation API', 'body': 'in progress'});
         navigator.geolocation.getCurrentPosition(
             function(Geoposition) {
                 console.log(Geoposition);
                 writeHistory(Geoposition.coords.latitude + ',' + Geoposition.coords.longitude);
-                setToast({'title': Geoposition.coords.latitude + ',' + Geoposition.coords.longitude});
+                setToast({'title': 'Geolocation API', 'body': Geoposition.coords.latitude + ',' + Geoposition.coords.longitude});
             },
             function(PositionError) {
                 console.log(PositionError);
                 writeHistory(PositionError.message);
-                setToast({'title': PositionError.message});
+                setToast({'title': 'Geolocation API', 'body': PositionError.message});
             },
             {'enableHighAccuracy': true, 'timeout': 10000}
         );
@@ -419,7 +435,7 @@ function geolocationState() {
             'name': 'geolocation'
         })
         .then(function(permission) {
-            setToast({'title': permission.state});
+            setToast({'title': 'Geolocation API', 'body': permission.state});
         });
     } else {
         setToast({'title': 'Permissions API not supported'});
@@ -457,134 +473,6 @@ function networkInformation() {
             document.getElementById('buttonNetwork').textContent = navigator.connection.effectiveType;
             show('buttonNetwork');
         }
-    }
-}
-
-function paymentRequest() {
-    if ('PaymentRequest' in window) {
-        var methodData = [
-            {
-                supportedMethods: ['basic-card'],
-                data: {
-                    supportedNetworks: ['visa', 'mastercard', 'amex'],
-                    supportedTypes: ['credit']
-                }
-            }
-        ];
-
-        var details =  {
-            displayItems: [
-                {
-                    label: "Sub-total",
-                    amount: { currency: "USD", value : 90 }, // US$100.00
-                },
-                {
-                    label: "Sales Tax",
-                    amount: { currency: "USD", value : 10 }, // US$9.00
-                },
-                {
-                    label: "Shipping",
-                    amount: { currency: "USD", value : 10 }, // US$9.00
-                }
-            ],
-            total:  {
-                label: "Total due",
-                amount: { currency: "USD", value : 110 }, // US$109.00
-            },
-            shippingOptions: [
-              {
-                id: 'economy',
-                selected: true,
-                label: 'Economy Shipping (5-7 Days)',
-                amount: {
-                  currency: 'USD',
-                  value: 10,
-                },
-              }
-            ]
-        };
-
-        var options = {
-            requestShipping: true,
-            shippingType: "shipping"
-        };
-
-        var paymentRequest = new PaymentRequest(methodData, details, options);
-
-        paymentRequest.addEventListener('shippingaddresschange', function(PaymentRequestUpdateEvent) {
-            console.log(PaymentRequestUpdateEvent);
-
-            event.updateWith({
-                displayItems: [
-                    {
-                        label: "Sub-total",
-                        amount: { currency: "USD", value : 90 }, // US$100.00
-                    },
-                    {
-                        label: "Sales Tax",
-                        amount: { currency: "USD", value : 10 }, // US$9.00
-                    },
-                    {
-                        label: "Shipping",
-                        amount: { currency: "USD", value : 10 }, // US$9.00
-                    }
-                ],
-              total: {
-                label: 'Total',
-                amount: {
-                  currency: 'USD',
-                  value: 110,
-                },
-              },
-              shippingOptions: [
-                {
-                  id: 'economy',
-                  label: 'Economy Shipping (5-7 Days)',
-                  amount: {
-                    currency: 'USD',
-                    value: 10,
-                  },
-                }
-              ]
-          });
-        });
-
-        paymentRequest.addEventListener('shippingoptionchange', function(event) {
-            console.log(event);
-
-            event.updateWith({
-              total: {
-                label: 'Total',
-                amount: {
-                  currency: 'USD',
-                  value: 110,
-                },
-              },
-              shippingOptions: [
-                {
-                  id: 'economy',
-                  label: 'Economy Shipping (5-7 Days)',
-                  amount: {
-                    currency: 'USD',
-                    value: 10,
-                  },
-                }
-              ]
-            });
-        });
-
-        paymentRequest.show()
-        .then(function(paymentResponse) {
-            console.log(paymentResponse);
-
-            return paymentResponse.complete()
-            .then(function() {
-                setToast({'title': 'Payment done'});
-            });
-        })
-        .catch(function(err) {
-            console.log(err);
-        });
     }
 }
 
@@ -654,6 +542,7 @@ function updateOnlineStatus() {
 }
 
 function show(id) {
+    console.log('show: ' + id);
     document.getElementById(id).classList.remove('d-none');
 }
 
@@ -802,12 +691,13 @@ if ('getBattery' in navigator) {
     .then(function(BatteryManager) {
         console.log(BatteryManager);
 
-        writeHistory('Battery ' + BatteryManager.level*100 + '%');
+        document.getElementById('buttonBattery').textContent = BatteryManager.level * 100 + '%';
+        show('buttonBattery');
 
         BatteryManager.addEventListener('levelchange', function(event) {
             console.log(event);
 
-            writeHistory('Battery ' + event.target.level*100 + '%');
+            document.getElementById('buttonBattery').textContent = BatteryManager.level * 100 + '%';
         });
     });
 }
@@ -855,6 +745,10 @@ if ('geolocation' in navigator) {
     show('detect-geolocationapi');
 }
 
+if (navigator.setAppBadge) {
+    show('detect-badgingapi');
+}
+
 if ('screen' in window && 'orientation' in screen) {
     console.log(window.screen.orientation);
 
@@ -875,10 +769,6 @@ if ('connection' in navigator) {
         console.log(e);
         networkInformation();
     });
-}
-
-if ('PaymentRequest' in window) {
-    show('detect-paymentrequest');
 }
 
 if ('bluetooth' in navigator) {
@@ -903,7 +793,7 @@ window.addEventListener('beforeinstallprompt', function(BeforeInstallPromptEvent
 
     BeforeInstallPromptEvent.preventDefault();
 
-    document.getElementById('install').addEventListener('click', function() {
+    document.getElementById('install').addEventListener('click', function(event) {
         BeforeInstallPromptEvent.userChoice
         .then(function(AppBannerPromptResult) {
             console.log(AppBannerPromptResult);
@@ -936,84 +826,107 @@ document.addEventListener('DOMContentLoaded', function() {
     updateOnlineStatus();
 });
 
-document.getElementById('clearHistory').addEventListener('click', function() {
+document.getElementById('clearHistory').addEventListener('click', function(event) {
+    event.preventDefault();
     document.getElementById('history').innerHTML = '';
 });
 
-document.getElementById('getCameras').addEventListener('click', function() {
+document.getElementById('getCameras').addEventListener('click', function(event) {
+    event.preventDefault();
     getCameras();
 });
 
-document.getElementById('getStream').addEventListener('click', function() {
+document.getElementById('getStream').addEventListener('click', function(event) {
+    event.preventDefault();
     getStream();
 });
 
-document.getElementById('cameraState').addEventListener('click', function() {
+document.getElementById('cameraState').addEventListener('click', function(event) {
+    event.preventDefault();
     cameraState();
 });
 
-document.getElementById('takePhoto').addEventListener('click', function() {
+document.getElementById('takePhoto').addEventListener('click', function(event) {
+    event.preventDefault();
     takePhoto();
 });
 
-document.getElementById('serviceWorkerRegister').addEventListener('click', function() {
+document.getElementById('serviceWorkerRegister').addEventListener('click', function(event) {
+    event.preventDefault();
     serviceWorkerRegister();
 });
 
-document.getElementById('serviceWorkerUnregister').addEventListener('click', function() {
+document.getElementById('serviceWorkerUnregister').addEventListener('click', function(event) {
+    event.preventDefault();
     serviceWorkerUnregister();
 });
 
-document.getElementById('pushManagerSubscribe').addEventListener('click', function() {
+document.getElementById('pushManagerSubscribe').addEventListener('click', function(event) {
+    event.preventDefault();
     pushManagerSubscribe();
 });
 
-document.getElementById('pushManagerUnsubscribe').addEventListener('click', function() {
+document.getElementById('pushManagerUnsubscribe').addEventListener('click', function(event) {
+    event.preventDefault();
     pushManagerUnsubscribe();
 });
 
-document.getElementById('pushManagerPermissionState').addEventListener('click', function() {
+document.getElementById('pushManagerPermissionState').addEventListener('click', function(event) {
+    event.preventDefault();
     pushManagerPermissionState();
 });
 
-document.getElementById('serviceWorkerUpdate').addEventListener('click', function() {
+document.getElementById('serviceWorkerUpdate').addEventListener('click', function(event) {
+    event.preventDefault();
     serviceWorkerUpdate();
 });
 
-document.getElementById('serviceWorkerSyncRegister').addEventListener('click', function() {
+document.getElementById('serviceWorkerSyncRegister').addEventListener('click', function(event) {
+    event.preventDefault();
     serviceWorkerSyncRegister();
 });
 
-document.getElementById('serviceWorkerPeriodSyncRegister').addEventListener('click', function() {
+document.getElementById('serviceWorkerPeriodSyncRegister').addEventListener('click', function(event) {
+    event.preventDefault();
     serviceWorkerPeriodSyncRegister();
 });
 
-document.getElementById('serviceWorkerReloadCache').addEventListener('click', function() {
+document.getElementById('serviceWorkerReloadCache').addEventListener('click', function(event) {
+    event.preventDefault();
     messageToServiceWorker({command: 'reload-cache'});
 });
 
-document.getElementById('pushEvent').addEventListener('click', function() {
+document.getElementById('pushEvent').addEventListener('click', function(event) {
+    event.preventDefault();
     pushEvent();
 });
 
-document.getElementById('share').addEventListener('click', function() {
+document.getElementById('share').addEventListener('click', function(event) {
+    event.preventDefault();
     share();
 });
 
-document.getElementById('bluetooth').addEventListener('click', function() {
+document.getElementById('bluetooth').addEventListener('click', function(event) {
+    event.preventDefault();
     bluetooth();
 });
 
-document.getElementById('geolocationGet').addEventListener('click', function() {
+document.getElementById('geolocationGet').addEventListener('click', function(event) {
+    event.preventDefault();
     geolocationGet();
 });
 
-document.getElementById('geolocationState').addEventListener('click', function() {
+document.getElementById('geolocationState').addEventListener('click', function(event) {
+    event.preventDefault();
     geolocationState();
 });
 
-document.getElementById('paymentRequest').addEventListener('click', function() {
-    paymentRequest();
+document.getElementById('setBadge').addEventListener('click', function(event) {
+    event.preventDefault();
+    setBadge();
 });
 
-setBadge(24);
+document.getElementById('clearBadge').addEventListener('click', function(event) {
+    event.preventDefault();
+    clearBadge();
+});
