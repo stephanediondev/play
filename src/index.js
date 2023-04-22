@@ -63,6 +63,11 @@ function setBadge() {
             writeHistory(error);
             console.log(error);
         });
+    } else if (navigator.setExperimentalAppBadge) {
+        navigator.setExperimentalAppBadge(randomIntFromInterval(1, 99)).catch(function(error) {
+            writeHistory(error);
+            console.log(error);
+        });
     }
 }
 
@@ -740,7 +745,7 @@ if ('geolocation' in navigator) {
     show('detect-geolocationapi');
 }
 
-if (navigator.setAppBadge) {
+if (navigator.setAppBadge || navigator.setExperimentalAppBadge) {
     show('detect-badgingapi');
 }
 
