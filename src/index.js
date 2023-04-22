@@ -470,10 +470,10 @@ function screenOrientation() {
 function networkInformation() {
     hide('buttonNetwork');
     if ('connection' in navigator) {
-        if (typeof navigator.connection.type !== 'undefined') {
+        if ('undefined' !== typeof navigator.connection.type) {
             document.getElementById('buttonNetwork').textContent = navigator.connection.type;
             show('buttonNetwork');
-        } else if (typeof navigator.connection.effectiveType !== 'undefined') {
+        } else if ('undefined' !== typeof navigator.connection.effectiveType) {
             document.getElementById('buttonNetwork').textContent = navigator.connection.effectiveType;
             show('buttonNetwork');
         }
@@ -563,7 +563,7 @@ function writeHistory(message) {
 }
 
 function setToast(content) {
-    if (typeof content.body !== 'undefined') {
+    if ('undefined' !== typeof content.body) {
         document.querySelector('.navbar-brand').innerText = content.title + ': ' + content.body;
     } else {
         document.querySelector('.navbar-brand').innerText = content.title;
