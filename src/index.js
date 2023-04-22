@@ -563,7 +563,7 @@ function writeHistory(message) {
 }
 
 function setToast(content) {
-    if (content.body) {
+    if (typeof content.body !== 'undefined') {
         document.querySelector('.navbar-brand').innerText = content.title + ': ' + content.body;
     } else {
         document.querySelector('.navbar-brand').innerText = content.title;
@@ -699,7 +699,6 @@ if ('getBattery' in navigator) {
 }
 
 var serviceWorkerEnabled = false;
-var pushManagerEnabled = false;
 var imageCapture = false;
 
 if ('serviceWorker' in navigator && window.location.protocol == 'https:') {
