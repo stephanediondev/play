@@ -55,8 +55,6 @@
             <span class="badge bg-success" id="buttonNetwork"></span>
             <span class="badge bg-success d-none" id="buttonUsage"></span>
             <span class="badge bg-success d-none" id="buttonBattery"></span>
-            <span class="badge bg-success d-none" id="buttonHttps">https</span>
-            <span class="badge bg-danger d-none" id="buttonHttp">http</span>
             <span class="badge bg-success d-none" id="buttonOnline">online</span>
             <span class="badge bg-danger d-none" id="buttonOffline">offline</span>
         </span>
@@ -69,12 +67,12 @@
             <div class="p-2">
                 <h1 class="fs-5">Service Worker</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerRegister">Register</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUnregister">Unregister</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerUpdate">Update</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerSyncRegister">Sync</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerPeriodSyncRegister">Periodic sync</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="serviceWorkerReloadCache">Reload cache</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="serviceWorkerRegister">Register</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="serviceWorkerUnregister">Unregister</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="serviceWorkerUpdate">Update</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="serviceWorkerSyncRegister">Sync</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="serviceWorkerPeriodSyncRegister">Periodic sync</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="serviceWorkerReloadCache">Reload cache</a>
                 </div>
             </div>
         </div>
@@ -83,10 +81,10 @@
             <div class="p-2">
                 <h1 class="fs-5">Push API</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="pushManagerSubscribe">Subscribe</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="pushManagerUnsubscribe">Unsubscribe</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="pushManagerPermissionState">Permission state</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="pushEvent">Push event</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="pushManagerSubscribe">Subscribe</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="pushManagerUnsubscribe">Unsubscribe</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="pushManagerPermissionState">Permission state</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="pushEvent">Push event</a>
                 </div>
             </div>
         </div>
@@ -95,7 +93,7 @@
             <div class="p-2">
                 <h1 class="fs-5">promptinstall</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="install">Install</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="install">Install</a>
                 </div>
             </div>
         </div>
@@ -104,7 +102,7 @@
             <div class="p-2">
                 <h1 class="fs-5">Web Share API</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="share">Share</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="share">Share</a>
                 </div>
             </div>
         </div>
@@ -113,8 +111,8 @@
             <div class="p-2">
                 <h1 class="fs-5">Geolocation API</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="geolocationGet">Get</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="geolocationState">Permission state</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="geolocationGet">Get</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="geolocationState">Permission state</a>
                 </div>
             </div>
         </div>
@@ -123,8 +121,8 @@
             <div class="p-2">
                 <h1 class="fs-5">Badging API</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="setBadge">Set badge</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="clearBadge">Clear badge</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="setBadge">Set badge</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="clearBadge">Clear badge</a>
                 </div>
             </div>
         </div>
@@ -133,9 +131,9 @@
             <div class="p-2">
                 <h1 class="fs-5">MediaStream API</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="getCameras">Get cameras</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="getStream">Get stream</a>
-                    <a class="list-group-item list-group-item-action" href="#" id="cameraState">Permission state</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="getCameras">Get cameras</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="getStream">Get stream</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="cameraState">Permission state</a>
                 </div>
                 <p class="d-none">
                     <select id="selectCamera">
@@ -151,7 +149,7 @@
             <div class="p-2">
                 <h1 class="fs-5">Image Capture API</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="takePhoto">Take photo</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="takePhoto">Take photo</a>
                 </div>
                 <p>
                     <img id="image" width="320" height="240">
@@ -163,7 +161,7 @@
             <div class="p-2">
                 <h1 class="fs-5">Web Bluetooth</h1>
                 <div class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#" id="bluetooth">Devices</a>
+                    <a class="list-group-item list-group-item-action is-action" href="#" id="bluetooth">Devices</a>
                 </div>
             </div>
         </div>

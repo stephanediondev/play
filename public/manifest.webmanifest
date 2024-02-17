@@ -31,6 +31,22 @@
             "purpose": "maskable"
         }
     ],
+    "screenshots": [
+        {
+            "src": "app/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "label": "Screenshot",
+            "form_factor": "wide"
+        },
+        {
+            "src": "app/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "label": "Screenshot",
+            "form_factor": "narrow"
+        }
+    ],
     "id": "/",
     "start_url": "/",
     "scope": "/",
