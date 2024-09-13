@@ -1,4 +1,4 @@
-//var bootstrap = require('bootstrap');
+const bootstrap = require('bootstrap');
 
 const storedTheme = localStorage.getItem('theme')
 
