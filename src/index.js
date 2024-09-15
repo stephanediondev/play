@@ -173,7 +173,7 @@ function detectItems() {
             }
 
             if (messageEvent.data.command == 'show-tab') {
-                writeHistory('opened tab: ' + messageEvent.data.content.title + ' (' + messageEvent.data.content.url + ')');
+                writeHistory('opened client: ' + messageEvent.data.content.title + ' (' + messageEvent.data.content.url + ')');
             }
         });
 
