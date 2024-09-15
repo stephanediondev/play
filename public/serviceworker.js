@@ -239,7 +239,10 @@ function messageToClientFocused(command, content) {
     clients.matchAll({ 'type': 'window' }).then(clientList => {
         clientList.forEach(client => {
             if (client.focused) {
-                client.postMessage({'command': command, 'content': content});
+                if ('show-tab' === command && client.id === content.id) {
+                } else {
+                    client.postMessage({'command': command, 'content': content});
+                }
             }
         });
     });

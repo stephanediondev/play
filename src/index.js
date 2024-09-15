@@ -178,7 +178,6 @@ function detectItems() {
 
             if (messageEvent.data.command == 'show-tab') {
                 writeHistory('opened client: ' + messageEvent.data.content.title + ' (' + messageEvent.data.content.url + ')');
-                //listOpenedTab.innerHTML += '<a href="#" id="'+ messageEvent.data.content.id + '">'+ messageEvent.data.content.url + '</a><br>';
 
                 var node = document.createElement('a');
                 var textnode = document.createTextNode(messageEvent.data.content.url);
@@ -187,12 +186,16 @@ function detectItems() {
                 node.appendChild(textnode);
                 listOpenedTab.insertBefore(node, listOpenedTab.firstChild);
 
+                var br = document.createElement('br');
+                listOpenedTab.insertBefore(br, listOpenedTab.firstChild);
+
                 node.addEventListener('click', (event) => {
                     event.preventDefault();
 
                     const myWindow = window.open(messageEvent.data.content.url, messageEvent.data.content.id);
                     if (myWindow) {
                         console.log(myWindow);
+                        listOpenedTab.innerHTML = '';
                         myWindow.focus();
                     } else {
                         console.log('Window is not open.');
