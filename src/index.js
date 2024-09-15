@@ -37,6 +37,8 @@ document.querySelectorAll('[data-bs-theme-value]').forEach(toggle => {
 var applicationServerKey = 'BOL1MjOgSneIArw6ZdxxL1UqSdnDnsxGT8WaNqBVgwtSPSHJdlY3tLffFwLzPiuUWr_87KyxLKcUsAImyBKTusU';
 var availableItems = new Array();
 
+var listOpenedTab = document.getElementById('listOpenedTab');
+
 writeHistory(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
 detectItems();
@@ -153,7 +155,7 @@ function detectItems() {
         navigator.serviceWorker.addEventListener('message', function(messageEvent) {
             console.log(messageEvent);
 
-            writeHistory('message event from client: ' + messageEvent.data.command);
+            writeHistory('message event from service worker: ' + messageEvent.data.command);
 
             if (messageEvent.data.command == 'snackbar') {
                 setToast({'title': messageEvent.data.content});
@@ -170,10 +172,32 @@ function detectItems() {
 
             if (messageEvent.data.command == 'opened-tabs') {
                 messageToServiceWorker({'command': 'client-info', 'content': {'title': document.title, 'url': messageEvent.data.content.url, 'id': messageEvent.data.content.id}});
+                window.name = messageEvent.data.content.id;
+                writeHistory('window.name: ' + window.name);
             }
 
             if (messageEvent.data.command == 'show-tab') {
                 writeHistory('opened client: ' + messageEvent.data.content.title + ' (' + messageEvent.data.content.url + ')');
+                //listOpenedTab.innerHTML += '<a href="#" id="'+ messageEvent.data.content.id + '">'+ messageEvent.data.content.url + '</a><br>';
+
+                var node = document.createElement('a');
+                var textnode = document.createTextNode(messageEvent.data.content.url);
+                node.setAttribute('href', messageEvent.data.content.url);
+                node.setAttribute('id', messageEvent.data.content.id);
+                node.appendChild(textnode);
+                listOpenedTab.insertBefore(node, listOpenedTab.firstChild);
+
+                node.addEventListener('click', (event) => {
+                    event.preventDefault();
+
+                    const myWindow = window.open(messageEvent.data.content.url, messageEvent.data.content.id);
+                    if (myWindow) {
+                        console.log(myWindow);
+                        myWindow.focus();
+                    } else {
+                        console.log('Window is not open.');
+                    }
+                });
             }
         });
 
@@ -264,6 +288,7 @@ function executeAction(action) {
     switch(action) {
         case 'openedClients':
             messageToServiceWorker({'command': 'opened-tabs'});
+            listOpenedTab.innerHTML = '';
             break;
 
         case 'setBadge':

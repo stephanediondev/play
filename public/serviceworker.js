@@ -34,7 +34,7 @@ self.addEventListener('activate', function(extendableEvent) {
 
     self.clients.matchAll().then(function(clients) {
         clients.map(function(client) {
-            if(client.focused) {
+            if (client.focused) {
                 messageToClient('history', 'client: ' + client.id);
             }
         });
@@ -183,7 +183,7 @@ self.addEventListener('notificationclose', function(notificationEvent) {
 self.addEventListener('message', function(extendableMessageEvent) {
     sendLog(extendableMessageEvent);
 
-    messageToClient('history', 'message event from service worker: ' + extendableMessageEvent.data.command);
+    messageToClient('history', 'message event from client: ' + extendableMessageEvent.data.command);
 
     switch(extendableMessageEvent.data.command) {
         case 'reload-cache':
@@ -221,11 +221,10 @@ function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function cacheAddAll() {
+async function cacheAddAll() {
     caches.delete(appCacheKey);
-    return caches.open(appCacheKey).then(function(cache) {
-        return cache.addAll(CACHE_FILES);
-    });
+    const cache = await caches.open(appCacheKey);
+    return await cache.addAll(CACHE_FILES);
 }
 
 function messageToClient(command, content) {
@@ -237,7 +236,7 @@ function messageToClient(command, content) {
 }
 
 function messageToClientFocused(command, content) {
-    clients.matchAll({ type: 'window' }).then(clientList => {
+    clients.matchAll({ 'type': 'window' }).then(clientList => {
         clientList.forEach(client => {
             if (client.focused) {
                 client.postMessage({'command': command, 'content': content});
