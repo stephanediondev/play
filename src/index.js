@@ -150,22 +150,30 @@ function detectItems() {
 
         executeAction('serviceWorkerRegister');
 
-        navigator.serviceWorker.addEventListener('message', function(MessageEvent) {
-            console.log(MessageEvent);
+        navigator.serviceWorker.addEventListener('message', function(messageEvent) {
+            console.log(messageEvent);
 
-            writeHistory('message event from client');
+            writeHistory('message event from client: ' + messageEvent.data.command);
 
-            if (MessageEvent.data.type == 'snackbar') {
-                setToast({'title': MessageEvent.data.content});
+            if (messageEvent.data.command == 'snackbar') {
+                setToast({'title': messageEvent.data.content});
             }
 
-            if (MessageEvent.data.type == 'history') {
-                writeHistory(MessageEvent.data.content);
+            if (messageEvent.data.command == 'history') {
+                writeHistory(messageEvent.data.content);
             }
 
-            if (MessageEvent.data.type == 'reload') {
+            if (messageEvent.data.command == 'reload') {
                 setToast({'title': 'reload'});
-                document.location.reload(MessageEvent.data.content);
+                document.location.reload(messageEvent.data.content);
+            }
+
+            if (messageEvent.data.command == 'opened-tabs') {
+                messageToServiceWorker({'command': 'client-info', 'content': {'title': document.title, 'url': messageEvent.data.content.url, 'id': messageEvent.data.content.id}});
+            }
+
+            if (messageEvent.data.command == 'show-tab') {
+                writeHistory('opened tab: ' + messageEvent.data.content.title + ' (' + messageEvent.data.content.url + ')');
             }
         });
 
@@ -251,7 +259,13 @@ function randomIntFromInterval(min, max) {
 }
 
 function executeAction(action) {
+    console.log(action);
+
     switch(action) {
+        case 'openedClients':
+            messageToServiceWorker({'command': 'opened-tabs'});
+            break;
+
         case 'setBadge':
             if ('setAppBadge' in navigator) {
                 navigator.setAppBadge(randomIntFromInterval(1, 99))

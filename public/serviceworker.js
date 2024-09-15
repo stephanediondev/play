@@ -183,26 +183,39 @@ self.addEventListener('notificationclose', function(notificationEvent) {
 self.addEventListener('message', function(extendableMessageEvent) {
     sendLog(extendableMessageEvent);
 
-    messageToClient('history', 'message event from service worker');
-
-    messageToClient('history', 'command: ' + extendableMessageEvent.data.command);
-
-    messageToClient('history', 'source: ' + extendableMessageEvent.source.id);
+    messageToClient('history', 'message event from service worker: ' + extendableMessageEvent.data.command);
 
     switch(extendableMessageEvent.data.command) {
         case 'reload-cache':
             cacheAddAll().then(function() {
                 messageToClient('reload', true);
             });
-        break;
+            break;
+
         case 'cache-key':
             messageToClient('snackbar', appCacheKey);
-        break;
+            break;
+
+        case 'opened-tabs':
+            getOpenedTabs();
+            break;
+
+        case 'client-info':
+            messageToClientFocused('show-tab', extendableMessageEvent.data.content);
+            break;
 
         default:
             messageToClient('history', 'unknown command: ' + extendableMessageEvent.data.command);
     }
 });
+
+function getOpenedTabs() {
+    self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+            client.postMessage({'command': 'opened-tabs', 'content': {'url': client.url, 'id': client.id}});
+        });
+    });
+}
 
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
@@ -215,10 +228,20 @@ function cacheAddAll() {
     });
 }
 
-function messageToClient(type, content) {
+function messageToClient(command, content) {
     self.clients.matchAll().then(function(clients) {
         clients.map(function(client) {
-            client.postMessage({type: type, content: content});
+            client.postMessage({'command': command, 'content': content});
+        });
+    });
+}
+
+function messageToClientFocused(command, content) {
+    clients.matchAll({ type: 'window' }).then(clientList => {
+        clientList.forEach(client => {
+            if (client.focused) {
+                client.postMessage({'command': command, 'content': content});
+            }
         });
     });
 }
