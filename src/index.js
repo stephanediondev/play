@@ -171,18 +171,18 @@ function detectItems() {
             }
 
             if (messageEvent.data.command == 'opened-tabs') {
-                messageToServiceWorker({'command': 'client-info', 'content': {'title': document.title, 'url': messageEvent.data.content.url, 'id': messageEvent.data.content.id}});
-                window.name = messageEvent.data.content.id;
+                //window.name = messageEvent.data.content.id;
                 writeHistory('window.name: ' + window.name);
+                messageToServiceWorker({'command': 'client-info', 'content': {'window': window.name, 'title': document.title, 'url': messageEvent.data.content.url, 'id': messageEvent.data.content.id}});
             }
 
             if (messageEvent.data.command == 'show-tab') {
-                writeHistory('opened client: ' + messageEvent.data.content.title + ' (' + messageEvent.data.content.url + ')');
+                writeHistory('opened client: ' + messageEvent.data.content.window + ' (' + messageEvent.data.content.url + ')');
 
                 var node = document.createElement('a');
                 var textnode = document.createTextNode(messageEvent.data.content.url);
                 node.setAttribute('href', messageEvent.data.content.url);
-                node.setAttribute('id', messageEvent.data.content.id);
+                node.setAttribute('target', messageEvent.data.content.window);
                 node.appendChild(textnode);
                 listOpenedTab.insertBefore(node, listOpenedTab.firstChild);
 
@@ -192,7 +192,7 @@ function detectItems() {
                 node.addEventListener('click', (event) => {
                     event.preventDefault();
 
-                    const myWindow = window.open(messageEvent.data.content.url, messageEvent.data.content.id);
+                    const myWindow = window.open(messageEvent.data.content.url, messageEvent.data.content.window);
                     if (myWindow) {
                         console.log(myWindow);
                         listOpenedTab.innerHTML = '';

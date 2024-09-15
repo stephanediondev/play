@@ -212,7 +212,9 @@ self.addEventListener('message', function(extendableMessageEvent) {
 function getOpenedTabs() {
     self.clients.matchAll().then(clients => {
         clients.forEach(client => {
-            client.postMessage({'command': 'opened-tabs', 'content': {'url': client.url, 'id': client.id}});
+            if (false === client.focused) {
+                client.postMessage({'command': 'opened-tabs', 'content': {'url': client.url, 'id': client.id}});
+            }
         });
     });
 }
@@ -238,11 +240,8 @@ function messageToClient(command, content) {
 function messageToClientFocused(command, content) {
     clients.matchAll({ 'type': 'window' }).then(clientList => {
         clientList.forEach(client => {
-            if (client.focused) {
-                if ('show-tab' === command && client.id === content.id) {
-                } else {
-                    client.postMessage({'command': command, 'content': content});
-                }
+            if (true === client.focused) {
+                client.postMessage({'command': command, 'content': content});
             }
         });
     });
